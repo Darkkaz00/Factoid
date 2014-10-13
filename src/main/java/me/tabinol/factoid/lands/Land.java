@@ -1,0 +1,1263 @@
+/*
+ Factoid: Lands and Factions plugin for Minecraft server
+ Copyright (C) 2014 Kaz00, Tabinol
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+package me.tabinol.factoid.lands;
+
+import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.UUID;
+
+import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.lands.areas.CuboidArea;
+import me.tabinol.factoid.parameters.FlagType;
+import me.tabinol.factoid.parameters.LandFlag;
+import me.tabinol.factoid.parameters.Permission;
+import me.tabinol.factoid.parameters.PermissionType;
+import me.tabinol.factoid.playercontainer.PlayerContainer;
+import me.tabinol.factoid.playercontainer.PlayerContainerNobody;
+import me.tabinol.factoidapi.event.PlayerContainerLandBanEvent;
+import me.tabinol.factoidapi.factions.IFaction;
+import me.tabinol.factoidapi.lands.ILand;
+import me.tabinol.factoidapi.lands.areas.ICuboidArea;
+import me.tabinol.factoidapi.parameters.IFlagType;
+import me.tabinol.factoidapi.parameters.IFlagValue;
+import me.tabinol.factoidapi.parameters.ILandFlag;
+import me.tabinol.factoidapi.parameters.IPermission;
+import me.tabinol.factoidapi.parameters.IPermissionType;
+import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
+import me.tabinol.factoidapi.playercontainer.IPlayerContainerPlayer;
+
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
+
+/**
+ * The Class Land.
+ */
+public class Land extends DummyLand implements ILand {
+
+    /** The Constant DEFAULT_PRIORITY. */
+    public static final short DEFAULT_PRIORITY = 10;
+    
+    /** The Constant MINIM_PRIORITY. */
+    public static final short MINIM_PRIORITY = 0;
+    
+    /** The Constant MAXIM_PRIORITY. */
+    public static final short MAXIM_PRIORITY = 100;
+    
+    /** The uuid. */
+    private final UUID uuid;
+    
+    /** The name. */
+    private String name;
+    
+    /** The areas. */
+    private Map<Integer, ICuboidArea> areas = new TreeMap<Integer, ICuboidArea>();
+    
+    /** The children. */
+    private Map<UUID, ILand> 
+    	children = new TreeMap<UUID, ILand>();
+    
+    /** The priority. */
+    private short priority = DEFAULT_PRIORITY; // Do not put more then 100000!!!!
+    
+    /** The genealogy. */
+    private int genealogy = 0; // 0 = first, 1 = child, 2 = child of child, ...
+    
+    /** The parent. */
+    private me.tabinol.factoidapi.lands.ILand parent = null;
+    
+    /** The owner. */
+    private IPlayerContainer owner;
+    
+    /** The residents. */
+    private Set<IPlayerContainer> residents = new TreeSet<IPlayerContainer>();
+    
+    /** The banneds. */
+    private Set<IPlayerContainer> banneds = new TreeSet<IPlayerContainer>();
+    
+    /** The auto save. */
+    private boolean autoSave = true;
+    
+    /** The faction territory. */
+    private IFaction factionTerritory = null;
+    
+    /** The money. */
+    private double money = 0L;
+    
+    /** The player notify. */
+    private Set<IPlayerContainerPlayer> playerNotify = new TreeSet<IPlayerContainerPlayer>();
+    
+    /** The players in land. */
+    private final Set<Player> playersInLand = new HashSet<Player>();
+    // Economy
+    /** The for sale. */
+    private boolean forSale = false;
+    
+    /** The for sale sign location */
+    private Location forSaleSignLoc = null;
+    
+    /** The sale price. */
+    private double salePrice = 0;
+    
+    /** The for rent. */
+    private boolean forRent = false;
+    
+    /** The for rent sign location */
+    private Location forRentSignLoc = null;
+    
+    /** The rent price. */
+    private double rentPrice = 0;
+    
+    /** The rent renew. */
+    private int rentRenew = 0; // How many days before renew?
+    
+    /** The rent auto renew. */
+    private boolean rentAutoRenew = false;
+    
+    /** The rented. */
+    private boolean rented = false;
+    
+    /** The tenant. */
+    private IPlayerContainerPlayer tenant = null;
+    
+    /** The last payment. */
+    private Timestamp lastPayment = new Timestamp(0);
+
+    // Please use createLand in Lands class to create a Land
+    /**
+     * Instantiates a new land.
+     *
+     * @param landName the land name
+     * @param uuid the uuid
+     * @param owner the owner
+     * @param area the area
+     * @param genealogy the genealogy
+     * @param parent the parent
+     * @param areaId the area id
+     */
+    @SuppressWarnings("unchecked")
+	protected Land(String landName, UUID uuid, IPlayerContainer owner,
+            ICuboidArea area, int genealogy, Land parent, int areaId) {
+
+        super(area.getWorldName().toLowerCase());
+        this.uuid = uuid;
+        name = landName.toLowerCase();
+        if (parent != null) {
+            this.parent = parent;
+            parent.addChild(this);
+            this.factionTerritory = parent.factionTerritory;
+        }
+        this.owner = owner;
+        this.genealogy = genealogy;
+        if (!Factoid.getThisPlugin().iStorageThread().isInLoad()) {
+            if (!Factoid.getThisPlugin().iLands().defaultConf.flags.isEmpty()) {
+                flags = (TreeMap<IFlagType, ILandFlag>) Factoid.getThisPlugin().iLands().defaultConf.flags.clone();
+            }
+            copyPerms();
+        }
+        addArea(area, areaId);
+    }
+
+    /**
+     * Sets the default.
+     */
+    @SuppressWarnings("unchecked")
+	public void setDefault() {
+        owner = new PlayerContainerNobody();
+        residents = new TreeSet<IPlayerContainer>();
+        playerNotify = new TreeSet<IPlayerContainerPlayer>();
+        permissions = new TreeMap<IPlayerContainer, TreeMap<IPermissionType, IPermission>>();
+        flags = (TreeMap<IFlagType, ILandFlag>) Factoid.getThisPlugin().iLands().defaultConf.flags.clone();
+        copyPerms();
+        doSave();
+    }
+
+    /**
+     * Copy perms.
+     */
+    @SuppressWarnings("unchecked")
+	private void copyPerms() {
+
+        for (IPlayerContainer pc : Factoid.getThisPlugin().iLands().defaultConf.permissions.keySet()) {
+            permissions.put(PlayerContainer.create(
+            		this, pc.getContainerType(), pc.getName()),
+                    (TreeMap<IPermissionType, IPermission>) Factoid.getThisPlugin().iLands().defaultConf.permissions.get(pc).clone());
+        }
+    }
+
+    /**
+     * Adds the area.
+     *
+     * @param area the area
+     */
+    public void addArea(ICuboidArea area) {
+
+        int nextKey = 0;
+
+        if (areas.isEmpty()) {
+            nextKey = 1;
+        } else {
+            for (int key : areas.keySet()) {
+
+                if (nextKey < key) {
+                    nextKey = key;
+                }
+            }
+            nextKey++;
+        }
+
+        addArea(area, nextKey);
+    }
+
+    /**
+     * Adds the area.
+     *
+     * @param area the area
+     * @param price the price
+     * @param mustPay If the owner has to pay
+     */
+    public void addArea(ICuboidArea area, double price, boolean mustPay) {
+
+        if(mustPay) {
+        	Factoid.getThisPlugin().iLands().getPriceFromPlayer(worldName, owner, price);
+        }
+        addArea(area);
+    }
+
+    /**
+     * Adds the area.
+     *
+     * @param area the area
+     * @param key the key
+     */
+    public void addArea(ICuboidArea area, int key) {
+
+        ((CuboidArea) area).setLand(this);
+        areas.put(key, area);
+        Factoid.getThisPlugin().iLands().addAreaToList(area);
+        doSave();
+    }
+
+    /**
+     * Removes the area.
+     *
+     * @param key the key
+     * @return true, if successful
+     */
+    public boolean removeArea(int key) {
+
+        ICuboidArea area;
+
+        if ((area = areas.remove(key)) != null) {
+            Factoid.getThisPlugin().iLands().removeAreaFromList(area);
+            doSave();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Removes the area.
+     *
+     * @param area the area
+     * @return true, if successful
+     */
+    public boolean removeArea(ICuboidArea area) {
+
+        Integer key = getAreaKey(area);
+
+        if (key != null) {
+            return removeArea(key);
+        }
+
+        return false;
+    }
+
+    /**
+     * Replace area.
+     *
+     * @param key the key
+     * @param newArea the new area
+     * @param price the price
+     * @param mustPay If the owner has to pay
+     * @return true, if successful
+     */
+    public boolean replaceArea(int key, ICuboidArea newArea, double price, boolean mustPay) {
+
+        if (mustPay) {
+        	Factoid.getThisPlugin().iLands().getPriceFromPlayer(worldName, owner, price);
+        }
+
+        return replaceArea(key, newArea);
+    }
+
+    /**
+     * Replace area.
+     *
+     * @param key the key
+     * @param newArea the new area
+     * @return true, if successful
+     */
+    public boolean replaceArea(int key, ICuboidArea newArea) {
+
+        ICuboidArea area;
+
+        if ((area = areas.remove(key)) != null) {
+            Factoid.getThisPlugin().iLands().removeAreaFromList(area);
+            ((CuboidArea) newArea).setLand(this);
+            areas.put(key, newArea);
+            Factoid.getThisPlugin().iLands().addAreaToList(newArea);
+            doSave();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets the area.
+     *
+     * @param key the key
+     * @return the area
+     */
+    public ICuboidArea getArea(int key) {
+
+        return areas.get(key);
+    }
+
+    /**
+     * Gets the area key.
+     *
+     * @param area the area
+     * @return the area key
+     */
+    public Integer getAreaKey(ICuboidArea area) {
+
+        for (Map.Entry<Integer, ICuboidArea> entry : areas.entrySet()) {
+            if (entry.getValue() == area) {
+                return entry.getKey();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the areas key.
+     *
+     * @return the areas key
+     */
+    public Set<Integer> getAreasKey() {
+
+        return areas.keySet();
+    }
+
+    /**
+     * Gets the ids and areas.
+     *
+     * @return the ids and areas
+     */
+    public Map<Integer, ICuboidArea> getIdsAndAreas() {
+
+        return areas;
+    }
+
+    /**
+     * Gets the areas.
+     *
+     * @return the areas
+     */
+    public Collection<ICuboidArea> getAreas() {
+
+        return areas.values();
+    }
+
+    /**
+     * Checks if is location inside.
+     *
+     * @param loc the loc
+     * @return true, if is location inside
+     */
+    public boolean isLocationInside(Location loc) {
+
+        for (ICuboidArea area1 : areas.values()) {
+            if (area1.isLocationInside(loc)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets the nb blocks outside.
+     *
+     * @param areaComp the area comp
+     * @return the nb blocks outside
+     */
+    public long getNbBlocksOutside(ICuboidArea areaComp) {
+
+        // Get the Volume of the area
+        long volume = areaComp.getTotalBlock();
+
+        // Put the list of areas in the land to an array
+        ICuboidArea[] areaAr = areas.values().toArray(new ICuboidArea[0]);
+
+        for (int t = 0; t < areaAr.length; t++) {
+
+            // Get the result collision cuboid
+            ICuboidArea colArea = areaAr[t].getCollisionArea(areaComp);
+
+            if (colArea != null) {
+
+                // Substract the volume of collision
+                volume -= colArea.getTotalBlock();
+
+                // Compare each next areas to the collision area and add
+                // the collision of the collision to cancel multiple subtracts
+                for (int a = t + 1; a < areaAr.length; a++) {
+
+                    ICuboidArea colAreaToNextArea = areaAr[a].getCollisionArea(colArea);
+
+                    if (colAreaToNextArea != null) {
+                        volume += colAreaToNextArea.getTotalBlock();
+                    }
+                }
+            }
+        }
+
+        return volume;
+    }
+
+    /**
+     * Gets the name.
+     *
+     * @return the name
+     */
+    public String getName() {
+
+        return name;
+    }
+
+    /**
+     * Gets the uuid.
+     *
+     * @return the uuid
+     */
+    public UUID getUUID() {
+
+        return uuid;
+    }
+
+    /**
+     * Sets the name.
+     *
+     * @param newName the new name
+     */
+    protected void setName(String newName) {
+
+        setAutoSave(false);
+        Factoid.getThisPlugin().iStorageThread().removeLand(this);
+        this.name = newName;
+        setAutoSave(true);
+        doSave();
+    }
+
+    /**
+     * Gets the owner.
+     *
+     * @return the owner
+     */
+    public IPlayerContainer getOwner() {
+
+        return owner;
+    }
+
+    /**
+     * Checks if is owner.
+     *
+     * @param player the player
+     * @return true, if is owner
+     */
+    public boolean isOwner(Player player) {
+
+        return owner.hasAccess(player);
+    }
+
+    /**
+     * Gets the faction territory.
+     *
+     * @return the faction territory
+     */
+    public IFaction getFactionTerritory() {
+
+        return factionTerritory;
+    }
+
+    /**
+     * Sets the faction territory.
+     *
+     * @param faction the new faction territory
+     */
+    public void setFactionTerritory(IFaction faction) {
+
+        this.factionTerritory = faction;
+        for (ILand child : children.values()) {
+            child.setFactionTerritory(faction);
+        }
+        doSave();
+    }
+
+    /**
+     * Sets the owner.
+     *
+     * @param owner the new owner
+     */
+    public void setOwner(IPlayerContainer owner) {
+
+        this.owner = owner;
+        doSave();
+    }
+
+    /**
+     * Adds the resident.
+     *
+     * @param resident the resident
+     */
+    public void addResident(IPlayerContainer resident) {
+
+        ((PlayerContainer) resident).setLand(this);
+        residents.add(resident);
+        doSave();
+    }
+
+    /**
+     * Removes the resident.
+     *
+     * @param resident the resident
+     * @return true, if successful
+     */
+    public boolean removeResident(IPlayerContainer resident) {
+
+        if (residents.remove(resident)) {
+            doSave();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets the residents.
+     *
+     * @return the residents
+     */
+    public final Set<IPlayerContainer> getResidents() {
+
+        return residents;
+    }
+
+    /**
+     * Checks if is resident.
+     *
+     * @param player the player
+     * @return true, if is resident
+     */
+    public boolean isResident(Player player) {
+
+        for (IPlayerContainer resident : residents) {
+            if (resident.hasAccess(player)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Adds the banned.
+     *
+     * @param banned the banned
+     */
+    @SuppressWarnings("deprecation")
+	public void addBanned(IPlayerContainer banned) {
+
+        ((PlayerContainer) banned).setLand(this);
+        banneds.add(banned);
+        doSave();
+
+        // Start Event
+        Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
+                new PlayerContainerLandBanEvent(this, banned));
+    
+        // Deprecated to remove
+        Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
+                new me.tabinol.factoid.event.PlayerContainerLandBanEvent((Land) this, (PlayerContainer) banned));
+    }
+
+    /**
+     * Removes the banned.
+     *
+     * @param banned the banned
+     * @return true, if successful
+     */
+    public boolean removeBanned(IPlayerContainer banned) {
+
+        if (banneds.remove(banned)) {
+            doSave();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets the banneds.
+     *
+     * @return the banneds
+     */
+    public final Set<IPlayerContainer> getBanneds() {
+
+        return banneds;
+    }
+
+    /**
+     * Checks if is banned.
+     *
+     * @param player the player
+     * @return true, if is banned
+     */
+    public boolean isBanned(Player player) {
+
+        for (IPlayerContainer banned : banneds) {
+            if (banned.hasAccess(player)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Note : a child get the parent priority
+    /**
+     * Gets the priority.
+     *
+     * @return the priority
+     */
+    public short getPriority() {
+
+        if (parent != null) {
+            return parent.getPriority();
+        }
+
+        return priority;
+    }
+
+    /**
+     * Gets the genealogy.
+     *
+     * @return the genealogy
+     */
+    public int getGenealogy() {
+
+        return genealogy;
+    }
+
+    /**
+     * Sets the priority.
+     *
+     * @param priority the new priority
+     */
+    public void setPriority(short priority) {
+
+        this.priority = priority;
+        doSave();
+    }
+
+    /**
+     * Gets the parent.
+     *
+     * @return the parent
+     */
+    public Land getParent() {
+
+        return (Land) parent;
+    }
+
+    /**
+     * Gets the ancestor.
+     *
+     * @param gen the gen
+     * @return the ancestor
+     */
+    public Land getAncestor(int gen) { // 1 parent, 2 grand-parent, 3 ...
+
+        Land ancestor = this;
+
+        for (int t = 0; t < gen; t++) {
+            ancestor = ancestor.getParent();
+        }
+
+        return ancestor;
+    }
+
+    /**
+     * Checks if is descendants.
+     *
+     * @param land the land
+     * @return true, if is descendants
+     */
+    public boolean isDescendants(ILand land) {
+
+        if (land == this) {
+            return true;
+        }
+
+        for (ILand landT : children.values()) {
+            if (landT.isDescendants(land) == true) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Adds the child.
+     *
+     * @param land the land
+     */
+    private void addChild(Land land) {
+
+        children.put(land.uuid, land);
+        doSave();
+    }
+
+    /**
+     * Removes the child.
+     *
+     * @param uuid the uuid
+     */
+    protected void removeChild(UUID uuid) {
+
+        children.remove(uuid);
+        doSave();
+    }
+
+    /**
+     * Gets the child.
+     *
+     * @param uuid the uuid
+     * @return the child
+     */
+    public Land getChild(UUID uuid) {
+
+        return (Land) children.get(uuid);
+    }
+
+    /**
+     * Gets the children.
+     *
+     * @return the children
+     */
+    public Collection<ILand> getChildren() {
+
+        return children.values();
+    }
+
+    /**
+     * Sets the auto save.
+     *
+     * @param autoSave the new auto save
+     */
+    public void setAutoSave(boolean autoSave) {
+
+        this.autoSave = autoSave;
+    }
+
+    /**
+     * Force save.
+     */
+    public void forceSave() {
+
+        Factoid.getThisPlugin().iStorageThread().saveLand(this);
+    }
+
+    /* (non-Javadoc)
+     * @see me.tabinol.factoid.lands.DummyLand#doSave()
+     */
+    @Override
+    protected void doSave() {
+
+        if (autoSave) {
+            forceSave();
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see me.tabinol.factoidapi.lands.ILand#addPermission(me.tabinol.factoidapi.playercontainer.IPlayerContainer, me.tabinol.factoidapi.parameters.IPermissionType, boolean, boolean)
+     */
+    public void addPermission(IPlayerContainer pc, IPermissionType permType,
+    		boolean value, boolean inheritance) {
+    	
+    	addPermission(pc, new Permission((PermissionType) permType, value, inheritance));
+    }
+    
+    /* (non-Javadoc)
+     * @see me.tabinol.factoidapi.lands.ILand#addFlag(me.tabinol.factoidapi.parameters.ILandFlag, java.lang.Object, boolean)
+     */
+    public void addFlag(ILandFlag flagType, Object value, boolean inheritance) {
+
+    	addFlag(new LandFlag((FlagType) flagType, value, inheritance));
+    }
+    
+    /**
+     * Check land permission and inherit.
+     *
+     * @param player the player
+     * @param pt the pt
+     * @param onlyInherit the only inherit
+     * @return the boolean
+     */
+    protected Boolean checkLandPermissionAndInherit(Player player, IPermissionType pt, boolean onlyInherit) {
+
+        Boolean permValue;
+
+        if ((permValue = getPermission(player, pt, onlyInherit)) != null) {
+            return permValue;
+        } else if (parent != null) {
+            return ((Land) parent).checkPermissionAndInherit(player, pt, true);
+        }
+
+        return Factoid.getThisPlugin().iLands().getPermissionInWorld(worldName, player, pt, true);
+    }
+
+    /**
+     * Gets the land flag and inherit.
+     *
+     * @param ft the ft
+     * @param onlyInherit the only inherit
+     * @return the land flag value
+     */
+    protected IFlagValue getLandFlagAndInherit(IFlagType ft, boolean onlyInherit) {
+
+        IFlagValue flagValue;
+
+        if ((flagValue = getFlag(ft, onlyInherit)) != null) {
+            return flagValue;
+        } else if (parent != null) {
+            return ((Land) parent).getFlagAndInherit(ft, true);
+        }
+
+        return Factoid.getThisPlugin().iLands().getFlagInWorld(worldName, ft, true);
+    }
+
+    /**
+     * Adds the money.
+     *
+     * @param money the money
+     */
+    public void addMoney(double money) {
+
+        this.money += money;
+        doSave();
+    }
+
+    /**
+     * Substract money.
+     *
+     * @param money the money
+     */
+    public void substractMoney(double money) {
+
+        this.money -= money;
+        doSave();
+    }
+
+    /**
+     * Gets the money.
+     *
+     * @return the money
+     */
+    public double getMoney() {
+
+        return money;
+    }
+
+    /**
+     * Adds the player notify.
+     *
+     * @param player the player
+     */
+    public void addPlayerNotify(IPlayerContainerPlayer player) {
+
+        playerNotify.add(player);
+        doSave();
+    }
+
+    /**
+     * Removes the player notify.
+     *
+     * @param player the player
+     * @return true, if successful
+     */
+    public boolean removePlayerNotify(IPlayerContainerPlayer player) {
+
+        boolean ret = playerNotify.remove(player);
+        doSave();
+
+        return ret;
+    }
+
+    /**
+     * Checks if is player notify.
+     *
+     * @param player the player
+     * @return true, if is player notify
+     */
+    public boolean isPlayerNotify(IPlayerContainerPlayer player) {
+
+        return playerNotify.contains(player);
+    }
+
+    /**
+     * Gets the players notify.
+     *
+     * @return the players notify
+     */
+    public Set<IPlayerContainerPlayer> getPlayersNotify() {
+
+        return playerNotify;
+    }
+
+    /**
+     * Adds the player in land.
+     *
+     * @param player the player
+     */
+    public void addPlayerInLand(Player player) {
+
+        playersInLand.add(player);
+    }
+
+    /**
+     * Removes the player in land.
+     *
+     * @param player the player
+     * @return true, if successful
+     */
+    public boolean removePlayerInLand(Player player) {
+
+        return playersInLand.remove(player);
+    }
+
+    // No parent verify
+    /**
+     * Checks if is player in land.
+     *
+     * @param player the player
+     * @return true, if is player in land
+     */
+    public boolean isPlayerInLand(Player player) {
+
+        return playersInLand.contains(player);
+    }
+
+    /**
+     * Checks if is playerin land no vanish.
+     *
+     * @param player the player
+     * @param fromPlayer the from player
+     * @return true, if is playerin land no vanish
+     */
+    public boolean isPlayerinLandNoVanish(Player player, Player fromPlayer) {
+
+        if (playersInLand.contains(player)
+                && (!Factoid.getThisPlugin().iPlayerConf().isVanished(player) 
+                		|| Factoid.getThisPlugin().iPlayerConf().get(fromPlayer).isAdminMod())) {
+            return true;
+        }
+
+        // Check Chidren
+        for (ILand landChild : children.values()) {
+            if (landChild.isPlayerinLandNoVanish(player, fromPlayer)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // No parent verify
+    /**
+     * Gets the players in land.
+     *
+     * @return the players in land
+     */
+    public Set<Player> getPlayersInLand() {
+
+        return playersInLand;
+    }
+
+    /**
+     * Gets the players in land no vanish.
+     *
+     * @param fromPlayer the from player
+     * @return the players in land no vanish
+     */
+    public Set<Player> getPlayersInLandNoVanish(Player fromPlayer) {
+
+        Set<Player> playerList = new HashSet<Player>();
+
+        for (Player player : playersInLand) {
+            if (!Factoid.getThisPlugin().iPlayerConf().isVanished(player) || Factoid.getThisPlugin().iPlayerConf().get(fromPlayer).isAdminMod()) {
+                playerList.add(player);
+            }
+        }
+        for (ILand landChild : children.values()) {
+            playerList.addAll(landChild.getPlayersInLandNoVanish(fromPlayer));
+        }
+
+        return playerList;
+    }
+
+    /**
+     * Checks if is for sale.
+     *
+     * @return true, if is for sale
+     */
+    public boolean isForSale() {
+
+        return forSale;
+    }
+
+    /**
+     * Sets the for sale.
+     *
+     * @param isForSale the is for sale
+     * @param salePrice the sale price
+     * @param signLoc the sign location
+     */
+    public void setForSale(boolean isForSale, double salePrice, Location signLoc) {
+
+        forSale = isForSale;
+        if (forSale) {
+            this.salePrice = salePrice;
+            this.forSaleSignLoc = signLoc;
+            Factoid.getThisPlugin().iLands().addForSale(this);
+        } else {
+            this.salePrice = 0;
+            this.forSaleSignLoc = null;
+            Factoid.getThisPlugin().iLands().removeForSale(this);
+        }
+        doSave();
+    }
+
+    public Location getSaleSignLoc() {
+    	
+    	return forSaleSignLoc;
+    }
+
+    public void setSaleSignLoc(Location forSaleSignLoc) {
+    	
+    	this.forSaleSignLoc = forSaleSignLoc;
+    	doSave();
+    }
+
+    /**
+     * Gets the sale price.
+     *
+     * @return the sale price
+     */
+    public double getSalePrice() {
+
+        return salePrice;
+    }
+
+    /**
+     * Checks if is for rent.
+     *
+     * @return true, if is for rent
+     */
+    public boolean isForRent() {
+
+        return forRent;
+    }
+
+    /**
+     * Sets the for rent.
+     *
+     * @param rentPrice the rent price
+     * @param rentRenew the rent renew
+     * @param rentAutoRenew the rent auto renew
+     */
+    public void setForRent(double rentPrice, int rentRenew, boolean rentAutoRenew, Location signLoc) {
+
+        forRent = true;
+        this.rentPrice = rentPrice;
+        this.rentRenew = rentRenew;
+        this.rentAutoRenew = rentAutoRenew;
+        this.forRentSignLoc = signLoc;
+        Factoid.getThisPlugin().iLands().addForRent(this);
+        doSave();
+    }
+
+    public Location getRentSignLoc() {
+    	
+    	return forRentSignLoc;
+    }
+    
+    public void setRentSignLoc(Location forRentSignLoc) {
+    	
+    	this.forRentSignLoc = forRentSignLoc;
+    	doSave();
+    }
+    
+    /**
+     * Un set for rent.
+     */
+    public void unSetForRent() {
+
+        forRent = false;
+        rentPrice = 0;
+        rentRenew = 0;
+        rentAutoRenew = false;
+        forRentSignLoc = null;
+        Factoid.getThisPlugin().iLands().removeForRent(this);
+        doSave();
+    }
+
+    /**
+     * Gets the rent price.
+     *
+     * @return the rent price
+     */
+    public double getRentPrice() {
+
+        return rentPrice;
+    }
+
+    /**
+     * Gets the rent renew.
+     *
+     * @return the rent renew
+     */
+    public int getRentRenew() {
+
+        return rentRenew;
+    }
+
+    /**
+     * Gets the rent auto renew.
+     *
+     * @return the rent auto renew
+     */
+    public boolean getRentAutoRenew() {
+
+        return rentAutoRenew;
+    }
+
+    /**
+     * Checks if is rented.
+     *
+     * @return true, if is rented
+     */
+    public boolean isRented() {
+
+        return rented;
+    }
+
+    /**
+     * Sets the rented.
+     *
+     * @param tenant the new rented
+     */
+    public void setRented(IPlayerContainerPlayer tenant) {
+
+        rented = true;
+        this.tenant = tenant;
+        updateRentedPayment(); // doSave() done in this method
+    }
+
+    /**
+     * Update rented payment.
+     */
+    public void updateRentedPayment() {
+
+        lastPayment = new Timestamp(new Date().getTime());
+        doSave();
+    }
+
+    /**
+     * Un set rented.
+     */
+    public void unSetRented() {
+
+        rented = false;
+        tenant = null;
+        lastPayment = new Timestamp(0);
+        doSave();
+    }
+
+    /**
+     * Gets the tenant.
+     *
+     * @return the tenant
+     */
+    public IPlayerContainerPlayer getTenant() {
+
+        return tenant;
+    }
+
+    /**
+     * Checks if is tenant.
+     *
+     * @param player the player
+     * @return true, if is tenant
+     */
+    public boolean isTenant(Player player) {
+
+        return rented && tenant.hasAccess(player);
+    }
+
+    /**
+     * Sets the last payment time.
+     *
+     * @param lastPayment the new last payment time
+     */
+    public void setLastPaymentTime(Timestamp lastPayment) {
+    	
+    	this.lastPayment = lastPayment;
+    	doSave();
+    }
+    
+    /**
+     * Gets the last payment time.
+     *
+     * @return the last payment time
+     */
+    public Timestamp getLastPaymentTime() {
+
+        return lastPayment;
+    }
+}

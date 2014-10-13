@@ -1,0 +1,41 @@
+name: Factoid
+main: me.tabinol.factoid.Factoid
+version: ${project.version}
+description: Factoid
+author: [Kaz00,Tabinol]
+depend: [Vault]
+softdepend: [WorldEdit,Essentials,VanishNoPacket]
+commands:
+   factoid:
+      description: Factoid Command
+      aliases: [fd, claim]
+      usage: /factoid help
+      permission: factoid.use
+      permission-message: you don't have permission for that!
+permissions:
+    factoid.*:
+        description: Factoid Command Permission
+        default: op
+        children:
+            factoid.adminmod: true
+            factoid.adminmod.auto: true
+            factoid.collisionapprove: true
+            factoid.use: true
+            factoid.reload: true
+    factoid.adminmod:
+        description: Can use Admin Mod
+        default: op
+    factoid.adminmod.auto:
+        description: Auto Admin Mod on connect
+        default: op
+        children:
+            factoid.adminmod: true
+    factoid.collisionapprove:
+        description: Can approve land creation collisions
+        default: op
+    factoid.use:
+        description: Can use factoid command
+        default: op
+    factoid.reload:
+        description: Can reload the plugin
+        default: op

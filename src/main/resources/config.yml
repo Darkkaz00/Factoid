@@ -1,0 +1,54 @@
+##################################################################
+# Author: Kazoo	 & Tabinol                                       #
+# Copyrigth 2013      	                                         #
+# Website: http://dev.bukkit.org/profiles/darkkazoo/             #
+# Contact: dev.kazoo@gmail.com                	                 #
+##################################################################
+general:                             # ----General Config----
+  debug: false                       # Set to true to show DebugLog 
+  lang: english                      # english, french for now
+  Storage: flat                      # Only flat is supported for now
+  # The next value is if you want the Factoid explosion protection.
+  # Set it to «False» if you prefer to disable explosions from Essentials
+  # or avoiding plugin conflicts. Flags (???_DAMAGE) will be ignored.
+  OverrideExplosions: true
+  UseEconomy: false
+  InfoItem: 352                      # Item that give Land information
+  SelectItem: 367                    # Item that give Land selection
+land:
+  # AllowCollision:
+  # true: Collisions are permitted without verification.
+  # approve: A player with permission factoid.approvecollision must approve
+  #          the land created if there is a collision.
+  # false: No collision permitted.
+  AllowCollision: approve            # true, approve, false
+  ApproveNotifyTime: 24002           # Time to notify for Approval (in ticks)
+                                     # or 0 for disabling
+  SelectAutoCancel: 12000            # Time before auto cancel a selection
+                                     # or 0 for disabling
+  MaxVisualSelect: 256               # High value = crash or severe lag
+  MaxVisualSelectFromPlayer: 128     # Same problem ;-)
+  MaxLand: 1
+  MinLandSize: 1
+  MaxLandSize: 1
+  MinLandHigh: 0
+  MaxLandHigh: 255
+  DefaultXsize: 10
+  DefaultZsize: 10
+  DefaultBottom: 0
+  DefaultTop: 255
+  MaxLandPerPlayer: 5
+  area:
+    MinAreaSize: 1
+    MaxAreaSize: 1
+    MaxAreaPerLand: 3
+  OwnerCanSet:                     # What the owner can set on his land?
+    Permissions: [BUILD, OPEN, USE, ANIMAL_KILL, TAMED_KILL, VILLAGER_KILL, VILLAGER_GOLEM_KILL, HORSE_KILL]
+    Flags: [TNT_EXPLOSION, TNT_DAMAGE, MESSAGE_JOIN, MESSAGE_QUIT]
+  BeaconLight: false               #Set beacon light effect of an selection
+economy:
+  PricebyCube: 0.01
+  MinPriceLocation: 1
+  MaxPriceLocation: 1
+  MinPriceSell: 1
+  MaxPriceSell: 1
