@@ -31,7 +31,7 @@ import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.lands.collisions.Collisions.LandAction;
 import me.tabinol.factoid.playercontainer.PlayerContainer;
-import me.tabinol.factoid.utilities.StringChanges;
+import me.tabinol.factoidapi.utilities.StringChanges;
 import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
 
 import org.bukkit.configuration.ConfigurationSection;

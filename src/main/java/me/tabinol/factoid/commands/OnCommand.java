@@ -23,7 +23,7 @@ import me.tabinol.factoid.commands.executor.CommandEntities;
 import me.tabinol.factoid.commands.executor.CommandExec;
 import me.tabinol.factoid.commands.executor.CommandHelp;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
-import me.tabinol.factoid.utilities.StringChanges;
+import me.tabinol.factoidapi.utilities.StringChanges;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

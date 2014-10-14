@@ -121,15 +121,4 @@ public class Calculate {
         }
         return t;
     }
-    
-    /**
-     * Gets the random yield.
-     *
-     * @param yield the yield
-     * @return the random yield
-     */
-    public static boolean getRandomYield(float yield) {
-        
-        return Math.random() < yield;
-    }
 }

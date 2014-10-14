@@ -44,7 +44,7 @@ import me.tabinol.factoid.parameters.Permission;
 import me.tabinol.factoid.parameters.PermissionType;
 import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoid.playercontainer.PlayerContainerPlayer;
-import me.tabinol.factoid.utilities.StringChanges;
+import me.tabinol.factoidapi.utilities.StringChanges;
 import me.tabinol.factoidapi.parameters.ILandFlag;
 import me.tabinol.factoidapi.parameters.IPermission;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;

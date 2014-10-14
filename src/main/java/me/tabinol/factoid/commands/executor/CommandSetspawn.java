@@ -25,7 +25,7 @@ import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.parameters.FlagList;
 import me.tabinol.factoid.parameters.LandFlag;
-import me.tabinol.factoid.utilities.StringChanges;
+import me.tabinol.factoidapi.utilities.StringChanges;
 
 public class CommandSetspawn extends CommandExec {
 

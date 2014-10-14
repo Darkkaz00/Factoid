@@ -18,7 +18,7 @@
 package me.tabinol.factoid.parameters;
 
 import me.tabinol.factoid.Factoid;
-import me.tabinol.factoid.utilities.StringChanges;
+import me.tabinol.factoidapi.utilities.StringChanges;
 import me.tabinol.factoidapi.parameters.ILandFlag;
 
 

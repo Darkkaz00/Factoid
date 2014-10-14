@@ -42,7 +42,7 @@ import me.tabinol.factoid.parameters.FlagList;
 import me.tabinol.factoid.parameters.PermissionList;
 import me.tabinol.factoid.selection.region.PlayerMoveListen;
 import me.tabinol.factoid.selection.region.RegionSelection;
-import me.tabinol.factoid.utilities.StringChanges;
+import me.tabinol.factoidapi.utilities.StringChanges;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

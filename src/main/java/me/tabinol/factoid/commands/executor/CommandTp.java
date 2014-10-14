@@ -24,7 +24,7 @@ import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.parameters.FlagList;
 import me.tabinol.factoidapi.parameters.IFlagValue;
 import me.tabinol.factoid.parameters.PermissionList;
-import me.tabinol.factoid.utilities.StringChanges;
+import me.tabinol.factoidapi.utilities.StringChanges;
 
 
 /**
