@@ -159,7 +159,7 @@ public class FlagValue implements IFlagValue {
         		String[] strs = str.split(" ");
         		value = new FlagValue(Double.parseDouble(strs[0]));
         	} else if (ft.getDefaultValue().getValue() instanceof String) {
-        		value = new FlagValue(str);
+        		value = new FlagValue(StringChanges.fromQuote(str));
         	} else if (ft.getDefaultValue().getValue() instanceof String[]) {
         		ArrayList<String> result = new ArrayList<String>();
         		String[] strs = StringChanges.splitKeepQuote(str, ";");
