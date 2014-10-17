@@ -39,9 +39,12 @@ public class EcoScheduler extends BukkitRunnable {
     	
     	// Check for rent renew
     	for(ILand land : Factoid.getThisPlugin().iLands().getForRent()) {
-    		if(land.isRented() && land.getLastPaymentTime().getTime() < now.getTimeInMillis() - 1000 * 60 * 60 * 24) {
+    		
+    		long nextPaymentTime = land.getLastPaymentTime().getTime() + (86400000 * land.getRentRenew());
+    		
+    		if(land.isRented() && nextPaymentTime < now.getTimeInMillis()) {
     			
-    			//Check if the tenant has enough money or time limit whit no auto renew
+    			//Check if the tenant has enough money or time limit whit no auto renew 
     			if(Factoid.getThisPlugin().iPlayerMoney().getPlayerBalance(land.getTenant().getOfflinePlayer(), land.getWorldName()) < land.getRentPrice()
     					|| !land.getRentAutoRenew()) {
     				
