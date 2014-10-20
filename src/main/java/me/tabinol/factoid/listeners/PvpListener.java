@@ -176,7 +176,8 @@ public class PvpListener extends CommonListener implements Listener {
 				// Check for fire near the player
 				for(Map.Entry<Location, IPlayerContainerPlayer> fireEntry : playerFireLocation.entrySet()) {
 					
-					if(loc.distanceSquared(fireEntry.getKey()) < 5) {
+					if(loc.getWorld() == fireEntry.getKey().getWorld() 
+							&& loc.distanceSquared(fireEntry.getKey()) < 5) {
 						Block block = loc.getBlock();
 						if((block.getType() == Material.FIRE || block.getType() == Material.AIR) 
 								&& !isPvpValid(land, fireEntry.getValue(), entry.getPlayerContainer())) {
