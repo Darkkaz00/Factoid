@@ -210,6 +210,7 @@ public abstract class CommandExec implements CommandInterface {
      * @param parent the parent
      * @param owner the owner of the land (PlayerContainer)
      * @param price the price
+     * @param mustPay if the player must pay
      * @param addForApprove the add for approve
      * @return true, if successful
      * @throws FactoidCommandException the factoid command exception

@@ -1110,6 +1110,7 @@ public class Land extends DummyLand implements ILand {
      * @param rentPrice the rent price
      * @param rentRenew the rent renew
      * @param rentAutoRenew the rent auto renew
+     * @param signLoc the sign location
      */
     public void setForRent(double rentPrice, int rentRenew, boolean rentAutoRenew, Location signLoc) {
 

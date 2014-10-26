@@ -22,10 +22,11 @@ import java.util.List;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.config.Config;
-import me.tabinol.factoidapi.lands.IDummyLand;
 import me.tabinol.factoid.parameters.FlagList;
+import me.tabinol.factoidapi.lands.IDummyLand;
 import me.tabinol.factoidapi.parameters.IFlagType;
 import me.tabinol.factoidapi.parameters.IFlagValue;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Animals;
@@ -50,19 +51,10 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
-import org.bukkit.event.world.WorldEvent;
 
 
 /**
- * The listener interface for receiving world events.
- * The class that is interested in processing a world
- * event implements this interface, and the object created
- * with that class is registered with a component using the
- * component's <code>addWorldListener<code> method. When
- * the world event occurs, that object's appropriate
- * method is invoked.
- *
- * @see WorldEvent
+ * World listener
  */
 public class WorldListener extends CommonListener implements Listener {
 

@@ -30,18 +30,18 @@ import me.tabinol.factoid.commands.executor.CommandSelect;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.config.players.PlayerConfEntry;
 import me.tabinol.factoid.config.players.PlayerStaticConfig;
-import me.tabinol.factoidapi.config.players.IPlayerConfEntry;
-import me.tabinol.factoidapi.event.PlayerLandChangeEvent;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
-import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.lands.DummyLand;
-import me.tabinol.factoidapi.lands.IDummyLand;
-import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.parameters.FlagList;
 import me.tabinol.factoid.parameters.PermissionList;
 import me.tabinol.factoid.selection.region.PlayerMoveListen;
 import me.tabinol.factoid.selection.region.RegionSelection;
+import me.tabinol.factoidapi.config.players.IPlayerConfEntry;
+import me.tabinol.factoidapi.event.PlayerLandChangeEvent;
+import me.tabinol.factoidapi.lands.IDummyLand;
+import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.utilities.StringChanges;
 
 import org.bukkit.ChatColor;
@@ -75,7 +75,6 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -90,14 +89,7 @@ import org.bukkit.plugin.PluginManager;
 
 
 /**
- * The listener interface for receiving player events. The class that is
- * interested in processing a player event implements this interface, and the
- * object created with that class is registered with a component using the
- * component's <code>addPlayerListener<code> method. When
- * the player event occurs, that object's appropriate
- * method is invoked.
- * 
- * @see PlayerEvent
+ * Players listener
  */
 public class PlayerListener extends CommonListener implements Listener {
 

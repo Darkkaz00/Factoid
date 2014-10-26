@@ -43,18 +43,9 @@ import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.player.PlayerEvent;
 
 /**
- * The listener interface for receiving pvp events.
- * The class that is interested in processing a pvp
- * event implements this interface, and the object created
- * with that class is registered with a component using the
- * component's <code>addPvpListener<code> method. When
- * the pvp event occurs, that object's appropriate
- * method is invoked.
- *
- * @see PlayerEvent
+ * PVP Listener
  */
 public class PvpListener extends CommonListener implements Listener {
 

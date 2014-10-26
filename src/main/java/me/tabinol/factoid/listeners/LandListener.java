@@ -20,16 +20,15 @@ package me.tabinol.factoid.listeners;
 import java.util.ArrayList;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.parameters.FlagList;
+import me.tabinol.factoid.parameters.PermissionList;
+import me.tabinol.factoid.parameters.PermissionType;
 import me.tabinol.factoidapi.config.players.IPlayerStaticConfig;
-import me.tabinol.factoidapi.event.LandEvent;
 import me.tabinol.factoidapi.event.PlayerContainerAddNoEnterEvent;
 import me.tabinol.factoidapi.event.PlayerContainerLandBanEvent;
 import me.tabinol.factoidapi.event.PlayerLandChangeEvent;
 import me.tabinol.factoidapi.lands.IDummyLand;
 import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoid.parameters.FlagList;
-import me.tabinol.factoid.parameters.PermissionList;
-import me.tabinol.factoid.parameters.PermissionType;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainerPlayer;
 
@@ -43,15 +42,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 
 /**
- * The listener interface for receiving land events.
- * The class that is interested in processing a land
- * event implements this interface, and the object created
- * with that class is registered with a component using the
- * component's <code>addLandListener<code> method. When
- * the land event occurs, that object's appropriate
- * method is invoked.
- *
- * @see LandEvent
+ * Land listener
  */
 public class LandListener extends CommonListener implements Listener {
 
