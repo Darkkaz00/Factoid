@@ -23,7 +23,9 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoidapi.event.LandModifyEvent;
 import me.tabinol.factoidapi.event.PlayerContainerAddNoEnterEvent;
+import me.tabinol.factoidapi.event.LandModifyEvent.LandModifyReason;
 import me.tabinol.factoidapi.lands.IDummyLand;
 import me.tabinol.factoidapi.parameters.IFlagType;
 import me.tabinol.factoidapi.parameters.IFlagValue;
@@ -108,17 +110,24 @@ public class DummyLand implements IDummyLand {
         permPlayer.put(perm.getPermType(), perm);
         doSave();
 
-        // Start Event
-        if (this instanceof Land && perm.getPermType() == PermissionList.LAND_ENTER.getPermissionType()
-                && perm.getValue() != perm.getPermType().getDefaultValue()) {
-            Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
-                    new PlayerContainerAddNoEnterEvent((Land) this, pc));
+        if (this instanceof Land) {
+        	if (perm.getPermType() == PermissionList.LAND_ENTER.getPermissionType()
+        			&& perm.getValue() != perm.getPermType().getDefaultValue()) {
+                
+        		// Start Event for kick
+        		Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
+        				new PlayerContainerAddNoEnterEvent((Land) this, pc));
             
-            // Deprecated to remove
-            Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
-                    new me.tabinol.factoid.event.PlayerContainerAddNoEnterEvent((Land) this, (PlayerContainer) pc));
-        }
+        		// Deprecated to remove
+        		Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
+        				new me.tabinol.factoid.event.PlayerContainerAddNoEnterEvent((Land) this, 
+        						(PlayerContainer) pc));
+        	}
 
+        	// Start Event
+        	Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
+        			new LandModifyEvent((Land) this, LandModifyReason.PERMISSION_SET, perm));
+        }
     }
 
     /**
@@ -132,12 +141,14 @@ public class DummyLand implements IDummyLand {
     		me.tabinol.factoidapi.parameters.IPermissionType permType) {
 
         TreeMap<IPermissionType, IPermission> permPlayer;
+        IPermission perm;
 
         if (!permissions.containsKey(pc)) {
             return false;
         }
         permPlayer = permissions.get(pc);
-        if (permPlayer.remove(permType) == null) {
+        perm = permPlayer.remove(permType);
+        if (perm == null) {
             return false;
         }
 
@@ -147,7 +158,14 @@ public class DummyLand implements IDummyLand {
         }
 
         doSave();
-        return true;
+
+    	if(this instanceof Land) {
+    		// Start Event
+    		Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
+    				new LandModifyEvent((Land) this, LandModifyReason.PERMISSION_UNSET, perm));
+    	}
+
+    	return true;
     }
 
     /**
@@ -255,6 +273,12 @@ public class DummyLand implements IDummyLand {
 
         flags.put(flag.getFlagType(), flag);
         doSave();
+
+    	if(this instanceof Land) {
+    		// Start Event
+    		Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
+    				new LandModifyEvent((Land) this, LandModifyReason.FLAG_SET, flag));
+    	}
     }
 
     /**
@@ -265,11 +289,20 @@ public class DummyLand implements IDummyLand {
      */
     public boolean removeFlag(IFlagType flagType) {
 
-        if (flags.remove(flagType) == null) {
+        ILandFlag flag = flags.remove(flagType);
+    	
+    	if (flag == null) {
             return false;
         }
         doSave();
-        return true;
+    	
+        if(this instanceof Land) {
+    		// Start Event
+    		Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
+    				new LandModifyEvent((Land) this, LandModifyReason.FLAG_UNSET, flag));
+    	}
+
+    	return true;
     }
 
     /**

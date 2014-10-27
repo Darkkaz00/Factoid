@@ -35,6 +35,8 @@ import me.tabinol.factoid.parameters.Permission;
 import me.tabinol.factoid.parameters.PermissionType;
 import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoid.playercontainer.PlayerContainerNobody;
+import me.tabinol.factoidapi.event.LandModifyEvent;
+import me.tabinol.factoidapi.event.LandModifyEvent.LandModifyReason;
 import me.tabinol.factoidapi.event.PlayerContainerLandBanEvent;
 import me.tabinol.factoidapi.factions.IFaction;
 import me.tabinol.factoidapi.lands.ILand;
@@ -257,6 +259,10 @@ public class Land extends DummyLand implements ILand {
         areas.put(key, area);
         Factoid.getThisPlugin().iLands().addAreaToList(area);
         doSave();
+        
+        // Start Event
+        Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
+                new LandModifyEvent(this, LandModifyReason.AREA_ADD, area));
     }
 
     /**
@@ -272,6 +278,11 @@ public class Land extends DummyLand implements ILand {
         if ((area = areas.remove(key)) != null) {
             Factoid.getThisPlugin().iLands().removeAreaFromList(area);
             doSave();
+            
+            // Start Event
+            Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
+                    new LandModifyEvent(this, LandModifyReason.AREA_REMOVE, area));
+
             return true;
         }
 
@@ -330,6 +341,11 @@ public class Land extends DummyLand implements ILand {
             areas.put(key, newArea);
             Factoid.getThisPlugin().iLands().addAreaToList(newArea);
             doSave();
+
+            // Start Event
+            Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
+                    new LandModifyEvent(this, LandModifyReason.AREA_REPLACE, area));
+
             return true;
         }
 
@@ -483,6 +499,10 @@ public class Land extends DummyLand implements ILand {
         this.name = newName;
         setAutoSave(true);
         doSave();
+
+        // Start Event
+        Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
+                new LandModifyEvent(this, LandModifyReason.RENAME, name));
     }
 
     /**
@@ -528,6 +548,10 @@ public class Land extends DummyLand implements ILand {
             child.setFactionTerritory(faction);
         }
         doSave();
+
+        // Start Event
+        Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
+                new LandModifyEvent(this, LandModifyReason.FACTION_TERRITORY_CHANGE, faction));
     }
 
     /**
@@ -539,6 +563,10 @@ public class Land extends DummyLand implements ILand {
 
         this.owner = owner;
         doSave();
+
+        // Start Event
+        Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
+                new LandModifyEvent(this, LandModifyReason.OWNER_CHANGE, owner));
     }
 
     /**
@@ -551,6 +579,10 @@ public class Land extends DummyLand implements ILand {
         ((PlayerContainer) resident).setLand(this);
         residents.add(resident);
         doSave();
+
+        // Start Event
+        Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
+                new LandModifyEvent(this, LandModifyReason.RESIDENT_ADD, resident));
     }
 
     /**
@@ -563,6 +595,11 @@ public class Land extends DummyLand implements ILand {
 
         if (residents.remove(resident)) {
             doSave();
+
+            // Start Event
+            Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
+                    new LandModifyEvent(this, LandModifyReason.RESIDENT_REMOVE, resident));
+            
             return true;
         }
 
