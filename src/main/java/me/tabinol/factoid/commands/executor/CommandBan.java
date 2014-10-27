@@ -18,7 +18,6 @@
 package me.tabinol.factoid.commands.executor;
 
 import me.tabinol.factoid.Factoid;
-import me.tabinol.factoid.commands.ArgList;
 import me.tabinol.factoid.commands.ChatPage;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
@@ -28,7 +27,6 @@ import me.tabinol.factoid.playerscache.PlayerCacheEntry;
 import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 
 /**
@@ -109,13 +107,6 @@ public class CommandBan extends CommandThreadExec {
     			throw new FactoidCommandException("Banned", entity.player, "COMMAND.BANNED.NOTINSPAWN");
     		}
     		land.addBanned(pc);
-
-    		// Check for kick the player if he is online and in the land
-    		for (Player pl : Factoid.getThisPlugin().getServer().getOnlinePlayers()) {
-    			if (land.isPlayerinLandNoVanish(pl, entity.player) && pc.hasAccess(pl)) {
-    				new CommandKick(entity.player, new ArgList(new String[]{pl.getName()}, entity.player), land).commandExecute();
-    			}
-    		}
 
     		entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.BANNED.ISDONE", 
     				pc.getPrint() + ChatColor.YELLOW, land.getName()));

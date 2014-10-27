@@ -234,7 +234,7 @@ public class LandListener extends CommonListener implements Listener {
      *
      * @param event the event
      */
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerContainerLandBan(PlayerContainerLandBanEvent event) {
 
         checkForBannedPlayers(event.getLand(), event.getPlayerContainer(), "ACTION.BANNED");
@@ -245,7 +245,7 @@ public class LandListener extends CommonListener implements Listener {
      *
      * @param event the event
      */
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerContainerAddNoEnter(PlayerContainerAddNoEnterEvent event) {
 
         checkForBannedPlayers(event.getLand(), event.getPlayerContainer(), "ACTION.NOENTRY");
@@ -259,16 +259,38 @@ public class LandListener extends CommonListener implements Listener {
      * @param message the message
      */
     private void checkForBannedPlayers(ILand land, IPlayerContainer pc, String message) {
-
-        for (Player players : Factoid.getThisPlugin().getServer().getOnlinePlayers()) {
-            if (pc.hasAccess(players)
-                    && !land.isOwner(players)
-                    && !playerConf.get(players).isAdminMod()) {
-                tpSpawn(players, land, message);
-            }
-        }
+    	
+    	checkForBannedPlayers(land, pc, message, new ArrayList<Player>());
     }
 
+    /**
+     * Check for banned players.
+     *
+     * @param land the land
+     * @param pc the pc
+     * @param message the message
+     * @param kickPlayers the kicked players list
+     */
+    private void checkForBannedPlayers(ILand land, IPlayerContainer pc, String message, ArrayList<Player> kickPlayers) {
+
+    	for (Player players : land.getPlayersInLand()) {
+            if (pc.hasAccess(players)
+                    && !land.isOwner(players)
+                    && !playerConf.get(players).isAdminMod()
+                    && (land.checkPermissionAndInherit(players, PermissionList.LAND_ENTER.getPermissionType()) == false
+                    || land.isBanned(players))
+                    && !kickPlayers.contains(players)) {
+                tpSpawn(players, land, message);
+                kickPlayers.add(players);
+            }
+        }
+    	
+    	// check for children
+    	for (ILand children : land.getChildren()) {
+    		checkForBannedPlayers(children, pc, message);
+    	}
+    }
+    
     // Notify players for land Enter/Exit
     /**
      * Notify players.

@@ -20,7 +20,6 @@ package me.tabinol.factoid.commands.executor;
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ArgList;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
-import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoid.parameters.PermissionList;
 
 import org.bukkit.ChatColor;
@@ -52,23 +51,6 @@ public class CommandKick extends CommandExec {
 
     }
     
-    // From other command
-    /**
-     * Instantiates a new command kick.
-     *
-     * @param player the player
-     * @param argList the arg list
-     * @param land the land
-     * @throws FactoidCommandException the factoid command exception
-     */
-    public CommandKick(Player player, ArgList argList, ILand land) throws FactoidCommandException {
-        
-        super(null, false, false);
-        this.argList = argList;
-        this.player = player;
-        this.land = land;
-    }
-
     /* (non-Javadoc)
      * @see me.tabinol.factoid.commands.executor.CommandInterface#commandExecute()
      */
