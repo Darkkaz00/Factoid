@@ -1045,7 +1045,6 @@ public class Land extends DummyLand implements ILand {
         return false;
     }
 
-    // No parent verify
     /**
      * Gets the players in land.
      *
@@ -1054,6 +1053,24 @@ public class Land extends DummyLand implements ILand {
     public Set<Player> getPlayersInLand() {
 
         return playersInLand;
+    }
+
+    /**
+     * Gets the players in land and children.
+     *
+     * @return the players in land and children
+     */
+    public Set<Player> getPlayersInLandAndChildren() {
+    	
+    	Set<Player> playLandChild = new HashSet<Player>();
+    	
+    	playLandChild.addAll(playersInLand);
+    	
+    	for(ILand child : children.values()) {
+    		playLandChild.addAll(child.getPlayersInLandAndChildren());
+    	}
+    	
+    	return playLandChild;
     }
 
     /**
