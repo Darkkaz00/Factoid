@@ -94,6 +94,12 @@ public enum PermissionList {
     /** The use string. */
     USE_STRING(true),
     
+    /** The use enchanting table **/
+    USE_ENCHANTTABLE(true),
+    
+    /** The use anvil **/
+    USE_ANVIL(true),
+    
     /** The animal kill. */
     ANIMAL_KILL(true),
 

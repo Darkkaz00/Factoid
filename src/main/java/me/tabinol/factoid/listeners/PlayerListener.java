@@ -352,7 +352,9 @@ public class PlayerListener extends CommonListener implements Listener {
 							|| ml == Material.STONE_BUTTON
 							|| ml == Material.WOOD_BUTTON
 							|| ml == Material.LEVER
-							|| ml == Material.TRAPPED_CHEST || ml == Material.FENCE_GATE)) || (action == Action.PHYSICAL && (ml == Material.WOOD_PLATE
+							|| ml == Material.TRAPPED_CHEST || ml == Material.FENCE_GATE
+							|| ml == Material.ENCHANTMENT_TABLE || ml == Material.ANVIL)) 
+							|| (action == Action.PHYSICAL && (ml == Material.WOOD_PLATE
 							|| ml == Material.STONE_PLATE || ml == Material.STRING))) && !checkPermission(
 								land, player,
 								PermissionList.USE.getPermissionType())) // End
@@ -383,12 +385,17 @@ public class PlayerListener extends CommonListener implements Listener {
 										.getPermissionType()))
 					|| (action == Action.PHYSICAL && ml == Material.STRING && !checkPermission(
 							land, player,
-							PermissionList.USE_STRING.getPermissionType()))) {
+							PermissionList.USE_STRING.getPermissionType()))
+					|| (action == Action.RIGHT_CLICK_BLOCK && ml == Material.ENCHANTMENT_TABLE
+							&& !checkPermission(land, player, PermissionList.USE_ENCHANTTABLE.getPermissionType()))
+					|| (action == Action.RIGHT_CLICK_BLOCK && ml == Material.ANVIL
+						&& !checkPermission(land, player, PermissionList.USE_ANVIL.getPermissionType()))) {
 
 				if (action != Action.PHYSICAL) {
 					messagePermission(player);
 				}
 				event.setCancelled(true);
+
 			} else if (action == Action.RIGHT_CLICK_BLOCK
 					&& (((ml == Material.CHEST
 							|| ml == Material.ENDER_CHEST // Begin of OPEN
@@ -538,8 +545,8 @@ public class PlayerListener extends CommonListener implements Listener {
 			IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(
 					event.getBlock().getLocation());
 
-			if ((land instanceof ILand && ((ILand) land).isBanned(event
-					.getPlayer()))
+			if ((land instanceof ILand && (((ILand) land).isBanned(event.getPlayer())
+					|| hasEcoSign((Land) land, event.getBlock())))
 					|| !checkPermission(land, event.getPlayer(),
 							PermissionList.BUILD.getPermissionType())
 					|| !checkPermission(land, event.getPlayer(),
