@@ -17,6 +17,7 @@
  */
 package me.tabinol.factoid.playercontainer;
 
+import me.tabinol.factoid.parameters.FlagList;
 import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
@@ -70,7 +71,18 @@ public class PlayerContainerTenant extends PlayerContainer
     @Override
     public boolean hasAccess(Player player) {
         
-        return land.isTenant(player);
+        boolean value = land.isTenant(player);
+        ILand actual = land;
+        ILand parent;
+
+        while(!value && (parent = actual.getParent()) != null 
+    			&& actual.getFlagAndInherit(FlagList.INHERIT_RESIDENTS.getFlagType()).getValueBoolean() == true) {
+    		
+    		value = parent.isTenant(player);
+    		actual = parent;
+    	}
+    	
+    	return value;
     }
     
     /**

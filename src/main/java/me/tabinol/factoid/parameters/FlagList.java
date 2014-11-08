@@ -86,7 +86,16 @@ public enum FlagList {
     EXCLUDE_COMMANDS(new String[] {}),
     
     /**  The spawn and teleport point. */
-    SPAWN(new String(""));
+    SPAWN(new String("")),
+    
+    /** Inherit from parent owner */
+    INHERIT_OWNER(new Boolean(true)),
+    
+    /** Inherit from parent residents */
+    INHERIT_RESIDENTS(new Boolean(true)),
+    
+    /** Inherit from parent tenant */
+    INHERIT_TENANT(new Boolean(true));
 
     /** The base value. */
     final FlagValue baseValue;

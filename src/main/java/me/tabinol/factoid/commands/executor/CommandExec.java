@@ -26,6 +26,7 @@ import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoid.lands.approve.Approve;
 import me.tabinol.factoidapi.lands.areas.ICuboidArea;
 import me.tabinol.factoid.lands.collisions.Collisions;
+import me.tabinol.factoid.playercontainer.PlayerContainerOwner;
 import me.tabinol.factoidapi.parameters.IPermissionType;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 
@@ -182,7 +183,7 @@ public abstract class CommandExec implements CommandInterface {
         if (mustBeAdminMod && entity.playerConf.isAdminMod()) {
             canDo = true;
         }
-        if (mustBeOwner && (land == null || (land !=null && land.getOwner().hasAccess(entity.player)))) {
+        if (mustBeOwner && (land == null || (land !=null && new PlayerContainerOwner(land).hasAccess(entity.player)))) {
             canDo = true;
         }
         if (neededPerm != null && land.checkPermissionAndInherit(entity.player, neededPerm)) {

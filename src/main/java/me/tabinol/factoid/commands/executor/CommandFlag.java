@@ -82,7 +82,7 @@ public class CommandFlag extends CommandExec {
             Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.FLAGS.ISDONE", landFlag.getFlagType().toString(), 
                     landFlag.getValue().getValuePrint() + ChatColor.YELLOW));
             Factoid.getThisPlugin().iLog().write("Flag set: " + landFlag.getFlagType().toString() + ", value: " + 
-                    landFlag.getValue().getValueString());
+                    landFlag.getValue().getValue().toString());
 
         } else if (curArg.equalsIgnoreCase("unset")) {
         
