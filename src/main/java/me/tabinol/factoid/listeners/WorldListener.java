@@ -89,7 +89,7 @@ public class WorldListener extends CommonListener implements Listener {
         // Check for Explosion cancel 
         if ((entityType == EntityType.CREEPER
                 && land.getFlagAndInherit(FlagList.CREEPER_EXPLOSION.getFlagType()).getValueBoolean() == false)
-                || (entityType == EntityType.PRIMED_TNT
+                || ((entityType == EntityType.PRIMED_TNT || entityType == EntityType.MINECART_TNT)
                 && land.getFlagAndInherit(FlagList.TNT_EXPLOSION.getFlagType()).getValueBoolean() == false)
                 || land.getFlagAndInherit(FlagList.EXPLOSION.getFlagType()).getValueBoolean() == false) {
             event.setCancelled(true);
