@@ -71,7 +71,8 @@ public class PlayerContainerVisitor extends PlayerContainer
     public boolean hasAccess(Player player) {
         
         return !land.getOwner().hasAccess(player)
-                && !land.isResident(player);
+                && !land.isResident(player)
+                && !land.isTenant(player);
     }
     
     /**
