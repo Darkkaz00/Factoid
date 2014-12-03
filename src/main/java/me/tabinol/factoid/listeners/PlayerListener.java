@@ -558,32 +558,6 @@ public class PlayerListener extends CommonListener implements Listener {
 	}
 
 	/**
-	 * On player bucket fill.
-	 * 
-	 * @param event
-	 *            the event
-	 */
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onPlayerBucketFill(PlayerBucketFillEvent event) {
-
-		if (!playerConf.get(event.getPlayer()).isAdminMod()) {
-
-			IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(
-					event.getBlockClicked().getLocation());
-
-			if ((land instanceof ILand && ((ILand) land).isBanned(event
-					.getPlayer()))
-					|| !checkPermission(land, event.getPlayer(),
-							PermissionList.BUILD.getPermissionType())
-					|| !checkPermission(land, event.getPlayer(),
-							PermissionList.BUILD_DESTROY.getPermissionType())) {
-				messagePermission(event.getPlayer());
-				event.setCancelled(true);
-			}
-		}
-	}
-
-	/**
 	 * On hanging break by entity.
 	 * 
 	 * @param event
@@ -754,6 +728,35 @@ public class PlayerListener extends CommonListener implements Listener {
 					messagePermission(player);
 					event.setCancelled(true);
 				} 
+			}
+		}
+	}
+
+	/**
+	 * On player bucket fill.
+	 * 
+	 * @param event
+	 *            the event
+	 */
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onPlayerBucketFill(PlayerBucketFillEvent event) {
+
+		if (!playerConf.get(event.getPlayer()).isAdminMod()) {
+
+			IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(
+					event.getBlockClicked().getLocation());
+			Material mt = event.getBlockClicked().getType();
+
+			if ((land instanceof ILand && ((ILand) land).isBanned(event
+					.getPlayer()))
+					|| (mt == Material.LAVA_BUCKET && !checkPermission(land,
+							event.getPlayer(),
+							PermissionList.BUCKET_LAVA.getPermissionType()))
+					|| (mt == Material.WATER_BUCKET && !checkPermission(land,
+							event.getPlayer(),
+							PermissionList.BUCKET_WATER.getPermissionType()))) {
+				messagePermission(event.getPlayer());
+				event.setCancelled(true);
 			}
 		}
 	}

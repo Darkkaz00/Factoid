@@ -5,7 +5,7 @@
 	<groupId>me.tabinol.factoid</groupId>
 	<artifactId>Factoid</artifactId>
 	<!-- *** Change version here *** -->
-	<version>0.5.1</version>
+	<version>0.5.2</version>
 	<packaging>jar</packaging>
 
 	<name>Factoid</name>
