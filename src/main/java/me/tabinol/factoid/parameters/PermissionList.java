@@ -73,6 +73,9 @@ public enum PermissionList {
     /** The open dropper. */
     OPEN_DROPPER(true),
     
+    /** The open dispenser. */
+    OPEN_DISPENSER(true),
+    
     /** The use. */
     USE(true),
     

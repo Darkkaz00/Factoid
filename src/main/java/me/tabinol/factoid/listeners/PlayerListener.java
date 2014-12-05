@@ -402,7 +402,8 @@ public class PlayerListener extends CommonListener implements Listener {
 							|| ml == Material.WORKBENCH
 							|| ml == Material.BREWING_STAND
 							|| ml == Material.FURNACE || ml == Material.BEACON
-							|| ml == Material.DROPPER || ml == Material.HOPPER) && !checkPermission(
+							|| ml == Material.DROPPER || ml == Material.HOPPER
+							|| ml == Material.DISPENSER) && !checkPermission(
 								land, player,
 								PermissionList.OPEN.getPermissionType())) // End
 																			// of
@@ -429,6 +430,10 @@ public class PlayerListener extends CommonListener implements Listener {
 							|| (ml == Material.BEACON && !checkPermission(land,
 									player,
 									PermissionList.OPEN_BEACON
+											.getPermissionType()))
+							|| (ml == Material.DISPENSER && !checkPermission(land,
+									player,
+									PermissionList.OPEN_DISPENSER
 											.getPermissionType()))
 							|| (ml == Material.DROPPER && !checkPermission(
 									land, player,
