@@ -9,7 +9,7 @@ general:                             # ----General Config----
   lang: english                      # english, french for now
   Storage: flat                      # Only flat is supported for now
   # The next value is if you want the Factoid explosion protection.
-  # Set it to «False» if you prefer to disable explosions from Essentials
+  # Set it to "False" if you prefer to disable explosions from Essentials
   # or avoiding plugin conflicts. Flags (???_DAMAGE) will be ignored.
   OverrideExplosions: true
   UseEconomy: false
