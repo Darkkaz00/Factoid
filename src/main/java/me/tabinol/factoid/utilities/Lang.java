@@ -18,9 +18,7 @@
 package me.tabinol.factoid.utilities;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -70,7 +68,7 @@ public class Lang extends Thread {
         this.lang = Factoid.getThisPlugin().iConf().getLang();
         this.langFile = new File(plugin.getDataFolder() + "/lang/", lang + ".yml");
         if (Factoid.getThisPlugin().iConf().getLang() != null) {
-            Make();
+            copyLang();
             loadYamls();
         }
     }
@@ -170,36 +168,15 @@ public class Lang extends Thread {
     }
 
     /**
-     * Make.
+     * Copyt the language file.
      */
-    private void Make() {
+    private void copyLang() {
         try {
             if (!langFile.exists()) {
                 langFile.getParentFile().mkdirs();
-                copy(plugin.getResource("lang/" + lang + ".yml"), langFile);
+                FileCopy.copyTextFromJav(plugin.getResource("lang/" + lang + ".yml"), langFile);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Copy.
-     *
-     * @param in the in
-     * @param file the file
-     */
-    private void copy(InputStream in, File file) {
-        try {
-            OutputStream out = new FileOutputStream(file);
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            out.close();
-            in.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

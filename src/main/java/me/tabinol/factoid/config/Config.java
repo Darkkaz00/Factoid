@@ -31,7 +31,8 @@ public class Config {
 
     // Global
     /** The Constant NEWLINE. */
-    public static final String NEWLINE = System.getProperty("line.separator");
+	public static final String NEWLINE = "\n";
+    //public static final String NEWLINE = System.getProperty("line.separator");
     
     /** The Constant GLOBAL. */
     public static final String GLOBAL = "_global_";
