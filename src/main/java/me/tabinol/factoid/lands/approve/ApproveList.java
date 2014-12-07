@@ -76,7 +76,9 @@ public class ApproveList {
         ConfigurationSection section = approveConfig.createSection(approve.getLandName());
         section.set("Action", approve.getAction().toString());
         section.set("RemovedAreaId", approve.getRemovedAreaId());
-        section.set("NewArea", approve.getNewArea().toString());
+        if (approve.getNewArea() != null) {
+        	section.set("NewArea", approve.getNewArea().toString());
+        }
         section.set("Owner", approve.getOwner().toString());
         if (approve.getParent() != null) {
             section.set("Parent", approve.getParent().getName());
@@ -153,6 +155,8 @@ public class ApproveList {
         String[] ownerS = StringChanges.splitAddVoid(section.getString("Owner"), ":");
         PlayerContainer pc = PlayerContainer.create(null, EPlayerContainerType.getFromString(ownerS[0]), ownerS[1]);
         ILand parent = null;
+        CuboidArea newArea = null;
+        
         if (section.contains("Parent")) {
             parent = Factoid.getThisPlugin().iLands().getLand(section.getString("Parent"));
             
@@ -161,6 +165,10 @@ public class ApproveList {
                 Factoid.getThisPlugin().iLog().write("Error, parent not found");
                 return null;
             }
+        }
+        
+        if(section.contains("NewArea")) {
+        	newArea = CuboidArea.getFromString(section.getString("NewArea"));
         }
         
         LandAction action = LandAction.valueOf(section.getString("Action"));
@@ -174,8 +182,7 @@ public class ApproveList {
         cal.setTimeInMillis(section.getLong("DateTime"));
 
         return new Approve(landName, action,
-                section.getInt("RemovedAreaId"),
-                CuboidArea.getFromString(section.getString("NewArea")), pc,
+                section.getInt("RemovedAreaId"), newArea, pc,
                 parent, section.getDouble("Price"), section.getBoolean("MustPay"), cal);
     }
 

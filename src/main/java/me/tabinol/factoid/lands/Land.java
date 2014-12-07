@@ -741,6 +741,56 @@ public class Land extends DummyLand implements ILand {
         return (Land) parent;
     }
 
+    public void setParent(ILand newParent) {
+    	
+    	// Remove files
+    	removeChildFiles();
+		Factoid.getThisPlugin().iStorageThread().removeLand(name, genealogy);
+    	
+    	// remove parent (if needed)
+    	if(parent != null) {
+            ((Land)parent).removeChild(uuid);
+            parent = null;
+            genealogy = 0;
+            Factoid.getThisPlugin().iLog().write("remove parent from land: " + name);
+    	}
+    	
+    	// Add parent
+    	if(newParent != null) {
+    		((Land)newParent).addChild(this);
+    		parent = newParent;
+    		priority = parent.getPriority();
+    		genealogy = parent.getGenealogy() + 1;
+            Factoid.getThisPlugin().iLog().write("add parent " + parent.getName() + " to land: " + name);
+    	}
+    	
+    	// Save
+    	doSave();
+    	
+    	// Save children files
+    	saveChildFiles();
+    }
+    
+    private void removeChildFiles() {
+    	
+    	for(ILand child : children.values()) {
+    		child.setAutoSave(false);
+    		Factoid.getThisPlugin().iStorageThread().removeLand((Land)child);
+    		((Land)child).removeChildFiles();
+    	}
+    }
+
+    private void saveChildFiles() {
+    	
+    	for(ILand child : children.values()) {
+    		child.setPriority(priority);
+    		((Land)child).genealogy = genealogy + 1;
+    		child.setAutoSave(true);
+    		child.forceSave();
+    		((Land)child).saveChildFiles();
+    	}
+    }
+
     /**
      * Gets the ancestor.
      *

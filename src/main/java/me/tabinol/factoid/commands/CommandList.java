@@ -111,7 +111,10 @@ public enum CommandList {
     SALE,
     
     /** Make the land for rent */
-    RENT;
+    RENT,
+    
+    /** Set/Unset the parent */
+    PARENT;
 
     // If a command has a second name
     /**

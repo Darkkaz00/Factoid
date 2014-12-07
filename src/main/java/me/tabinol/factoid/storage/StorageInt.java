@@ -44,6 +44,14 @@ public interface StorageInt {
      * @param land the land
      */
     public void removeLand(Land land);
+    
+    /**
+     * Removes the land.
+     *  
+     * @param landName the land name
+     * @param landGenealogy The land genealogy
+     */
+    public void removeLand(String landName, int landGenealogy);
 
     /**
      * Load factions.

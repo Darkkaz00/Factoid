@@ -52,6 +52,9 @@ public class Collisions {
         /** The land remove. */
         LAND_REMOVE,
         
+        /** The land parent. */
+        LAND_PARENT,
+        
         /** The area add. */
         AREA_ADD,
         
@@ -165,13 +168,24 @@ public class Collisions {
         // Pass 1 check if there is a collision
         if (action == LandAction.LAND_ADD || action == LandAction.AREA_ADD || action == LandAction.AREA_MODIFY) {
             checkCollisions();
-
-            // Pass 2 check if the the cuboid is inside the parent
-            if (parent != null) {
-                checkIfInsideParent();
-            }
         }
-
+        
+        // Pass 2 check if the the cuboid is inside the parent
+        if(parent != null) {
+        	if (action == LandAction.LAND_ADD || action == LandAction.AREA_ADD 
+        			|| action == LandAction.AREA_MODIFY) {
+        		checkIfInsideParent(newArea);
+        	} else if(action == LandAction.LAND_PARENT) {
+        		Iterator<ICuboidArea> areaIt = land.getAreas().iterator();
+        		boolean exitLoop = false;
+        		while(areaIt.hasNext() && !exitLoop) {
+        			if(!checkIfInsideParent(areaIt.next())) {
+        				exitLoop = true;
+        			}
+        		}
+        	}
+        }
+        
         // Pass 3 check if children are not out of land
         if ((action == LandAction.AREA_MODIFY || action == LandAction.AREA_REMOVE)
                 && !land.getChildren().isEmpty()) {
@@ -268,14 +282,18 @@ public class Collisions {
     }
     
     /**
-     * Check if inside parent.
+     * Check if inside parent and adds an error if not.
+     * @param area the area to check
+     * @return true if inside the parent
      */
-    private void checkIfInsideParent() {
+    private boolean checkIfInsideParent(ICuboidArea area) {
 
-        if (checkIfAreaOutsideParent(newArea, parent.getAreas())) {
+        if (checkIfAreaOutsideParent(area, parent.getAreas())) {
             coll.add(new CollisionsEntry(LandError.OUT_OF_PARENT, parent, 0));
+            return false;
         }
 
+        return true;
     }
 
     /**

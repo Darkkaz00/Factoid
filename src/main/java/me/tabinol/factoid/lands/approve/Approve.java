@@ -202,6 +202,8 @@ public class Approve {
             } catch (FactoidLandException ex) {
                 Logger.getLogger(Approve.class.getName()).log(Level.SEVERE, "On land remove", ex);
             }
+        } else if(action == LandAction.LAND_PARENT) {
+        	Factoid.getThisPlugin().iLands().getLand(landName).setParent(parent);
         }
     }
 }

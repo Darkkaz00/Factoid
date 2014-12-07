@@ -58,6 +58,19 @@ public class StorageThread extends Thread {
     /** The lock not saved. */
     final Condition notSaved = lock.newCondition(); 
 
+    /** Class internally used to store landName et LandGenealogy in a list */
+    private class NameGenealogy {
+    	
+    	String landName;
+    	int landGenealogy;
+    	
+    	NameGenealogy(String landName, int landGenealogy) {
+    		
+    		this.landName = landName;
+    		this.landGenealogy = landGenealogy;
+    	}
+    }
+    
     /**
      * Instantiates a new storage thread.
      */
@@ -117,6 +130,9 @@ public class StorageThread extends Thread {
    				Object removeEntry = removeList.remove(0);
    				if(removeEntry instanceof Land) {
    					storage.removeLand((Land)removeEntry);
+   				} else if( removeEntry instanceof NameGenealogy){
+   					storage.removeLand(((NameGenealogy)removeEntry).landName, 
+   							((NameGenealogy)removeEntry).landGenealogy);
    				} else {
    					storage.removeFaction((Faction)removeEntry);
    				}
@@ -190,7 +206,19 @@ public class StorageThread extends Thread {
 		wakeUp();
 	}
 
-	/**
+    /**
+     * Removes the land.
+     *  
+     * @param landName the land name
+     * @param landGenealogy The land genealogy
+     */
+    public void removeLand(String landName, int landGenealogy) {
+    	
+    	removeList.add(new NameGenealogy(landName, landGenealogy));
+    	wakeUp();
+    }
+
+    /**
 	 * Removes the faction.
 	 *
 	 * @param faction the faction

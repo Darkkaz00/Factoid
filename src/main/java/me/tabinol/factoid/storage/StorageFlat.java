@@ -123,6 +123,17 @@ public class StorageFlat extends Storage implements StorageInt {
         return new File(landsDir + "/" + land.getName() + "." + land.getGenealogy() + EXT_CONF);
     }
 
+    /**
+     * Gets the land file.
+     *
+     * @param landName the land
+     * @param landGenealogy the land genealogy
+     * @return the land file
+     */
+    private File getLandFile(String landName, int landGenealogy) {
+
+        return new File(landsDir + "/" + landName + "." + landGenealogy + EXT_CONF);
+    }
     /* (non-Javadoc)
      * @see me.tabinol.factoid.storage.StorageInt#loadFactions()
      */
@@ -572,6 +583,12 @@ public class StorageFlat extends Storage implements StorageInt {
     public void removeLand(Land land) {
 
         getLandFile(land).delete();
+    }
+
+    @Override
+    public void removeLand(String landName, int landGenealogy) {
+
+        getLandFile(landName, landGenealogy).delete();
     }
 
     /* (non-Javadoc)
