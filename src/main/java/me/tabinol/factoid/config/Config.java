@@ -118,6 +118,16 @@ public class Config {
      */
     public AllowCollisionType getAllowCollision() { return allowCollision; }
     
+    /** The land chat. */
+    private boolean isLandChat;
+    
+    /**
+     * Gets if land chat is activated.
+     *
+     * @return the land chat
+     */
+    public boolean isLandChat() { return isLandChat; }
+
     /** The approve notify time. */
     private long approveNotifyTime;
     
@@ -421,6 +431,7 @@ public class Config {
         } catch (NullPointerException ex) {
             allowCollision = AllowCollisionType.APPROVE;
         }
+        isLandChat = config.getBoolean("land.LandChat", true);
         approveNotifyTime = config.getLong("land.ApproveNotifyTime", 24002);
         selectAutoCancel = config.getLong("land.SelectAutoCancel", 12000);
         maxVisualSelect = config.getInt("land.MaxVisualSelect", 256);

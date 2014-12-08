@@ -27,6 +27,7 @@ import me.tabinol.factoid.factions.Factions;
 import me.tabinol.factoid.lands.Lands;
 import me.tabinol.factoid.lands.approve.ApproveNotif;
 import me.tabinol.factoid.lands.areas.CuboidArea;
+import me.tabinol.factoid.listeners.ChatListener;
 import me.tabinol.factoid.listeners.LandListener;
 import me.tabinol.factoid.listeners.PlayerListener;
 import me.tabinol.factoid.listeners.PvpListener;
@@ -89,6 +90,9 @@ public class Factoid extends JavaPlugin implements IFactoid {
     /** The land listener. */
     private LandListener landListener;
     
+    /** The chat listener. */
+    private ChatListener chatListener;
+
     /**  The economy scheduler. */
     private EcoScheduler ecoScheduler;
     
@@ -206,6 +210,7 @@ public class Factoid extends JavaPlugin implements IFactoid {
         playerListener = new PlayerListener();
         pvpListener = new PvpListener();
         landListener = new LandListener();
+        chatListener = new ChatListener();
         CommandListener = new OnCommand();
         Scoreboard = new ScoreBoard();
         approveNotif = new ApproveNotif();
@@ -218,6 +223,7 @@ public class Factoid extends JavaPlugin implements IFactoid {
         getServer().getPluginManager().registerEvents(playerListener, this);
         getServer().getPluginManager().registerEvents(pvpListener, this);
         getServer().getPluginManager().registerEvents(landListener, this);
+        getServer().getPluginManager().registerEvents(chatListener, this);
         getCommand("factoid").setExecutor(CommandListener);
         log.write(iLanguage().getMessage("ENABLE"));
     }

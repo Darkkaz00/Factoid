@@ -22,6 +22,7 @@ land:
   #          the land created if there is a collision.
   # false: No collision permitted.
   AllowCollision: approve            # true, approve, false
+  LandChat: true                     # Allow private chat in lands (=, < and >)
   ApproveNotifyTime: 24002           # Time to notify for Approval (in ticks)
                                      # or 0 for disabling
   SelectAutoCancel: 12000            # Time before auto cancel a selection

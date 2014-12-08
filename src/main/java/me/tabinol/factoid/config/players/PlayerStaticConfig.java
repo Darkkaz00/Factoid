@@ -17,6 +17,9 @@
  */
 package me.tabinol.factoid.config.players;
 
+import me.tabinol.factoid.config.chat.Chat;
+import me.tabinol.factoid.config.chat.ChatEssentials;
+import me.tabinol.factoid.config.chat.ChatFactoid;
 import me.tabinol.factoid.config.vanish.VanishEssentials;
 
 import java.util.HashMap;
@@ -43,6 +46,9 @@ public class PlayerStaticConfig implements IPlayerStaticConfig {
     
     /** The vanish. */
     private final Vanish vanish;
+    
+    /** The chat. */
+    private final Chat chat;
 
     /**
      * Instantiates a new player static config.
@@ -51,7 +57,7 @@ public class PlayerStaticConfig implements IPlayerStaticConfig {
 
         playerConfList = new HashMap<CommandSender, PlayerConfEntry>();
 
-        // Ceck for VanishNoPacket plugin
+        // Check for VanishNoPacket plugin
         if (Factoid.getThisPlugin().iDependPlugin().getVanishNoPacket() != null) {
             vanish = new VanishNoPacket();
 
@@ -62,6 +68,13 @@ public class PlayerStaticConfig implements IPlayerStaticConfig {
             // Dummy Vanish if no plugins
         } else {
             vanish = new DummyVanish();
+        }
+        
+        // Check for Chat plugin
+        if (Factoid.getThisPlugin().iDependPlugin().getEssentials() != null) {
+        	chat = new ChatEssentials();
+        } else {
+        	chat = new ChatFactoid();
         }
     }
 
@@ -139,5 +152,10 @@ public class PlayerStaticConfig implements IPlayerStaticConfig {
 	public boolean isVanished(Player player) {
         
         return vanish.isVanished(player);
+    }
+    
+    public Chat getChat() {
+    	
+    	return chat;
     }
 }

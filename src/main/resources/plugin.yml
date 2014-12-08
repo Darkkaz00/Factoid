@@ -20,6 +20,7 @@ permissions:
             factoid.adminmod: true
             factoid.adminmod.auto: true
             factoid.collisionapprove: true
+            factoid.socialspy: true
             factoid.use: true
             factoid.reload: true
     factoid.adminmod:
@@ -32,6 +33,9 @@ permissions:
             factoid.adminmod: true
     factoid.collisionapprove:
         description: Can approve land creation collisions
+        default: op
+    factoid.socialspy:
+        description: Can read conversations from all lands
         default: op
     factoid.use:
         description: Can use factoid command

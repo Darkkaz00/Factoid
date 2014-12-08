@@ -363,3 +363,5 @@ SIGN:
     FORRENT: "-For rent-"
     RENTED: "-Rented-"
     AUTORENEW: "Auto renew"
+CHAT:
+  OUTSIDE: "You are outside a land!"

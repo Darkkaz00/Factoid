@@ -362,3 +362,5 @@ SIGN:
     FORRENT: "-À louer-"
     RENTED: "-Loué-"
     AUTORENEW: "Auto renouv."
+CHAT:
+  OUTSIDE: "Vous êtes à l'extérieur d'un terrain!"
