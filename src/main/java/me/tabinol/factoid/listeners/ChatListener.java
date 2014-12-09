@@ -2,12 +2,12 @@ package me.tabinol.factoid.listeners;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.config.players.PlayerStaticConfig;
 import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.utilities.ColoredConsole;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -85,8 +85,7 @@ public class ChatListener extends CommonListener implements Listener {
     		String message = event.getMessage().substring(1);
     		
     		// send messages
-    		Factoid.getThisPlugin().getLogger().log(Level.INFO, 
-    				ChatColor.WHITE + "[" + player.getDisplayName()
+ 			ColoredConsole.info( ChatColor.WHITE + "[" + player.getDisplayName()
 					+ ChatColor.WHITE + " " + firstChar + " " + "'" 
 					+ ChatColor.GREEN + land.getName() + ChatColor.WHITE + "'] "
 					+ ChatColor.GRAY + message);

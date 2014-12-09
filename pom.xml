@@ -144,6 +144,14 @@
 			</exclusions>
 		</dependency>
 
+		<!-- For color cosole -->
+		<dependency>
+			<groupId>org.fusesource.jansi</groupId>
+			<artifactId>jansi</artifactId>
+			<version>1.11</version>
+			<optional>true</optional>
+		</dependency>
+
 		<!-- For Maven -->
 		<dependency>
 			<groupId>junit</groupId>
