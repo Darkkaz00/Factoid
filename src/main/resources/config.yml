@@ -1,6 +1,6 @@
 ##################################################################
 # Author: Kazoo	 & Tabinol                                       #
-# Copyrigth 2013      	                                         #
+# Copyright 2013      	                                         #
 # Website: http://dev.bukkit.org/profiles/darkkazoo/             #
 # Contact: dev.kazoo@gmail.com                	                 #
 ##################################################################
@@ -23,6 +23,8 @@ land:
   # false: No collision permitted.
   AllowCollision: approve            # true, approve, false
   LandChat: true                     # Allow private chat in lands (=, < and >)
+  SpectatorIsVanish: true            # true, Spectator players are not show in 
+                                     # land players list 
   ApproveNotifyTime: 24002           # Time to notify for Approval (in ticks)
                                      # or 0 for disabling
   SelectAutoCancel: 12000            # Time before auto cancel a selection

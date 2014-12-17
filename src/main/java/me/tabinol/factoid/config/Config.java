@@ -128,6 +128,16 @@ public class Config {
      */
     public boolean isLandChat() { return isLandChat; }
 
+    /** The is spectator is vanish. */
+    private boolean isSpectatorIsVanish;
+    
+    /**
+     * Checks if is spectator is vanish.
+     *
+     * @return true, if is spectator is vanish
+     */
+    public boolean isSpectatorIsVanish() { return isSpectatorIsVanish; }
+    
     /** The approve notify time. */
     private long approveNotifyTime;
     
@@ -432,6 +442,7 @@ public class Config {
             allowCollision = AllowCollisionType.APPROVE;
         }
         isLandChat = config.getBoolean("land.LandChat", true);
+        isSpectatorIsVanish = config.getBoolean("land.SpectatorIsVanish", true);
         approveNotifyTime = config.getLong("land.ApproveNotifyTime", 24002);
         selectAutoCancel = config.getLong("land.SelectAutoCancel", 12000);
         maxVisualSelect = config.getInt("land.MaxVisualSelect", 256);
