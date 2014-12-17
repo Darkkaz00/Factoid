@@ -53,10 +53,10 @@ public abstract class FactoidRunnable extends BukkitRunnable {
         stopNextRun();
 
         if (multiple) {
-            taskId = Bukkit.getServer().getScheduler().runTaskLater(Factoid.getThisPlugin(), this, tick);
+            taskId = Bukkit.getServer().getScheduler().runTaskLater(Factoid.getThisPlugin(), (Runnable) this, tick);
               
         } else {
-            taskId = Bukkit.getServer().getScheduler().runTaskLater(Factoid.getThisPlugin(), this, tick);
+            taskId = Bukkit.getServer().getScheduler().runTaskLater(Factoid.getThisPlugin(), (Runnable) this, tick);
         }
     }
 
