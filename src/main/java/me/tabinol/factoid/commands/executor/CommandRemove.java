@@ -51,7 +51,7 @@ public class CommandRemove extends CommandExec {
 
         // Check for collision
         if (checkCollision(land.getName(), land, Collisions.LandAction.LAND_REMOVE, 
-                0, null, land.getParent(), land.getOwner(), 0, !entity.playerConf.isAdminMod(), true)) {
+                0, null, land.getParent(), land.getOwner(), 0, true)) {
             return;
         }
 

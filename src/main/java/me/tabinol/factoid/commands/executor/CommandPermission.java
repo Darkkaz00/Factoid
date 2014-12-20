@@ -114,7 +114,7 @@ public class CommandPermission extends CommandThreadExec {
                 throw new FactoidCommandException("Permission", entity.player, "COMMAND.PERMISSION.NOENTERNOTINSPAWN");
             }
             ((Land) land).addPermission(pc, perm);
-            entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.PERMISSION.ISDONE", perm.getValuePrint(),
+            entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.PERMISSION.ISDONE", perm.getPermType().getPrint(),
                     pc.getPrint() + ChatColor.YELLOW, land.getName()));
             Factoid.getThisPlugin().iLog().write("Permission set: " + perm.getPermType().toString() + ", value: " + perm.getValue());
 

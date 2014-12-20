@@ -35,7 +35,6 @@ import me.tabinol.factoid.selection.PlayerSelection.SelectionType;
 import me.tabinol.factoid.selection.region.AreaSelection;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 
 
 /**
@@ -102,10 +101,7 @@ public class CommandCreate extends CommandExec {
         } else {
 
         	// Autodetect parent
-            parent = Factoid.getThisPlugin().iLands().getLand(new Location(area.getWord(), area.getX1(), area.getY1(), area.getZ1()));
-        	if(parent == null) {
-        		parent = Factoid.getThisPlugin().iLands().getLand(new Location(area.getWord(), area.getX2(), area.getY2(), area.getZ2()));
-        	}
+            parent = select.getParentDetected();
         }
 
         // Not complicated! The player must be AdminMod, or access to create (in world) 
@@ -125,7 +121,7 @@ public class CommandCreate extends CommandExec {
         }
 
         // Check for collision
-        if (checkCollision(curArg, null, LandAction.LAND_ADD, 0, area, parent, owner, price, !entity.playerConf.isAdminMod(), true)) {
+        if (checkCollision(curArg, null, LandAction.LAND_ADD, 0, area, parent, owner, price, true)) {
             new CommandCancel(entity.playerConf, true).commandExecute();
             return;
         }

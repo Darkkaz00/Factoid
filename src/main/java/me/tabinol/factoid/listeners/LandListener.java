@@ -227,6 +227,14 @@ public class LandListener extends CommonListener implements Listener {
                 playerHeal.remove(player);
             }
         }
+        
+        //Death land
+        permissionType = PermissionList.LAND_DEATH.getPermissionType();
+        
+        if (!playerConf.get(player).isAdminMod() 
+        		&& dummyLand.checkPermissionAndInherit(player, permissionType) != permissionType.getDefaultValue()) {
+        	player.setHealth(0);
+        }
     }
 
     /**

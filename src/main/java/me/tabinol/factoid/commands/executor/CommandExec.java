@@ -211,14 +211,13 @@ public abstract class CommandExec implements CommandInterface {
      * @param parent the parent
      * @param owner the owner of the land (PlayerContainer)
      * @param price the price
-     * @param mustPay if the player must pay
      * @param addForApprove the add for approve
      * @return true, if successful
      * @throws FactoidCommandException the factoid command exception
      */
     protected boolean checkCollision(String landName, ILand land, Collisions.LandAction action,
             int removeId, ICuboidArea newArea, ILand parent, IPlayerContainer owner, 
-            double price, boolean mustPay, boolean addForApprove) throws FactoidCommandException {
+            double price, boolean addForApprove) throws FactoidCommandException {
 
         // allowApprove: false: The command can absolutely not be done if there is error!
         Collisions coll = new Collisions(landName, land, action, removeId, newArea, parent,
@@ -233,7 +232,7 @@ public abstract class CommandExec implements CommandInterface {
                     entity.sender.sendMessage(ChatColor.RED + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COLLISION.GENERAL.NEEDAPPROVE", landName));
                     Factoid.getThisPlugin().iLog().write("land " + landName + " has collision and needs approval.");
                     Factoid.getThisPlugin().iLands().getApproveList().addApprove(new Approve(landName, action, removeId, newArea,
-                            owner, parent, price, mustPay, Calendar.getInstance()));
+                            owner, parent, price, Calendar.getInstance()));
                     new CommandCancel(entity.playerConf, true).commandExecute();
                     return true;
                 } else if (Factoid.getThisPlugin().iConf().getAllowCollision() == Config.AllowCollisionType.FALSE || allowApprove == false) {

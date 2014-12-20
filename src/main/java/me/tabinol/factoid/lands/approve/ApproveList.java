@@ -84,7 +84,6 @@ public class ApproveList {
             section.set("Parent", approve.getParent().getName());
         }
         section.set("Price", approve.getPrice());
-        section.set("MustPay", approve.isMustPay());
         section.set("DateTime", approve.getDateTime().getTimeInMillis());
         saveFile();
         Factoid.getThisPlugin().iApproveNotif().notifyForApprove(approve.getLandName(), approve.getOwner().getPrint());
@@ -183,7 +182,7 @@ public class ApproveList {
 
         return new Approve(landName, action,
                 section.getInt("RemovedAreaId"), newArea, pc,
-                parent, section.getDouble("Price"), section.getBoolean("MustPay"), cal);
+                parent, section.getDouble("Price"), cal);
     }
 
     /**

@@ -66,12 +66,12 @@ public class CommandArea extends CommandExec {
 
             // Check for collision
             if (checkCollision(land.getName(), land, LandAction.AREA_ADD, 0, area, land.getParent(), 
-            		land.getOwner(), price, !entity.playerConf.isAdminMod(), true)) {
+            		land.getOwner(), price, true)) {
                 return;
             }
 
             // Add Area
-            ((Land) land).addArea(area, price, !entity.playerConf.isAdminMod());
+            ((Land) land).addArea(area, price);
 
             entity.player.sendMessage(ChatColor.GREEN + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CREATE.AREA.ISDONE", land.getName()));
             Factoid.getThisPlugin().iLog().write(entity.playerName + " have create an area named " + land.getName() + " at position " + land.getAreas().toString());
@@ -118,7 +118,7 @@ public class CommandArea extends CommandExec {
 
                 // Check for collision
                 if (checkCollision(curArg, land, LandAction.AREA_REMOVE, areaNb, null, land.getParent(), 
-                		land.getOwner(), 0, !entity.playerConf.isAdminMod(), true)) {
+                		land.getOwner(), 0, true)) {
                     return;
                 }
 
@@ -141,12 +141,12 @@ public class CommandArea extends CommandExec {
 
                 // Check for collision
                 if (checkCollision(land.getName(), land, LandAction.AREA_MODIFY, areaNb, area, land.getParent(), 
-                		land.getOwner(), price, !entity.playerConf.isAdminMod(), true)) {
+                		land.getOwner(), price,  true)) {
                     return;
                 }
 
                 // Replace Area
-                ((Land) land).replaceArea(areaNb, area, price, !entity.playerConf.isAdminMod());
+                ((Land) land).replaceArea(areaNb, area, price);
 
                 entity.player.sendMessage(ChatColor.GREEN + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CREATE.AREA.ISDONE", land.getName()));
                 Factoid.getThisPlugin().iLog().write(entity.playerName + " have create an area named " + land.getName() + " at position " + land.getAreas().toString());

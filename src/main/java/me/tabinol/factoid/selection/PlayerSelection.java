@@ -290,7 +290,9 @@ public class PlayerSelection {
     private boolean isPlayerMustPay() {
         
         // Is Economy?
-        if (Factoid.getThisPlugin().iPlayerMoney() == null) {
+        if (Factoid.getThisPlugin().iPlayerMoney() == null
+        		|| !Factoid.getThisPlugin().iConf().useEconomy()
+        		|| playerConfEntry.isAdminMod()) {
             return false;
         }
 

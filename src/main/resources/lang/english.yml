@@ -156,7 +156,7 @@ COLLISION:
     NOTIFY: "% action(s) waiting for approval."
   GENERAL:
     NEEDAPPROVE: "Your operation is listed for approval. \"/factoid approve cancel %\" if you want to cancel."
-    CANNOTDONE: "Collision problem! Your action can't be done."
+    CANNOTDONE: "Problem detected! Your action can't be done."
     DONE: "This action is approved."
     REMOVE: "The action is removed from the approve list."
     CLEAR: "The list is now cleared."

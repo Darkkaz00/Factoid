@@ -57,7 +57,7 @@ public class CommandParent extends CommandExec {
         
         // Check for collision
         if (checkCollision(land.getName(), land, LandAction.LAND_PARENT, 0, null, parent, 
-        		land.getOwner(), 0, !entity.playerConf.isAdminMod(), true)) {
+        		land.getOwner(), 0, true)) {
             return;
         }
         

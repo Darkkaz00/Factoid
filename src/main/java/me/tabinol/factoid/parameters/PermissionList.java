@@ -194,7 +194,10 @@ public enum PermissionList {
     TP(false),
     
     /**  The payer respawn at the land spawn. */
-    TP_DEATH(false);
+    TP_DEATH(false),
+    
+    /** The player is death on enter. */
+    LAND_DEATH(false);
 
     /** The base value. */
     final boolean baseValue;

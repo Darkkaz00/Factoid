@@ -132,7 +132,6 @@ public class CommandApprove extends CommandExec {
             ICuboidArea newArea = approve.getNewArea();
             ILand parent = approve.getParent();
             Double price = approve.getPrice();
-            boolean mustPay = approve.isMustPay();
             IPlayerContainer owner = approve.getOwner();
 
             if (curArg.equalsIgnoreCase("info") || curArg.equalsIgnoreCase("confirm")) {
@@ -143,7 +142,7 @@ public class CommandApprove extends CommandExec {
                 }
                 
                 // Info on the specified land (Collision)
-                checkCollision(param, land, action, removeId, newArea, parent, owner, price, mustPay, false);
+                checkCollision(param, land, action, removeId, newArea, parent, owner, price, false);
 
                 if (curArg.equalsIgnoreCase("confirm")) {
 

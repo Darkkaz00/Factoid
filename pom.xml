@@ -5,7 +5,7 @@
 	<groupId>me.tabinol.factoid</groupId>
 	<artifactId>Factoid</artifactId>
 	<!-- *** Change version here *** -->
-	<version>0.6.0</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>Factoid</name>
@@ -15,7 +15,7 @@
 		<build.number>SNAPSHOT</build.number>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- *** Change Language version here here *** -->
-		<langVersion>21</langVersion>
+		<langVersion>22</langVersion>
 		<!-- *** Change land .conf version here here *** -->
 		<landVersion>4</landVersion>
 		<!-- *** Change faction .conf version here here *** -->

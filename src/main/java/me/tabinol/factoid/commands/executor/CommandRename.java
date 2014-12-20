@@ -59,7 +59,7 @@ public class CommandRename extends CommandExec {
 
         // Check for collision
         if (checkCollision(curArg, land, Collisions.LandAction.LAND_RENAME, 0, 
-                null, land.getParent(), land.getOwner(), 0, !entity.playerConf.isAdminMod(), true)) {
+                null, land.getParent(), land.getOwner(), 0, true)) {
             return;
         }
 

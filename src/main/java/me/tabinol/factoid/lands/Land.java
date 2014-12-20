@@ -237,11 +237,10 @@ public class Land extends DummyLand implements ILand {
      *
      * @param area the area
      * @param price the price
-     * @param mustPay If the owner has to pay
      */
-    public void addArea(ICuboidArea area, double price, boolean mustPay) {
+    public void addArea(ICuboidArea area, double price) {
 
-        if(mustPay) {
+        if(price > 0) {
         	Factoid.getThisPlugin().iLands().getPriceFromPlayer(worldName, owner, price);
         }
         addArea(area);
@@ -312,12 +311,11 @@ public class Land extends DummyLand implements ILand {
      * @param key the key
      * @param newArea the new area
      * @param price the price
-     * @param mustPay If the owner has to pay
      * @return true, if successful
      */
-    public boolean replaceArea(int key, ICuboidArea newArea, double price, boolean mustPay) {
+    public boolean replaceArea(int key, ICuboidArea newArea, double price) {
 
-        if (mustPay) {
+        if (price > 0) {
         	Factoid.getThisPlugin().iLands().getPriceFromPlayer(worldName, owner, price);
         }
 

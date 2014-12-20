@@ -155,7 +155,7 @@ COLLISION:
     NOTIFY: "% action(s) en attente d'approbation."
   GENERAL:
     NEEDAPPROVE: "Votre action est en attente d'approbation. \"/factoid approve cancel %\" si vous voulez annuler."
-    CANNOTDONE: "Problème de collision! Votre action ne peut être complétée."
+    CANNOTDONE: "Problème détecté! Votre action ne peut être complétée."
     DONE: "Cette action est approuvée."
     REMOVE: "Cette action est enlevée de la liste."
     CLEAR: "La liste est maintenant détruite."

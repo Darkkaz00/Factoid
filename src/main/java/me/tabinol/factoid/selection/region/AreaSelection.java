@@ -24,6 +24,7 @@ import java.util.Map;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoidapi.lands.IDummyLand;
+import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.lands.areas.ICuboidArea;
 import me.tabinol.factoid.parameters.PermissionList;
 import me.tabinol.factoid.selection.PlayerSelection.SelectionType;
@@ -54,6 +55,9 @@ public class AreaSelection extends RegionSelection implements Listener {
     
     /** The is from land. */
     private boolean isFromLand = false;
+    
+    /** Parent detected */
+    private IDummyLand parentDetected = null;
 
     /**
      * Instantiates a new area selection.
@@ -120,10 +124,32 @@ public class AreaSelection extends RegionSelection implements Listener {
             return;
         }
         
-        // Detect the curent land from the first postion
-        IDummyLand actualLand = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(new Location(
+        // Detect the curent land from the 8 points
+        IDummyLand Land1 = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(new Location(
         		area.getWord(), area.getX1(), area.getY1(), area.getZ1()));
-        boolean canCreate = actualLand.checkPermissionAndInherit(player, PermissionList.LAND_CREATE.getPermissionType()); 
+        IDummyLand Land2 = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(new Location(
+        		area.getWord(), area.getX1(), area.getY1(), area.getZ2()));
+        IDummyLand Land3 = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(new Location(
+        		area.getWord(), area.getX2(), area.getY1(), area.getZ1()));
+        IDummyLand Land4 = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(new Location(
+        		area.getWord(), area.getX2(), area.getY1(), area.getZ2()));
+        IDummyLand Land5 = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(new Location(
+        		area.getWord(), area.getX1(), area.getY2(), area.getZ1()));
+        IDummyLand Land6 = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(new Location(
+        		area.getWord(), area.getX1(), area.getY2(), area.getZ2()));
+        IDummyLand Land7 = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(new Location(
+        		area.getWord(), area.getX2(), area.getY2(), area.getZ1()));
+        IDummyLand Land8 = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(new Location(
+        		area.getWord(), area.getX2(), area.getY2(), area.getZ2()));
+        
+        if(Land1 == Land2 && Land1 == Land3 && Land1 == Land4 && Land1 == Land5 && Land1 == Land6
+        		&& Land1 == Land7 && Land1 == Land8) {
+        	parentDetected = Land1;
+        } else {
+        	parentDetected = Factoid.getThisPlugin().iLands().getOutsideArea(Land1.getWorldName());
+        }
+        
+        boolean canCreate = parentDetected.checkPermissionAndInherit(player, PermissionList.LAND_CREATE.getPermissionType());
 
         //MakeSquare
         for (int posX = area.getX1(); posX <= area.getX2(); posX++) {
@@ -138,7 +164,7 @@ public class AreaSelection extends RegionSelection implements Listener {
 
                         // Active Selection
                         IDummyLand testCuboidarea = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(newloc);
-                        if (actualLand == testCuboidarea 
+                        if (parentDetected == testCuboidarea 
                         		&& (canCreate == true || Factoid.getThisPlugin().iPlayerConf().get(player).isAdminMod())) {
                             this.player.sendBlockChange(newloc, Material.SPONGE, this.by);
                         } else {
@@ -212,9 +238,17 @@ public class AreaSelection extends RegionSelection implements Listener {
         return isCollision;
     }
     
-     // Get the nearest block from player before air
+    public ILand getParentDetected() {
+    	
+    	if(parentDetected instanceof ILand) {
+    		return (ILand) parentDetected;
+    	} else {
+    		return null;
+    	}
+    }
+    
     /**
-      * Gets the y near player.
+      * Gets the y near player before air.
       *
       * @param x the x
       * @param z the z

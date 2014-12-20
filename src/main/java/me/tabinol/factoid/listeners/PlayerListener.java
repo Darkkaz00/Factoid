@@ -313,6 +313,22 @@ public class PlayerListener extends CommonListener implements Listener {
 
 			event.setCancelled(true);
 
+			// For armor stand
+		} else if(player.getItemInHand() != null
+				&& action == Action.RIGHT_CLICK_BLOCK
+				&& player.getItemInHand().getType() == Material.ARMOR_STAND) {
+			
+			land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(loc);
+
+			if ((land instanceof ILand && ((ILand) land).isBanned(event.getPlayer()))
+					|| !checkPermission(land, event.getPlayer(),
+							PermissionList.BUILD.getPermissionType())
+					|| !checkPermission(land, event.getPlayer(),
+							PermissionList.BUILD_PLACE.getPermissionType())) {
+				messagePermission(event.getPlayer());
+				event.setCancelled(true);
+			}
+			
 			// For economy (buy or rent/unrent)
 		} else if ((action == Action.RIGHT_CLICK_BLOCK || action == Action.LEFT_CLICK_BLOCK)
 				&& (ml == Material.SIGN_POST || ml == Material.WALL_SIGN)) {
@@ -669,71 +685,53 @@ public class PlayerListener extends CommonListener implements Listener {
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 
 		IPlayerConfEntry entry;
+		Player player = getSourcePlayer(event.getDamager());
 
-		// Check if a player break a ItemFrame
-		if (event.getDamager() instanceof Player
-				&& (entry = playerConf.get((Player) event.getDamager())) != null // Citizens
-																					// bugfix
-				&& !entry.isAdminMod() && event.getEntity() instanceof Hanging) {
-
-			Player player = (Player) event.getDamager();
+		// Check for non-player kill
+		if (player != null) {
 			IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(
 					event.getEntity().getLocation());
+			Entity entity = event.getEntity();
+			EntityType et = entity.getType();
 
-			if ((land instanceof ILand && ((ILand) land).isBanned(player))
-					|| !checkPermission(land, player,
-							PermissionList.BUILD.getPermissionType())
-					|| !checkPermission(land, player,
-							PermissionList.BUILD_DESTROY.getPermissionType())) {
+			// kill an entity (none player)
+			if ((entry = playerConf.get(player)) != null // Citizens bugfix
+					&& !entry.isAdminMod()
+					&& ((land instanceof ILand && ((ILand) land)
+							.isBanned(player))
+							|| ((et == EntityType.ARMOR_STAND || entity instanceof Hanging)
+									&& (!checkPermission(land, player,
+											PermissionList.BUILD.getPermissionType())
+									|| !checkPermission(land, player,
+											PermissionList.BUILD_DESTROY.getPermissionType())))
+							|| (entity instanceof Animals && !checkPermission(
+									land, player,
+									PermissionList.ANIMAL_KILL
+											.getPermissionType()))
+							|| (entity instanceof Monster && !checkPermission(
+									land, player,
+									PermissionList.MOB_KILL
+											.getPermissionType()))
+							|| (et == EntityType.VILLAGER && !checkPermission(
+									land, player,
+									PermissionList.VILLAGER_KILL
+											.getPermissionType()))
+							|| (et == EntityType.IRON_GOLEM && !checkPermission(
+									land, player,
+									PermissionList.VILLAGER_GOLEM_KILL
+											.getPermissionType()))
+							|| (et == EntityType.HORSE && !checkPermission(
+									land, player,
+									PermissionList.HORSE_KILL
+											.getPermissionType())) || (entity instanceof Tameable
+							&& ((Tameable) entity).isTamed() == true
+							&& ((Tameable) entity).getOwner() != player && !checkPermission(
+								land, player,
+								PermissionList.TAMED_KILL
+										.getPermissionType())))) {
 				messagePermission(player);
 				event.setCancelled(true);
-			}
-		} else {
-			Player player = getSourcePlayer(event.getDamager());
-
-			// Check for non-player kill
-			if (player != null) {
-				IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(
-						event.getEntity().getLocation());
-				Entity entity = event.getEntity();
-				EntityType et = entity.getType();
-
-				// kill an entity (none player)
-				if ((entry = playerConf.get(player)) != null // Citizens
-																	// bugfix
-						&& !entry.isAdminMod()
-						&& ((land instanceof ILand && ((ILand) land)
-								.isBanned(player))
-								|| (entity instanceof Animals && !checkPermission(
-										land, player,
-										PermissionList.ANIMAL_KILL
-												.getPermissionType()))
-								|| (entity instanceof Monster && !checkPermission(
-										land, player,
-										PermissionList.MOB_KILL
-												.getPermissionType()))
-								|| (et == EntityType.VILLAGER && !checkPermission(
-										land, player,
-										PermissionList.VILLAGER_KILL
-												.getPermissionType()))
-								|| (et == EntityType.IRON_GOLEM && !checkPermission(
-										land, player,
-										PermissionList.VILLAGER_GOLEM_KILL
-												.getPermissionType()))
-								|| (et == EntityType.HORSE && !checkPermission(
-										land, player,
-										PermissionList.HORSE_KILL
-												.getPermissionType())) || (entity instanceof Tameable
-								&& ((Tameable) entity).isTamed() == true
-								&& ((Tameable) entity).getOwner() != player && !checkPermission(
-									land, player,
-									PermissionList.TAMED_KILL
-											.getPermissionType())))) {
-
-					messagePermission(player);
-					event.setCancelled(true);
-				} 
-			}
+			} 
 		}
 	}
 

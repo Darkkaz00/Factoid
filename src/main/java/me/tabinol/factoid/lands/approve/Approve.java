@@ -54,9 +54,6 @@ public class Approve {
     /** The price. */
     private final double price;
     
-    /** If the owner has to pay */
-    private final boolean mustPay;
-    
     /** The date time. */
     private final Calendar dateTime;
     
@@ -70,12 +67,11 @@ public class Approve {
      * @param owner the owner
      * @param parent the parent
      * @param price the price
-     * @param mustPay If the owner has to pay
      * @param dateTime the date time
      */
     public Approve(String landName, LandAction action, int removedAreaId, 
             ICuboidArea newArea, IPlayerContainer owner, ILand parent, double price,
-            boolean mustPay, Calendar dateTime) {
+            Calendar dateTime) {
         
         this.action = action;
         this.landName = landName.toLowerCase();
@@ -85,8 +81,6 @@ public class Approve {
         this.parent = parent;
         this.price = price;
         this.dateTime = dateTime;
-        this.mustPay = mustPay;
-        
     }
 
     /**
@@ -160,16 +154,6 @@ public class Approve {
     }
     
     /**
-     * Checks if is must pay.
-     *
-     * @return true, if is must pay
-     */
-    public boolean isMustPay() {
-    	
-    	return mustPay;
-    }
-    
-    /**
      * Gets the date time.
      *
      * @return the date time
@@ -185,11 +169,11 @@ public class Approve {
     public void createAction() {
         
         if(action == LandAction.AREA_ADD) {
-            Factoid.getThisPlugin().iLands().getLand(landName).addArea(newArea, price, mustPay);
+            Factoid.getThisPlugin().iLands().getLand(landName).addArea(newArea, price);
         } else if(action == LandAction.AREA_REMOVE) {
             Factoid.getThisPlugin().iLands().getLand(landName).removeArea(removedAreaId);
         } else if(action == LandAction.AREA_MODIFY) {
-            Factoid.getThisPlugin().iLands().getLand(landName).replaceArea(removedAreaId, newArea, price, mustPay);
+            Factoid.getThisPlugin().iLands().getLand(landName).replaceArea(removedAreaId, newArea, price);
         } else if(action == LandAction.LAND_ADD) {
             try {
                 Factoid.getThisPlugin().iLands().createLand(landName, owner, newArea, parent, price);
