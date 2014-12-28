@@ -76,6 +76,7 @@ public class StorageThread extends Thread {
      */
     public StorageThread() {
     	
+        this.setName("Factoid Storage");
     	storage = new StorageFlat();
         saveList = Collections.synchronizedList(new ArrayList<Object>());
         removeList = Collections.synchronizedList(new ArrayList<Object>());

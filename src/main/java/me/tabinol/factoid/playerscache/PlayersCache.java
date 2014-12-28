@@ -116,7 +116,8 @@ public class PlayersCache extends Thread {
 	 */
 	public PlayersCache() {
 		
-        fileName = Factoid.getThisPlugin().getDataFolder() + "/" + "playerscache.conf";
+        this.setName("Factoid Players cache");
+		fileName = Factoid.getThisPlugin().getDataFolder() + "/" + "playerscache.conf";
         file = new File(fileName);
         outputList = Collections.synchronizedList(new ArrayList<OutputRequest>());
         updateList = Collections.synchronizedList(new ArrayList<PlayerCacheEntry>());
