@@ -38,9 +38,10 @@ import java.util.logging.Logger;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.executor.CommandThreadExec;
-import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.playercontainer.PlayerContainerPlayerName;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
+
+import org.bukkit.Bukkit;
 
 import com.mojang.api.profiles.HttpProfileRepository;
 import com.mojang.api.profiles.Profile;
@@ -234,12 +235,9 @@ public class PlayersCache extends Thread {
    						}
    					}
    				}
-   				// Return the output of the request
-   				try {
-					outputRequest.commandExec.commandThreadExecute(entries);
-				} catch (FactoidCommandException e) {
-					// The message will be sent to the player in this error
-				}
+   				// Return the output of the request on the main thread
+   				ReturnToCommand returnToCommand = new ReturnToCommand(outputRequest.commandExec, entries);
+  				Bukkit.getScheduler().callSyncMethod(Factoid.getThisPlugin(), returnToCommand);
    			}
    			
    			// Update playerList

@@ -96,7 +96,7 @@ public class CommandBan extends CommandThreadExec {
      * @see me.tabinol.factoid.commands.executor.CommandThreadExec#commandThreadExecute(me.tabinol.factoid.playerscache.PlayerCacheEntry[])
      */
     @Override
-    public void commandThreadExecute(PlayerCacheEntry[] playerCacheEntry)
+    public synchronized void commandThreadExecute(PlayerCacheEntry[] playerCacheEntry)
     		throws FactoidCommandException {
 	
     	convertPcIfNeeded(playerCacheEntry);

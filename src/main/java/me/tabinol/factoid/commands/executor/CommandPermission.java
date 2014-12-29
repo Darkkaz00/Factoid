@@ -100,7 +100,7 @@ public class CommandPermission extends CommandThreadExec {
         
     	convertPcIfNeeded(playerCacheEntry);
 
-        if (fonction.equalsIgnoreCase("set")) {
+    	if (fonction.equalsIgnoreCase("set")) {
 
             IPermission perm = entity.argList.getPermissionFromArg(entity.playerConf.isAdminMod(), land.isOwner(entity.player));
 
