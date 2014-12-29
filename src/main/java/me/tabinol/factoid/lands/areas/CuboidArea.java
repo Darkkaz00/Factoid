@@ -56,7 +56,7 @@ public class CuboidArea implements Comparable<CuboidArea>, ICuboidArea {
      */
     public CuboidArea(String worldName, int x1, int y1, int z1, int x2, int y2, int z2) {
 
-        this.worldName = worldName.toLowerCase();
+        this.worldName = worldName;
         this.x1 = Calculate.lowerInt(x1, x2);
         this.x2 = Calculate.greaterInt(x1, x2);
         this.y1 = Calculate.lowerInt(y1, y2);
@@ -73,7 +73,7 @@ public class CuboidArea implements Comparable<CuboidArea>, ICuboidArea {
      */
     public boolean equals(ICuboidArea area2) {
 
-        return worldName.equalsIgnoreCase(area2.getWorldName())
+        return worldName.equals(area2.getWorldName())
                 && x1 == area2.getX1() && y1 == area2.getY1() && z1 == area2.getZ1()
                 && x2 == area2.getX2() && y2 == area2.getY2() && z2 == area2.getZ2();
     }
@@ -188,7 +188,7 @@ public class CuboidArea implements Comparable<CuboidArea>, ICuboidArea {
      */
     public boolean isCollision(ICuboidArea area2) {
 
-        return (worldName.equalsIgnoreCase(area2.getWorldName())
+        return (worldName.equals(area2.getWorldName())
                 && (Calculate.isInInterval(x1, area2.getX1(), area2.getX2())
                 || Calculate.isInInterval(area2.getX1(), x1, x2)))
                 && ((Calculate.isInInterval(y1, area2.getY1(), area2.getY2())
@@ -205,7 +205,7 @@ public class CuboidArea implements Comparable<CuboidArea>, ICuboidArea {
      */
     public boolean isLocationInside(Location loc) {
 
-        return loc.getWorld().getName().equalsIgnoreCase(worldName)
+        return loc.getWorld().getName().equals(worldName)
                 && Calculate.isInInterval(loc.getBlockX(), x1, x2)
                 && Calculate.isInInterval(loc.getBlockY(), y1, y2)
                 && Calculate.isInInterval(loc.getBlockZ(), z1, z2);
@@ -219,7 +219,7 @@ public class CuboidArea implements Comparable<CuboidArea>, ICuboidArea {
     public CuboidArea getCollisionArea(ICuboidArea area2) {
         
         // Return null if the world is not the same
-        if (!worldName.equalsIgnoreCase(area2.getWorldName())) {
+        if (!worldName.equals(area2.getWorldName())) {
             return null;
         }
         
@@ -297,7 +297,7 @@ public class CuboidArea implements Comparable<CuboidArea>, ICuboidArea {
 
     	HashSet<ICuboidArea> areaList = new HashSet<ICuboidArea>();
 
-        if (!worldName.equalsIgnoreCase(area2.getWorldName())) {
+        if (!worldName.equals(area2.getWorldName())) {
             areaList.add(area2);
             return areaList;
         }
@@ -415,7 +415,7 @@ public class CuboidArea implements Comparable<CuboidArea>, ICuboidArea {
      */
     public void setWorldName(String worldName) {
 
-        this.worldName = worldName.toLowerCase();
+        this.worldName = worldName;
     }
 
     /**
