@@ -5,14 +5,14 @@
 	<groupId>me.tabinol.factoid</groupId>
 	<artifactId>Factoid</artifactId>
 	<!-- *** Change version here *** -->
-	<version>1.0.0</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Factoid</name>
 	<url>http://www.tabinol.me</url>
 
 	<properties>
-		<build.number>SNAPSHOT</build.number>
+		<build.number></build.number>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- *** Change Language version here here *** -->
 		<langVersion>22</langVersion>
@@ -166,7 +166,7 @@
 	</dependencies>
 	
 	<build>
-		<finalName>${project.artifactId}-${project.version}-${build.number}</finalName>
+		<finalName>${project.artifactId}-${project.version}${build.number}</finalName>
 		<resources>
 			<resource>
 				<targetPath>.</targetPath>
@@ -250,7 +250,7 @@
 		<snapshotRepository>
 			<id>Tabinol.me Nexus</id>
 			<name>Internal Releases</name>
-			<url>http://nexus.tabinol.me/nexus/content/repositories/snapshots/</url>
+			<url>http://nexus.tabinol.me/content/repositories/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 </project>
