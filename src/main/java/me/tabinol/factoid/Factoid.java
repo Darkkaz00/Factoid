@@ -17,6 +17,8 @@
  */ 
 package me.tabinol.factoid;
 
+import java.io.IOException;
+
 import me.tabinol.factoid.commands.OnCommand;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.config.DependPlugin;
@@ -47,8 +49,8 @@ import me.tabinol.factoidapi.lands.areas.ICuboidArea;
 import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.MetricsLite;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Factoid.
  */
@@ -226,6 +228,14 @@ public class Factoid extends JavaPlugin implements IFactoid {
         getServer().getPluginManager().registerEvents(chatListener, this);
         getCommand("factoid").setExecutor(CommandListener);
         log.write(iLanguage().getMessage("ENABLE"));
+        
+        // Start Plugin Metrics
+        try {
+            MetricsLite metrics = new MetricsLite(this);
+            metrics.start();
+        } catch (IOException e) {
+            // Failed to submit the stats :-(
+        }
     }
 
     /**
