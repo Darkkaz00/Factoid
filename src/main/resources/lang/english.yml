@@ -37,8 +37,9 @@ HELP:
     28: "/factoid resident : Resident of the land."
     29: "/factoid sale : Set the land for sale."
     30: "/factoid setspawn : Create a spawn location."
-    31: "/factoid who : (*) Show players on a land."
-    32: "(*) If the land is not selected, the name can be the last parameter."
+    31: "/factoid type : Set the type of the land."
+    32: "/factoid who : (*) Show players on a land."
+    33: "(*) If the land is not selected, the name can be the last parameter."
   SELECT:
     1: "/factoid select <here/land name> : Select a land for modification."
     2: "/factoid select : Start the visual selection."
@@ -82,7 +83,7 @@ HELP:
   KICK:
     1: "/factoid kick [player] <land> : Kick a player from a land."
   LIST:
-    1: "/factoid list [player] / world [world name] : Lands list."
+    1: "/factoid list [player] / world [world name] / type <type> : Lands list."
   MONEY:
     1: "/factoid money balance : Show the money balance of the land."
     2: "/factoid money deposit <amount> : Deposit money."
@@ -120,6 +121,10 @@ HELP:
     1: "/factoid setspawn : Create a spawn location."
   TP:
     1: "/factoid tp <terrain> : Teleport you to the land."
+  TYPE:
+    1: "/factoid type list : List available land types."
+    2: "/factoid type <type> : Set the land type."
+    3: "/factoid type remove : Remove the land types."
   WHO:
     1: "/factoid who [land] : Show players on a land."
 
@@ -176,6 +181,12 @@ COMMAND:
     INVALID: "The page number is invalid!"
   LAND:
     LISTSTART: "-Lands list-"
+    TYPENOTEXIST: "This type is invalid!"
+  TYPES:
+    LISTSTART: "-Types list-"
+    REMOVEISDONE: "The type is removed from the land %."
+    INVALID: "This type is invlaid!"
+    ISDONE: "The type % is set to land %."
   AREA:
     LISTSTART: "-Areas list of '%'-"
   SELECT:
@@ -186,14 +197,9 @@ COMMAND:
     LAND:
       NOCOLLISION: "Your selection has no collision."
       COLLISION: "Your selection has a collision with an another Land."
-#    AREA:
-#      NOCOLLISION: "Your selection has no collision."
-#      COLLISION: "Your selection has a collision with an another Area."
     CANCEL: "You have cancelled your selection."
     CANTDONE: "You cannot 'Done' a selection which's already a Land."
     CANTDONEWORLDEDIT: "You cannot 'Done' a WorldEdit selection. You can Create your land."
-#    NEWLAND: "You have selected a new Land."
-#    NEWAREA: "You have selected a new Area."
     SELECTEDLAND: "You have selected the land '%'"
     SELECTEDAREA: "You have selected the area '%'"
     WORLDEDIT:
@@ -298,7 +304,8 @@ COMMAND:
       PRIORITY: "Priority: %, "
       FORSALE: "For sale!"
       FORRENT: "For rent!"
-      PARENT: "Parent: % "
+      TYPE: "Type: %"
+      PARENT: ", Parent: % "
       OWNER: "Owner: %"
       TENANT: ", Tenant: %"
       ACTIVEAREA: "You are on area: %"

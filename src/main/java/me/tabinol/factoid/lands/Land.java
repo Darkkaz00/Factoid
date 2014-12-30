@@ -41,6 +41,7 @@ import me.tabinol.factoidapi.event.PlayerContainerLandBanEvent;
 import me.tabinol.factoidapi.factions.IFaction;
 import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.lands.areas.ICuboidArea;
+import me.tabinol.factoidapi.lands.types.IType;
 import me.tabinol.factoidapi.parameters.IFlagType;
 import me.tabinol.factoidapi.parameters.IFlagValue;
 import me.tabinol.factoidapi.parameters.ILandFlag;
@@ -72,6 +73,9 @@ public class Land extends DummyLand implements ILand {
     
     /** The name. */
     private String name;
+    
+    /** The type. */
+    private IType type = null;
     
     /** The areas. */
     private Map<Integer, ICuboidArea> areas = new TreeMap<Integer, ICuboidArea>();
@@ -157,14 +161,16 @@ public class Land extends DummyLand implements ILand {
      * @param genealogy the genealogy
      * @param parent the parent
      * @param areaId the area id
+     * @param type the type
      */
     @SuppressWarnings("unchecked")
 	protected Land(String landName, UUID uuid, IPlayerContainer owner,
-            ICuboidArea area, int genealogy, Land parent, int areaId) {
+            ICuboidArea area, int genealogy, Land parent, int areaId, IType type) {
 
         super(area.getWorldName().toLowerCase());
         this.uuid = uuid;
         name = landName.toLowerCase();
+        this.type = type;
         if (parent != null) {
             this.parent = parent;
             parent.addChild(this);
@@ -1363,4 +1369,17 @@ public class Land extends DummyLand implements ILand {
 
         return lastPayment;
     }
+
+	@Override
+	public IType getType() {
+
+		return type;
+	}
+
+	@Override
+	public void setType(IType arg0) {
+		
+		type = arg0;
+		doSave();
+	}
 }

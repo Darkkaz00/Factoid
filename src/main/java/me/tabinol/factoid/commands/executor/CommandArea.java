@@ -65,7 +65,7 @@ public class CommandArea extends CommandExec {
             double price = entity.playerConf.getSelection().getAreaAddPrice();
 
             // Check for collision
-            if (checkCollision(land.getName(), land, LandAction.AREA_ADD, 0, area, land.getParent(), 
+            if (checkCollision(land.getName(), land, null, LandAction.AREA_ADD, 0, area, land.getParent(), 
             		land.getOwner(), price, true)) {
                 return;
             }
@@ -117,7 +117,7 @@ public class CommandArea extends CommandExec {
             if (curArg.equalsIgnoreCase("remove")) {
 
                 // Check for collision
-                if (checkCollision(curArg, land, LandAction.AREA_REMOVE, areaNb, null, land.getParent(), 
+                if (checkCollision(curArg, land, null, LandAction.AREA_REMOVE, areaNb, null, land.getParent(), 
                 		land.getOwner(), 0, true)) {
                     return;
                 }
@@ -140,7 +140,7 @@ public class CommandArea extends CommandExec {
                 double price = entity.playerConf.getSelection().getAreaReplacePrice(areaNb);
 
                 // Check for collision
-                if (checkCollision(land.getName(), land, LandAction.AREA_MODIFY, areaNb, area, land.getParent(), 
+                if (checkCollision(land.getName(), land, null, LandAction.AREA_MODIFY, areaNb, area, land.getParent(), 
                 		land.getOwner(), price,  true)) {
                     return;
                 }

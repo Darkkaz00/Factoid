@@ -16,6 +16,13 @@ general:                             # ----General Config----
   InfoItem: 352                      # Item that give Land information
   SelectItem: 367                    # Item that give Land selection
 land:
+  Types:
+    List:                            # land types or categories
+      - admin
+      - player
+    OnCreate:                        # Automatic categories on create
+      AdminMod: admin                # On admin mode (or "-null-")
+      NoneAdminMod: player           # Non admin mode (normal players or "-null-")
   # AllowCollision:
   # true: Collisions are permitted without verification.
   # approve: A player with permission factoid.approvecollision must approve
@@ -31,27 +38,14 @@ land:
                                      # or 0 for disabling
   MaxVisualSelect: 256               # High value = crash or severe lag
   MaxVisualSelectFromPlayer: 128     # Same problem ;-)
-  MaxLand: 1
-  MinLandSize: 1
-  MaxLandSize: 1
-  MinLandHigh: 0
-  MaxLandHigh: 255
   DefaultXsize: 10
   DefaultZsize: 10
   DefaultBottom: 0
   DefaultTop: 255
   MaxLandPerPlayer: 5
   area:
-    MinAreaSize: 1
-    MaxAreaSize: 1
     MaxAreaPerLand: 3
   OwnerCanSet:                     # What the owner can set on his land?
     Permissions: [BUILD, OPEN, USE, ANIMAL_KILL, TAMED_KILL, VILLAGER_KILL, VILLAGER_GOLEM_KILL, HORSE_KILL]
     Flags: [TNT_EXPLOSION, TNT_DAMAGE, MESSAGE_JOIN, MESSAGE_QUIT]
   BeaconLight: false               #Set beacon light effect of an selection
-economy:
-  PricebyCube: 0.01
-  MinPriceLocation: 1
-  MaxPriceLocation: 1
-  MinPriceSell: 1
-  MaxPriceSell: 1

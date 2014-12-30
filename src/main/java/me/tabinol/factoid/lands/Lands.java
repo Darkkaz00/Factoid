@@ -37,6 +37,7 @@ import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.lands.ILands;
 import me.tabinol.factoidapi.lands.areas.ICuboidArea;
+import me.tabinol.factoidapi.lands.types.IType;
 import me.tabinol.factoid.lands.collisions.Collisions.LandAction;
 import me.tabinol.factoid.lands.collisions.Collisions.LandError;
 import me.tabinol.factoidapi.parameters.IFlagType;
@@ -178,16 +179,17 @@ public class Lands implements ILands {
      * @param area the area
      * @param parent the parent
      * @param price the price
+     * @param type the type
      * @return the land
      * @throws FactoidLandException the factoid land exception
      */
     public Land createLand(String landName, IPlayerContainer owner, ICuboidArea area, 
-    		me.tabinol.factoidapi.lands.ILand parent, double price)
+    		me.tabinol.factoidapi.lands.ILand parent, double price, IType type)
             throws FactoidLandException {
         
         getPriceFromPlayer(area.getWorldName(), owner, price);
 
-        return createLand(landName, owner, area, parent, 1, null);
+        return createLand(landName, owner, area, parent, 1, null, type);
     }
 
     // Only for Land load at start
@@ -200,11 +202,12 @@ public class Lands implements ILands {
      * @param parent the parent
      * @param areaId the area id
      * @param uuid the uuid
+     * @param type the type
      * @return the land
      * @throws FactoidLandException the factoid land exception
      */
     public Land createLand(String landName, IPlayerContainer owner, ICuboidArea area, 
-    		me.tabinol.factoidapi.lands.ILand parent, int areaId, UUID uuid)
+    		me.tabinol.factoidapi.lands.ILand parent, int areaId, UUID uuid, IType type)
             throws FactoidLandException {
 
         String landNameLower = landName.toLowerCase();
@@ -227,7 +230,7 @@ public class Lands implements ILands {
             		LandAction.LAND_ADD, LandError.NAME_IN_USE);
         }
 
-        land = new Land(landNameLower, landUUID, owner, area, genealogy, (Land) parent, areaId);
+        land = new Land(landNameLower, landUUID, owner, area, genealogy, (Land) parent, areaId, type);
 
         addLandToList(land);
         Factoid.getThisPlugin().iLog().write("add land: " + landNameLower);
@@ -513,6 +516,26 @@ public class Lands implements ILands {
         }
 
         return lands;
+    }
+
+    /**
+     * Gets the lands from type.
+     *
+     * @param type the type
+     * @return the lands
+     */
+    public Collection<ILand> getLands(IType type) {
+    	
+        Collection<ILand> 
+    	lands = new HashSet<ILand>();
+
+    for (ILand land : landList.values()) {
+        if (land.getType() == type) {
+            lands.add(land);
+        }
+    }
+
+    return lands;
     }
 
     /**

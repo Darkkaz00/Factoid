@@ -22,7 +22,9 @@ import java.util.Collection;
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ChatPage;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
+import me.tabinol.factoidapi.FactoidAPI;
 import me.tabinol.factoidapi.lands.ILand;
+import me.tabinol.factoidapi.lands.types.IType;
 import me.tabinol.factoid.playerscache.PlayerCacheEntry;
 
 import org.bukkit.ChatColor;
@@ -36,6 +38,7 @@ import org.bukkit.ChatColor;
 public class CommandList extends CommandThreadExec {
 
     private String worldName = null;
+    private IType type = null;
 
     /**
      * Instantiates a new command list.
@@ -61,12 +64,25 @@ public class CommandList extends CommandThreadExec {
             if (curArg.equalsIgnoreCase("world")) {
 
                 // Get worldName
-                worldName = entity.argList.getNext().toLowerCase();
+                worldName = entity.argList.getNext();
                 if (worldName == null) {
                     // No worldName has parameter
                     worldName = entity.player.getLocation().getWorld().getName().toLowerCase();
                 }
 
+            } else if (curArg.equalsIgnoreCase("type")) {
+            	
+            	// Get the category name
+                String typeName = entity.argList.getNext();
+                
+                if(typeName != null) {
+                	type = FactoidAPI.iTypes().getType(typeName);
+                }
+                
+                if(type == null) {
+                	throw new FactoidCommandException("CommandList", entity.sender, "COMMAND.LAND.TYPENOTEXIST");
+                }
+            	
             } else {
 
                 // Get the player Container
@@ -102,7 +118,9 @@ public class CommandList extends CommandThreadExec {
         stList.append(ChatColor.YELLOW);
 
         for (ILand land : lands) {
-            if ((worldName == null || worldName.equals(land.getWorldName()))
+            if (((worldName != null && worldName.equals(land.getWorldName()))
+            		|| (type !=null && type == land.getType())
+            		|| (worldName == null && type == null))
                     && (pc == null || land.getOwner().equals(pc))) {
                 stList.append(land.getName()).append(" ");
             }

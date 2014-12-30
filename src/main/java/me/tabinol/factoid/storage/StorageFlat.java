@@ -44,6 +44,7 @@ import me.tabinol.factoid.parameters.Permission;
 import me.tabinol.factoid.parameters.PermissionType;
 import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoid.playercontainer.PlayerContainerPlayer;
+import me.tabinol.factoidapi.FactoidAPI;
 import me.tabinol.factoidapi.utilities.StringChanges;
 import me.tabinol.factoidapi.parameters.ILandFlag;
 import me.tabinol.factoidapi.parameters.IPermission;
@@ -245,6 +246,7 @@ public class StorageFlat extends Storage implements StorageInt {
         ConfLoader cf = null;
         UUID uuid;
         String landName;
+        String type = null;
         Land land = null;
         Map<Integer, CuboidArea> areas = new TreeMap<Integer, CuboidArea>();
         boolean isLandCreated = false;
@@ -282,6 +284,10 @@ public class StorageFlat extends Storage implements StorageInt {
             version = cf.getVersion();
             uuid = cf.getUUID();
             landName = cf.getName();
+            if(version >= 5) {
+            	cf.readParam();
+            	type = cf.getValueString();
+            }
             cf.readParam();
             String ownerS = cf.getValueString();
 
@@ -413,14 +419,15 @@ public class StorageFlat extends Storage implements StorageInt {
 
                     try {
                         land = Factoid.getThisPlugin().iLands().createLand(landName, owner, entry.getValue(), parent,
-                                entry.getKey(), uuid);
+                                entry.getKey(), uuid, FactoidAPI.iTypes().addOrGetType(type));
                     } catch (FactoidLandException ex) {
                         Logger.getLogger(StorageFlat.class.getName()).log(Level.SEVERE, "Error on loading land: " + landName, ex);
                         return;
                     }
                 } else {
                     try {
-                        land = Factoid.getThisPlugin().iLands().createLand(landName, owner, entry.getValue(), null, entry.getKey(), uuid);
+                        land = Factoid.getThisPlugin().iLands().createLand(landName, owner, entry.getValue(), 
+                        		null, entry.getKey(), uuid, FactoidAPI.iTypes().addOrGetType(type));
                     } catch (FactoidLandException ex) {
                         Logger.getLogger(StorageFlat.class.getName()).log(Level.SEVERE, "Error on loading land: " + landName, ex);
                         return;
@@ -485,6 +492,7 @@ public class StorageFlat extends Storage implements StorageInt {
 
             Factoid.getThisPlugin().iLog().write("Saving land: " + land.getName());
             ConfBuilder cb = new ConfBuilder(land.getName(), land.getUUID(), getLandFile(land), LAND_VERSION);
+            cb.writeParam("Type", land.getType() != null ? land.getType().getName() : null);
             cb.writeParam("Owner", land.getOwner().toString());
 
             //Parent

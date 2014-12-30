@@ -142,7 +142,7 @@ public class CommandApprove extends CommandExec {
                 }
                 
                 // Info on the specified land (Collision)
-                checkCollision(param, land, action, removeId, newArea, parent, owner, price, false);
+                checkCollision(param, land, null, action, removeId, newArea, parent, owner, price, false);
 
                 if (curArg.equalsIgnoreCase("confirm")) {
 

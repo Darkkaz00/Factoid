@@ -20,10 +20,12 @@ package me.tabinol.factoid.lands.approve;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.exceptions.FactoidLandException;
 import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.lands.areas.ICuboidArea;
+import me.tabinol.factoidapi.lands.types.IType;
 import me.tabinol.factoid.lands.collisions.Collisions.LandAction;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 
@@ -38,6 +40,9 @@ public class Approve {
     
     /** The land name. */
     private final String landName;
+    
+    /** The type */
+    private final IType type;
     
     /** The removed area id. */
     private final int removedAreaId;
@@ -61,6 +66,7 @@ public class Approve {
      * Instantiates a new approve.
      *
      * @param landName the land name
+     * @param type the type
      * @param action the action
      * @param removedAreaId the removed area id
      * @param newArea the new area
@@ -69,12 +75,13 @@ public class Approve {
      * @param price the price
      * @param dateTime the date time
      */
-    public Approve(String landName, LandAction action, int removedAreaId, 
+    public Approve(String landName, IType type, LandAction action, int removedAreaId, 
             ICuboidArea newArea, IPlayerContainer owner, ILand parent, double price,
             Calendar dateTime) {
         
         this.action = action;
         this.landName = landName.toLowerCase();
+        this.type = type;
         this.removedAreaId = removedAreaId;
         this.newArea = newArea;
         this.owner = owner;
@@ -101,6 +108,16 @@ public class Approve {
     public String getLandName() {
         
         return landName;
+    }
+    
+    /**
+     * Gets the type.
+     *
+     * @return the type
+     */
+    public IType getType() {
+    	
+    	return type;
     }
     
     /**
@@ -176,7 +193,7 @@ public class Approve {
             Factoid.getThisPlugin().iLands().getLand(landName).replaceArea(removedAreaId, newArea, price);
         } else if(action == LandAction.LAND_ADD) {
             try {
-                Factoid.getThisPlugin().iLands().createLand(landName, owner, newArea, parent, price);
+                Factoid.getThisPlugin().iLands().createLand(landName, owner, newArea, parent, price, type);
             } catch (FactoidLandException ex) {
                 Logger.getLogger(Approve.class.getName()).log(Level.SEVERE, "On land create", ex);
             }

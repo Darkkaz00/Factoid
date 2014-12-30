@@ -116,10 +116,12 @@ public class CommandInfo extends CommandExec {
             	stList.append(ChatColor.RED + " " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.INFO.LAND.FORRENT"));
             }
             stList.append(NEWLINE);
-            if (land.getParent() != null) {
-                stList.append(ChatColor.YELLOW + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.INFO.LAND.PARENT", land.getParent().getName()));
-                stList.append(NEWLINE);
+            stList.append(ChatColor.YELLOW + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.INFO.LAND.TYPE", 
+            		land.getType() != null ? land.getType().getName() : "-null-"));
+            if(land.getParent() != null) {
+              	stList.append(ChatColor.YELLOW + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.INFO.LAND.PARENT", land.getParent().getName()));
             }
+            stList.append(NEWLINE);
             stList.append(ChatColor.YELLOW + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.INFO.LAND.OWNER", land.getOwner().getPrint()));
             if(land.isRented()) {
             	stList.append(ChatColor.YELLOW + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.INFO.LAND.TENANT", land.getTenant().getPrint()));

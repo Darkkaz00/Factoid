@@ -37,8 +37,9 @@ HELP:
     28: "/factoid resident : Résidents du terrain."
     29: "/factoid sale : Mettre le terrain à vendre."
     30: "/factoid setspawn : Créer un point de téléportation."
-    31: "/factoid who : (*) Lister les joueurs sur un terrain."
-    32: "(*) Si un terrain n'est pas sélectionné, le nom du celui-ci peut être le dernier argument."
+    31: "/factoid type : Set the type of the land."
+    32: "/factoid who : (*) Lister les joueurs sur un terrain."
+    33: "(*) Si un terrain n'est pas sélectionné, le nom du celui-ci peut être le dernier argument."
   SELECT:
     1: "/factoid select <here/nom du terrain> : Sélectionner un terrain pour une modification."
     2: "/factoid select : Démarrer la sélection visuelle."
@@ -82,7 +83,7 @@ HELP:
   KICK:
     1: "/factoid kick <joueur> [terrain] : Jeter un joueur hors du terrain."
   LIST:
-    1: "/factoid land [joueur] / world [nom du monde] : Liste des terrains."
+    1: "/factoid land [joueur] / world [nom du monde] / type <type> : Liste des terrains."
   MONEY:
     1: "/factoid money balance : Montrer le montant d'argent du terrain."
     2: "/factoid money deposit <montant> : Déposer de l'argent."
@@ -120,6 +121,10 @@ HELP:
     1: "/factoid setspawn : Créer un point de téléportation."
   TP:
     1: "/factoid tp <terrain> : Se téléporter vers le terrain"
+  TYPE:
+    1: "/factoid type list : Affiche les types disponibles."
+    2: "/factoid type <type> : Ajuste le type du terrain."
+    3: "/factoid type remove : Enlève le type du terrain."
   WHO:
     1: "/factoid who [terrain] : Lister les joueurs sur un terrain."
 SCOREBOARD:
@@ -175,6 +180,12 @@ COMMAND:
     INVALID: "Le numéro de la page est invalide !"
   LAND:
     LISTSTART: "-liste des terrains-"
+    TYPENOTEXIST: "Ce type est invalide!"
+  TYPES:
+    LISTSTART: "-Liste des types-"
+    REMOVEISDONE: "Ce type est enlevé du terrain %."
+    INVALID: "Ce type est invalide!"
+    ISDONE: "Le type % est mis au terrain %."
   AREA:
     LISTSTART: "-liste des étendues de '%'-"
   SELECT:
@@ -185,14 +196,9 @@ COMMAND:
     LAND:
       NOCOLLISION: "Votre sélection n'a pas de collision."
       COLLISION: "Votre sélection a une collision avec un autre terrain."
-#    AREA:
-#      NOCOLLISION: "Votre sélection n'a pas de collision."
-#      COLLISION: "Votre sélection a une collision avec un autre zone."
     CANCEL: "Vous avez annulé votre sélection."
     CANTDONE: "Vous ne pouvez pas terminer (Done) une sélection qui est déjà un terrain."
     CANTDONEWORLDEDIT: "Vous ne pouvez pas terminer (Done) une sélection WorldEdit. Vous pouvez créer un terrain."
-#    NEWLAND: "Vous avez sélectionné un nouveau terrain."
-#    NEWAREA: "Vous avez sélectionné une nouvelle zone."
     SELECTEDLAND: "Vous avez sélectionné le terrain '%'"
     SELECTEDAREA: "Vous avez sélectionné la zone '%'"
     WORLDEDIT:
@@ -297,7 +303,8 @@ COMMAND:
       PRIORITY: "Priorité: %, "
       FORSALE: "À vendre !"
       FORRENT: "À louer !"
-      PARENT: "Parent: % "
+      TYPE: "Type: %"
+      PARENT: ", Parent: % "
       OWNER: "Propriétaire: %"
       TENANT: ", Locataire: %"
       ACTIVEAREA: "Vous êtes sur l'étendue: %"

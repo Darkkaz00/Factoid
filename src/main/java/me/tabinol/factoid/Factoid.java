@@ -29,6 +29,7 @@ import me.tabinol.factoid.factions.Factions;
 import me.tabinol.factoid.lands.Lands;
 import me.tabinol.factoid.lands.approve.ApproveNotif;
 import me.tabinol.factoid.lands.areas.CuboidArea;
+import me.tabinol.factoid.lands.types.Types;
 import me.tabinol.factoid.listeners.ChatListener;
 import me.tabinol.factoid.listeners.LandListener;
 import me.tabinol.factoid.listeners.PlayerListener;
@@ -68,7 +69,10 @@ public class Factoid extends JavaPlugin implements IFactoid {
     /** The factions. */
     protected static Factions factions;
 	
-	/** The lands. */
+	/** The types */
+    protected static Types types;
+    
+    /** The lands. */
 	protected static Lands lands;
     
     /** The parameters. */
@@ -193,6 +197,7 @@ public class Factoid extends JavaPlugin implements IFactoid {
         thisPlugin = this;
         FactoidAPI.initFactoidPluginAccess();
         parameters = new Parameters();
+        types = new Types();
         conf = new Config();
         log = new Log();
         dependPlugin = new DependPlugin();
@@ -243,6 +248,7 @@ public class Factoid extends JavaPlugin implements IFactoid {
      */
     public void reload() {
 
+        types = new Types();
         // No reload of Parameters to avoid Deregistering external parameters
         conf.reloadConfig();
         if (conf.useEconomy() == true && dependPlugin.getEconomy() != null) {
@@ -346,6 +352,11 @@ public class Factoid extends JavaPlugin implements IFactoid {
     public Lands iLands() {
     	
     	return lands;
+    }
+    
+    public Types iTypes() {
+    	
+    	return types;
     }
 
     /**

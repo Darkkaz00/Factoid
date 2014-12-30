@@ -58,7 +58,7 @@ public class CommandRename extends CommandExec {
         }
 
         // Check for collision
-        if (checkCollision(curArg, land, Collisions.LandAction.LAND_RENAME, 0, 
+        if (checkCollision(curArg, land, null, Collisions.LandAction.LAND_RENAME, 0, 
                 null, land.getParent(), land.getOwner(), 0, true)) {
             return;
         }

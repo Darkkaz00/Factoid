@@ -15,9 +15,9 @@
 		<build.number></build.number>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- *** Change Language version here here *** -->
-		<langVersion>22</langVersion>
+		<langVersion>23</langVersion>
 		<!-- *** Change land .conf version here here *** -->
-		<landVersion>4</landVersion>
+		<landVersion>5</landVersion>
 		<!-- *** Change faction .conf version here here *** -->
 		<factionVersion>3</factionVersion>
 		<!-- *** Change players cache .conf version here here *** -->

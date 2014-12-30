@@ -18,12 +18,17 @@
 package me.tabinol.factoid.config;
 
 import java.util.TreeSet;
+
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.parameters.FlagType;
 import me.tabinol.factoid.parameters.PermissionType;
+import me.tabinol.factoidapi.FactoidAPI;
+import me.tabinol.factoidapi.lands.types.IType;
+
 import org.bukkit.configuration.file.FileConfiguration;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Config.
  */
@@ -178,36 +183,6 @@ public class Config {
      */
     public int getMaxVisualSelectFromPlayer() { return maxVisualSelectFromPlayer; }
 
-    /** The max land. */
-    private int maxLand;
-    
-    /**
-     * Gets the max land.
-     *
-     * @return the max land
-     */
-    public int getMaxLand() { return maxLand; } 
-    
-    /** The min land size. */
-    private int minLandSize;
-    
-    /**
-     * Gets the min land size.
-     *
-     * @return the min land size
-     */
-    public int getMinLandSize() { return minLandSize; }
-    
-    /** The max land size. */
-    private int maxLandSize;
-    
-    /**
-     * Gets the max land size.
-     *
-     * @return the max land size
-     */
-    public int getMaxLandSize() { return maxLandSize; }
-    
     /** The max area per land. */
     private int maxAreaPerLand;
     
@@ -227,46 +202,6 @@ public class Config {
      * @return the max land per player
      */
     public int getMaxLandPerPlayer() { return maxLandPerPlayer; }
-    
-    /** The min area size. */
-    private int minAreaSize;
-    
-    /**
-     * Gets the min area size.
-     *
-     * @return the min area size
-     */
-    public int getMinAreaSize() { return minAreaSize; }
-    
-    /** The max area size. */
-    private int maxAreaSize;
-    
-    /**
-     * Gets the max area size.
-     *
-     * @return the max area size
-     */
-    public int getMaxAreaSize() { return maxAreaSize; }
-    
-    /** The min land high. */
-    private int minLandHigh;
-    
-    /**
-     * Gets the min land high.
-     *
-     * @return the min land high
-     */
-    public int getMinLandHigh() { return minLandHigh; }
-    
-    /** The max land high. */
-    private int maxLandHigh;
-    
-    /**
-     * Gets the max land high.
-     *
-     * @return the max land high
-     */
-    public int getMaxLandHigh() { return maxLandHigh; }
     
     /** The default x size. */
     private int defaultXSize;
@@ -308,55 +243,6 @@ public class Config {
      */
     public int getDefaultTop() { return defaultTop; }
 
-    /** The price by cube. */
-    private double priceByCube;
-    
-    /**
-     * Gets the price by cube.
-     *
-     * @return the price by cube
-     */
-    public double getPriceByCube() { return priceByCube; }
-    
-    /** The min price location. */
-    private double minPriceLocation;
-    
-    /**
-     * Gets the min price location.
-     *
-     * @return the min price location
-     */
-    public double getMinPriceLocation() { return minPriceLocation; }
-    
-    /** The max price location. */
-    private double maxPriceLocation;
-    
-    /**
-     * Gets the max price location.
-     *
-     * @return the max price location
-     */
-    public double getMaxPriceLocation() { return maxPriceLocation; }
-    
-    /** The min price sell. */
-    private double minPriceSell;
-    
-    /**
-     * Gets the min price sell.
-     *
-     * @return the min price sell
-     */
-    public double getMinPriceSell() { return minPriceSell; }
-    
-    /** The max price sell. */
-    private double maxPriceSell;
-    
-    /**
-     * Max price sell.
-     *
-     * @return the double
-     */
-    public double maxPriceSell() { return maxPriceSell; }
     
     /** The beacon light. */
     private boolean beaconLight;
@@ -397,6 +283,26 @@ public class Config {
      * @return the owner config perm
      */
     public TreeSet<PermissionType> getOwnerConfigPerm() { return ownerConfigPerm; }
+
+    /** The type admin mod. */
+    private IType typeAdminMod;
+    
+    /**
+     * Gets the type admin mod.
+     *
+     * @return the type admin mod
+     */
+    public IType getTypeAdminMod() { return typeAdminMod; } 
+    
+    /** The type none admin mod. */
+    private IType typeNoneAdminMod;
+    
+    /**
+     * Gets the type none admin mod.
+     *
+     * @return the type none admin mod
+     */
+    public IType getTypeNoneAdminMod() { return typeNoneAdminMod; } 
 
     /**
      * Instantiates a new config.
@@ -447,29 +353,14 @@ public class Config {
         selectAutoCancel = config.getLong("land.SelectAutoCancel", 12000);
         maxVisualSelect = config.getInt("land.MaxVisualSelect", 256);
         maxVisualSelectFromPlayer = config.getInt("land.MaxVisualSelectFromPlayer", 128);
-        maxLand = config.getInt("land.MaxLand", 1);
-        minLandSize = config.getInt("land.MinLandSize", 1);
-        maxLandSize = config.getInt("land.MaxLandSize", 1);
         defaultXSize = config.getInt("land.defaultXSize", 10);
         defaultZSize = config.getInt("land.defaultZSize", 10);
         defaultBottom = config.getInt("land.defaultBottom", 0);
         defaultTop = config.getInt("land.defaultTop", 255);
         maxAreaPerLand = config.getInt("land.area.MaxAreaPerLand", 3);
         maxLandPerPlayer = config.getInt("land.MaxLandPerPlayer", 5);
-        minAreaSize = config.getInt("land.area.MinAreaSize", 1);
-        maxAreaSize = config.getInt("land.area.MaxAreaSize", 1);
-        minLandHigh = config.getInt("land.area.MinLandHigh", 0);
-        maxLandHigh = config.getInt("land.area.MaxLandHigh", 256);
         beaconLight = config.getBoolean("land.BeaconLight", false);
         overrideExplosions = config.getBoolean("general.OverrideExplosions", true);
-
-        if (useEconomy) {
-            priceByCube = config.getDouble("economy.PricebyCube", 0.01);
-            minPriceSell = config.getDouble("economy.MinPriceSell", 1);
-            maxPriceSell = config.getDouble("economy.MaxPriceSell", 1);
-            minPriceLocation = config.getDouble("economy.MinPriceLocation", 1);
-            maxPriceLocation = config.getDouble("economy.MaxPriceLocation", 1);
-        }
 
         config.addDefault("land.OwnerCanSet.Flags", new String[] {"MESSAGE_JOIN", "MESSAGE_QUIT"});
         ownerConfigFlag = new TreeSet<FlagType>();
@@ -481,5 +372,22 @@ public class Config {
         for (String value : config.getStringList("land.OwnerCanSet.Permissions")) {
             ownerConfigPerm.add(Factoid.getThisPlugin().iParameters().getPermissionTypeNoValid(value.toUpperCase()));
         }
+        
+        // Add types
+        for(String typeName : config.getStringList("land.Types.List")) {
+        	FactoidAPI.iTypes().addOrGetType(typeName);
+        }
+        typeAdminMod = FactoidAPI.iTypes().addOrGetType(getStringOrNull("land.Types.OnCreate.AdminMod", "admin"));
+        typeNoneAdminMod = FactoidAPI.iTypes().addOrGetType(getStringOrNull("land.Types.OnCreate.NoneAdminMod", "player"));
+    }
+    
+    private String getStringOrNull(String path, String defaultSt) {
+    	
+    	String result = config.getString(path, defaultSt);
+    	if(result.equalsIgnoreCase("-null-")) {
+    		result = null;
+    	}
+    	
+    	return result;
     }
 }

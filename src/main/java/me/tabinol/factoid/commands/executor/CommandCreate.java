@@ -27,6 +27,7 @@ import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.exceptions.FactoidLandException;
 import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.lands.areas.ICuboidArea;
+import me.tabinol.factoidapi.lands.types.IType;
 import me.tabinol.factoid.lands.collisions.Collisions.LandAction;
 import me.tabinol.factoid.parameters.PermissionList;
 import me.tabinol.factoid.playercontainer.PlayerContainerNobody;
@@ -112,16 +113,19 @@ public class CommandCreate extends CommandExec {
             throw new FactoidCommandException("CommandCreate", entity.player, "GENERAL.MISSINGPERMISSION");
         }
 
-        // If the player is adminmod, the owner is nobody
+        // If the player is adminmod, the owner is nobody, and set type
         IPlayerContainer owner;
+        IType type;
         if(entity.playerConf.isAdminMod()) {
             owner = new PlayerContainerNobody();
+            type = Factoid.getThisPlugin().iConf().getTypeAdminMod();
         } else {
             owner = entity.playerConf.getPlayerContainer();
+            type = Factoid.getThisPlugin().iConf().getTypeNoneAdminMod();
         }
 
         // Check for collision
-        if (checkCollision(curArg, null, LandAction.LAND_ADD, 0, area, parent, owner, price, true)) {
+        if (checkCollision(curArg, null, type, LandAction.LAND_ADD, 0, area, parent, owner, price, true)) {
             new CommandCancel(entity.playerConf, true).commandExecute();
             return;
         }
@@ -130,7 +134,7 @@ public class CommandCreate extends CommandExec {
         ILand land = null;
         
         try {
-            land = Factoid.getThisPlugin().iLands().createLand(curArg, owner, area, parent, price);
+            land = Factoid.getThisPlugin().iLands().createLand(curArg, owner, area, parent, price, type);
         } catch (FactoidLandException ex) {
             Logger.getLogger(CommandCreate.class.getName()).log(Level.SEVERE, "On land create", ex);
         }

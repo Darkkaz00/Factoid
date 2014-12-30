@@ -50,7 +50,7 @@ public class CommandRemove extends CommandExec {
         checkPermission(true, true, null, null);
 
         // Check for collision
-        if (checkCollision(land.getName(), land, Collisions.LandAction.LAND_REMOVE, 
+        if (checkCollision(land.getName(), land, null, Collisions.LandAction.LAND_REMOVE, 
                 0, null, land.getParent(), land.getOwner(), 0, true)) {
             return;
         }

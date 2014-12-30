@@ -267,7 +267,8 @@ public class PlayerListener extends CommonListener implements Listener {
 
 		Factoid.getThisPlugin().iLog().write(
 				"PlayerInteract player name: " + event.getPlayer().getName()
-						+ ", Action: " + event.getAction());
+						+ ", Action: " + event.getAction()
+						+ ", Material: " + ml.name());
 
 		// For infoItem
 		if (player.getItemInHand() != null && action == Action.LEFT_CLICK_BLOCK
@@ -401,6 +402,7 @@ public class PlayerListener extends CommonListener implements Listener {
 							|| ml == Material.ENDER_CHEST // Begin of OPEN
 							|| ml == Material.WORKBENCH
 							|| ml == Material.BREWING_STAND
+							|| ml == Material.BURNING_FURNACE
 							|| ml == Material.FURNACE || ml == Material.BEACON
 							|| ml == Material.DROPPER || ml == Material.HOPPER
 							|| ml == Material.DISPENSER) && !checkPermission(
@@ -423,7 +425,7 @@ public class PlayerListener extends CommonListener implements Listener {
 							|| (ml == Material.BREWING_STAND && !checkPermission(
 									land, player,
 									PermissionList.OPEN_BREW.getPermissionType()))
-							|| (ml == Material.FURNACE && !checkPermission(
+							|| ((ml == Material.FURNACE || ml == Material.BURNING_FURNACE) && !checkPermission(
 									land, player,
 									PermissionList.OPEN_FURNACE
 											.getPermissionType()))

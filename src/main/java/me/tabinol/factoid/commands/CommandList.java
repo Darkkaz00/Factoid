@@ -114,7 +114,10 @@ public enum CommandList {
     RENT,
     
     /** Set/Unset the parent */
-    PARENT;
+    PARENT,
+    
+    /** Type **/
+    TYPE;
 
     // If a command has a second name
     /**

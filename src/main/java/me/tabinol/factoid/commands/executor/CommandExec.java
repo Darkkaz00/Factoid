@@ -25,6 +25,7 @@ import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoid.lands.approve.Approve;
 import me.tabinol.factoidapi.lands.areas.ICuboidArea;
+import me.tabinol.factoidapi.lands.types.IType;
 import me.tabinol.factoid.lands.collisions.Collisions;
 import me.tabinol.factoid.playercontainer.PlayerContainerOwner;
 import me.tabinol.factoidapi.parameters.IPermissionType;
@@ -205,6 +206,7 @@ public abstract class CommandExec implements CommandInterface {
      *
      * @param landName the land name
      * @param land the land
+     * @param type the type
      * @param action the action
      * @param removeId the remove id
      * @param newArea the new area
@@ -215,7 +217,7 @@ public abstract class CommandExec implements CommandInterface {
      * @return true, if successful
      * @throws FactoidCommandException the factoid command exception
      */
-    protected boolean checkCollision(String landName, ILand land, Collisions.LandAction action,
+    protected boolean checkCollision(String landName, ILand land, IType type, Collisions.LandAction action,
             int removeId, ICuboidArea newArea, ILand parent, IPlayerContainer owner, 
             double price, boolean addForApprove) throws FactoidCommandException {
 
@@ -231,7 +233,7 @@ public abstract class CommandExec implements CommandInterface {
                 if (Factoid.getThisPlugin().iConf().getAllowCollision() == Config.AllowCollisionType.APPROVE && allowApprove == true) {
                     entity.sender.sendMessage(ChatColor.RED + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COLLISION.GENERAL.NEEDAPPROVE", landName));
                     Factoid.getThisPlugin().iLog().write("land " + landName + " has collision and needs approval.");
-                    Factoid.getThisPlugin().iLands().getApproveList().addApprove(new Approve(landName, action, removeId, newArea,
+                    Factoid.getThisPlugin().iLands().getApproveList().addApprove(new Approve(landName, type, action, removeId, newArea,
                             owner, parent, price, Calendar.getInstance()));
                     new CommandCancel(entity.playerConf, true).commandExecute();
                     return true;

@@ -27,7 +27,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoidapi.FactoidAPI;
 import me.tabinol.factoidapi.lands.ILand;
+import me.tabinol.factoidapi.lands.types.IType;
 import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.lands.collisions.Collisions.LandAction;
 import me.tabinol.factoid.playercontainer.PlayerContainer;
@@ -74,6 +76,9 @@ public class ApproveList {
 
         landNames.add(approve.getLandName());
         ConfigurationSection section = approveConfig.createSection(approve.getLandName());
+        if(approve.getType() != null) {
+        	section.set("Type", approve.getType().getName());
+        }
         section.set("Action", approve.getAction().toString());
         section.set("RemovedAreaId", approve.getRemovedAreaId());
         if (approve.getNewArea() != null) {
@@ -150,6 +155,12 @@ public class ApproveList {
             Factoid.getThisPlugin().iLog().write("Error Section null");
             return null;
         }
+        
+        String typeName = section.getString("Type");
+        IType type = null;
+        if(typeName != null) {
+        	type = FactoidAPI.iTypes().addOrGetType(typeName);
+        }
 
         String[] ownerS = StringChanges.splitAddVoid(section.getString("Owner"), ":");
         PlayerContainer pc = PlayerContainer.create(null, EPlayerContainerType.getFromString(ownerS[0]), ownerS[1]);
@@ -180,7 +191,7 @@ public class ApproveList {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(section.getLong("DateTime"));
 
-        return new Approve(landName, action,
+        return new Approve(landName, type, action,
                 section.getInt("RemovedAreaId"), newArea, pc,
                 parent, section.getDouble("Price"), cal);
     }
