@@ -75,6 +75,7 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -248,6 +249,38 @@ public class PlayerListener extends CommonListener implements Listener {
 		updatePosInfo(event, entry, event.getTo(), false);
 	}
 
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
+
+		IDummyLand land;
+		EntityType et = event.getRightClicked().getType();
+		Player player = event.getPlayer();
+		Material mat = player.getItemInHand().getType();
+		PlayerConfEntry entry;
+		Location loc = event.getRightClicked().getLocation();
+
+		Factoid.getThisPlugin().iLog().write(
+				"PlayerInteractAtEntity player name: " + event.getPlayer().getName()
+						+ ", Entity: " + et.name());
+
+		// Citizen bug, check if entry exist before
+		if ((entry = playerConf.get(player)) != null
+				&& !entry.isAdminMod()) {
+			land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(loc);
+			
+			// Remove and add an item from an armor stand
+			if (((!checkPermission(land, event.getPlayer(), PermissionList.BUILD.getPermissionType())
+					|| !checkPermission(land, event.getPlayer(), PermissionList.BUILD_DESTROY.getPermissionType()))
+					&& mat == Material.AIR)
+					|| ((!checkPermission(land, event.getPlayer(), PermissionList.BUILD.getPermissionType())
+							|| !checkPermission(land, event.getPlayer(), PermissionList.BUILD_PLACE.getPermissionType()))
+							&& mat != Material.AIR)) {
+				messagePermission(player);
+				event.setCancelled(true);
+			}
+		}
+	}
+	
 	/**
 	 * On player interact.
 	 * 
