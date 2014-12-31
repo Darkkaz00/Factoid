@@ -19,11 +19,13 @@ package me.tabinol.factoid.commands.executor;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.config.BannedWords;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.exceptions.FactoidLandException;
 import me.tabinol.factoid.lands.collisions.Collisions;
+
 import org.bukkit.ChatColor;
 
 
@@ -73,5 +75,8 @@ public class CommandRename extends CommandExec {
         }
         entity.player.sendMessage(ChatColor.GREEN + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.RENAME.ISDONE", oldName, curArg));
         Factoid.getThisPlugin().iLog().write(entity.playerName + " has renamed " + oldName + " to " + curArg);
+
+        // Cancel the selection
+        new CommandCancel(entity.playerConf, true).commandExecute();
     }
 }

@@ -21,7 +21,7 @@ package me.tabinol.factoid.commands;
 /**
  * The Enum CommandList.
  */
-public enum CommandList {
+public enum ListCommands {
 
     /** The reload. */
     RELOAD,
@@ -132,14 +132,14 @@ public enum CommandList {
         HERE(INFO);
 
         /** The main command. */
-        public final CommandList mainCommand;
+        public final ListCommands mainCommand;
 
         /**
          * Instantiates a new second name.
          *
          * @param mainCommand the main command
          */
-        SecondName(CommandList mainCommand) {
+        SecondName(ListCommands mainCommand) {
 
             this.mainCommand = mainCommand;
         }

@@ -33,7 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.tabinol.factoid.Factoid;
-import static me.tabinol.factoid.commands.CommandList.valueOf;
+import static me.tabinol.factoid.commands.ListCommands.valueOf;
 
 
 /**
@@ -78,7 +78,7 @@ public class OnCommand extends Thread implements CommandExecutor {
     public void getCommand(CommandSender sender, ArgList argList) throws FactoidCommandException {
 
         try {
-            CommandList cl;
+            ListCommands cl;
 
             String command = argList.getNext();
 
@@ -92,7 +92,7 @@ public class OnCommand extends Thread implements CommandExecutor {
             cl = getCommandValue(command, sender);
             
             // Remove page from memory if needed
-            if(cl != CommandList.PAGE) {
+            if(cl != ListCommands.PAGE) {
                 Factoid.getThisPlugin().iPlayerConf().get(sender).setChatPage(null);
             }
 
@@ -139,18 +139,18 @@ public class OnCommand extends Thread implements CommandExecutor {
      * @return the command value
      * @throws FactoidCommandException the factoid command exception
      */
-    private CommandList getCommandValue(String command, CommandSender sender) throws FactoidCommandException {
+    private ListCommands getCommandValue(String command, CommandSender sender) throws FactoidCommandException {
 
-        CommandList cl;
+        ListCommands cl;
 
         try {
             cl = valueOf(command.toUpperCase());
         } catch (IllegalArgumentException e) {
 
             // Check if the second name works
-            CommandList.SecondName sn = null;
+            ListCommands.SecondName sn = null;
             try {
-                sn = CommandList.SecondName.valueOf(command.toUpperCase());
+                sn = ListCommands.SecondName.valueOf(command.toUpperCase());
             } catch (IllegalArgumentException e2) {
 
                 // The command does not exist

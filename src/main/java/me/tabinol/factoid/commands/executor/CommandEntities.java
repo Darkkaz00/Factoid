@@ -19,7 +19,7 @@ package me.tabinol.factoid.commands.executor;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ArgList;
-import me.tabinol.factoid.commands.CommandList;
+import me.tabinol.factoid.commands.ListCommands;
 import me.tabinol.factoid.config.players.PlayerConfEntry;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
 public class CommandEntities {
     
     /** The command. */
-    protected final CommandList command;
+    protected final ListCommands command;
     
     /** The sender. */
     protected final CommandSender sender;
@@ -56,7 +56,7 @@ public class CommandEntities {
      * @param sender the sender
      * @param argList the arg list
      */
-    public CommandEntities(CommandList command, CommandSender sender, ArgList argList) {
+    public CommandEntities(ListCommands command, CommandSender sender, ArgList argList) {
         
         this.command = command;
         this.sender = sender;

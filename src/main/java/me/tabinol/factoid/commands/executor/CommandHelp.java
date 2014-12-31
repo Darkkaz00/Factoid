@@ -19,7 +19,7 @@ package me.tabinol.factoid.commands.executor;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ChatPage;
-import me.tabinol.factoid.commands.CommandList;
+import me.tabinol.factoid.commands.ListCommands;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import org.bukkit.command.CommandSender;
 
@@ -76,7 +76,7 @@ public class CommandHelp extends CommandExec {
             } else {
                 // Will throw an exception if the command name is invalid
                 try {
-                    CommandList cl = CommandList.valueOf(arg.toUpperCase());
+                    ListCommands cl = ListCommands.valueOf(arg.toUpperCase());
                     commandName = cl.name();
                 } catch (IllegalArgumentException ex) {
                     commandName = "GENERAL";
