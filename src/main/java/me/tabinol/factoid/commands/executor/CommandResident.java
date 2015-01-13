@@ -55,6 +55,11 @@ public class CommandResident extends CommandThreadExec {
 
         checkSelections(true, null);
         checkPermission(true, true, PermissionList.RESIDENT_MANAGER.getPermissionType(), null);
+       
+        // Double check: The player must be resident, owner or adminmod
+        if(!entity.playerConf.isAdminMod() && !land.isResident(entity.player) && !land.isOwner(entity.player)) {
+        	throw new FactoidCommandException("No permission to do this action", entity.player, "GENERAL.MISSINGPERMISSION");
+        }
         
         fonction = entity.argList.getNext();
 
