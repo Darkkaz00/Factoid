@@ -285,6 +285,7 @@ public class LandListener extends CommonListener implements Listener {
             if (pc.hasAccess(players)
                     && !land.isOwner(players)
                     && !playerConf.get(players).isAdminMod()
+                    && !players.hasPermission("factoid.bypassban")
                     && (land.checkPermissionAndInherit(players, PermissionList.LAND_ENTER.getPermissionType()) == false
                     || land.isBanned(players))
                     && !kickPlayers.contains(players)) {

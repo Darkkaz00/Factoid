@@ -77,7 +77,8 @@ public class CommandKick extends CommandExec {
 
         // Player not in land?
         if (playerKick == null || !land.isPlayerinLandNoVanish(playerKick, player)
-                || Factoid.getThisPlugin().iPlayerConf().get(playerKick).isAdminMod()) {
+                || Factoid.getThisPlugin().iPlayerConf().get(playerKick).isAdminMod()
+                || playerKick.hasPermission("factoid.bypassban")) {
             throw new FactoidCommandException("Kicked", player, "COMMAND.KICK.NOTINLAND");
         }
         

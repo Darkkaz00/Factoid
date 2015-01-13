@@ -21,6 +21,7 @@ permissions:
             factoid.adminmod.auto: true
             factoid.collisionapprove: true
             factoid.socialspy: true
+            factoid.bypassban: true
             factoid.use: true
             factoid.reload: true
     factoid.adminmod:
@@ -36,6 +37,9 @@ permissions:
         default: op
     factoid.socialspy:
         description: Can read conversations from all lands
+        default: op
+    factoid.bypassban:
+        description: Ban and kick does not affect this player
         default: op
     factoid.use:
         description: Can use factoid command
