@@ -17,6 +17,9 @@
  */
 package me.tabinol.factoid.listeners;
 
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -94,6 +97,15 @@ import org.bukkit.plugin.PluginManager;
  */
 public class PlayerListener extends CommonListener implements Listener {
 
+	public final Material[] DOORS = { Material.WOODEN_DOOR, Material.TRAP_DOOR, Material.FENCE_GATE, 
+			Material.SPRUCE_DOOR, Material.SPRUCE_FENCE_GATE,
+			Material.BIRCH_DOOR, Material.BIRCH_FENCE_GATE,
+			Material.JUNGLE_DOOR, Material.JUNGLE_FENCE_GATE,
+			Material.ACACIA_DOOR, Material.ACACIA_FENCE_GATE,
+			Material.DARK_OAK_DOOR, Material.DARK_OAK_FENCE_GATE };
+	
+	private final Set<Material> doorsList; 
+	
 	/** The conf. */
 	private Config conf;
 
@@ -119,6 +131,8 @@ public class PlayerListener extends CommonListener implements Listener {
 		playerConf = Factoid.getThisPlugin().iPlayerConf();
 		timeCheck = DEFAULT_TIME_LAPS;
 		pm = Factoid.getThisPlugin().getServer().getPluginManager();
+		doorsList = EnumSet.noneOf(Material.class);
+		doorsList.addAll(Arrays.asList(DOORS));
 	}
 
 	/**
@@ -382,11 +396,11 @@ public class PlayerListener extends CommonListener implements Listener {
 			land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(loc);
 			if ((land instanceof ILand && ((ILand) land).isBanned(player))
 					|| (((action == Action.RIGHT_CLICK_BLOCK // BEGIN of USE
-					&& (ml == Material.WOODEN_DOOR || ml == Material.TRAP_DOOR
+					&& (doorsList.contains(ml)
 							|| ml == Material.STONE_BUTTON
 							|| ml == Material.WOOD_BUTTON
 							|| ml == Material.LEVER
-							|| ml == Material.TRAPPED_CHEST || ml == Material.FENCE_GATE
+							|| ml == Material.TRAPPED_CHEST
 							|| ml == Material.ENCHANTMENT_TABLE || ml == Material.ANVIL)) 
 							|| (action == Action.PHYSICAL && (ml == Material.WOOD_PLATE
 							|| ml == Material.STONE_PLATE || ml == Material.STRING))) && !checkPermission(
@@ -395,8 +409,7 @@ public class PlayerListener extends CommonListener implements Listener {
 																		// of
 																		// "USE"
 					|| (action == Action.RIGHT_CLICK_BLOCK
-							&& (ml == Material.WOODEN_DOOR
-									|| ml == Material.TRAP_DOOR || ml == Material.FENCE_GATE) && !checkPermission(
+							&& doorsList.contains(ml) && !checkPermission(
 								land, player,
 								PermissionList.USE_DOOR.getPermissionType()))
 					|| (action == Action.RIGHT_CLICK_BLOCK
