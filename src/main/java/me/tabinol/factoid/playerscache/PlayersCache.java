@@ -281,6 +281,10 @@ public class PlayersCache extends Thread {
 	 */
 	public void stopNextRun() {
 		
+		if(!isAlive()) {
+			Factoid.getThisPlugin().getLogger().log(Level.SEVERE, "Problem with Players Cache Thread. Possible data loss!");
+			return;
+		}
 		exitRequest = true;
 		lock.lock();
 		commandRequest.signal();

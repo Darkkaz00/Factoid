@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.factions.Faction;
@@ -157,6 +158,10 @@ public class StorageThread extends Thread {
 	 */
 	public void stopNextRun() {
 		
+		if(!isAlive()) {
+			Factoid.getThisPlugin().getLogger().log(Level.SEVERE, "Problem with save Thread. Possible data loss!");
+			return;
+		}
 		exitRequest = true;
 		lock.lock();
 		commandRequest.signal();
