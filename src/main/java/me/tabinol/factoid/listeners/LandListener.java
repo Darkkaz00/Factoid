@@ -172,7 +172,7 @@ public class LandListener extends CommonListener implements Listener {
                 PermissionType permissionType = PermissionList.LAND_ENTER.getPermissionType();
                 if ((land.isBanned(player)
                         || land.checkPermissionAndInherit(player, permissionType) != permissionType.getDefaultValue())
-                        && !land.isOwner(player)) {
+                        && !land.isOwner(player) && !player.hasPermission("factoid.bypassban")) {
                     String message;
                     if (land.isBanned(player)) {
                         message = "ACTION.BANNED";
