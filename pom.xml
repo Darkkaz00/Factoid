@@ -56,7 +56,7 @@
         <dependency>
             <groupId>me.tabinol.factoid</groupId>
             <artifactId>FactoidAPI</artifactId>
-            <version>LATEST</version>
+            <version>1.0.0</version>
         </dependency>
 		
 		<dependency>
