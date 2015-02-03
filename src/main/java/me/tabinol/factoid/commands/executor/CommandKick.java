@@ -83,7 +83,7 @@ public class CommandKick extends CommandExec {
         }
         
         //Kick the player
-        playerKick.teleport(player.getLocation().getWorld().getSpawnLocation());
+        playerKick.teleport(playerKick.getLocation().getWorld().getSpawnLocation());
         player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.KICK.DONE", playerKickName, land.getName()));
         playerKick.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.KICK.KICKED", land.getName()));
         Factoid.getThisPlugin().iLog().write("Player " + playerKick + " kicked from " + land.getName() + ".");
