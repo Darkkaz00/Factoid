@@ -283,14 +283,16 @@ public class PlayerListener extends CommonListener implements Listener {
 			land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(loc);
 			
 			// Remove and add an item from an armor stand
-			if (((!checkPermission(land, event.getPlayer(), PermissionList.BUILD.getPermissionType())
-					|| !checkPermission(land, event.getPlayer(), PermissionList.BUILD_DESTROY.getPermissionType()))
-					&& mat == Material.AIR)
-					|| ((!checkPermission(land, event.getPlayer(), PermissionList.BUILD.getPermissionType())
-							|| !checkPermission(land, event.getPlayer(), PermissionList.BUILD_PLACE.getPermissionType()))
-							&& mat != Material.AIR)) {
-				messagePermission(player);
-				event.setCancelled(true);
+			if(et == EntityType.ARMOR_STAND) {
+				if (((!checkPermission(land, event.getPlayer(), PermissionList.BUILD.getPermissionType())
+						|| !checkPermission(land, event.getPlayer(), PermissionList.BUILD_DESTROY.getPermissionType()))
+						&& mat == Material.AIR)
+						|| ((!checkPermission(land, event.getPlayer(), PermissionList.BUILD.getPermissionType())
+								|| !checkPermission(land, event.getPlayer(), PermissionList.BUILD_PLACE.getPermissionType()))
+								&& mat != Material.AIR)) {
+					messagePermission(player);
+					event.setCancelled(true);
+				}
 			}
 		}
 	}
@@ -451,8 +453,8 @@ public class PlayerListener extends CommonListener implements Listener {
 							|| ml == Material.BURNING_FURNACE
 							|| ml == Material.FURNACE || ml == Material.BEACON
 							|| ml == Material.DROPPER || ml == Material.HOPPER
-							|| ml == Material.DISPENSER) && !checkPermission(
-								land, player,
+							|| ml == Material.DISPENSER || ml == Material.JUKEBOX) 
+							&& !checkPermission(land, player,
 								PermissionList.OPEN.getPermissionType())) // End
 																			// of
 																			// OPEN
@@ -488,7 +490,10 @@ public class PlayerListener extends CommonListener implements Listener {
 									PermissionList.OPEN_DROPPER
 											.getPermissionType())) || (ml == Material.HOPPER && !checkPermission(
 							land, player,
-							PermissionList.OPEN_HOPPER.getPermissionType())))
+							PermissionList.OPEN_HOPPER.getPermissionType()))
+							|| (ml == Material.JUKEBOX && !checkPermission(
+									land, player,
+									PermissionList.OPEN_JUKEBOX.getPermissionType())))
 					// For dragon egg fix
 					|| (ml == Material.DRAGON_EGG && (!checkPermission(land,
 							event.getPlayer(),
@@ -502,6 +507,18 @@ public class PlayerListener extends CommonListener implements Listener {
 			} else if(player.getItemInHand() != null
 					&& action == Action.RIGHT_CLICK_BLOCK
 					&& player.getItemInHand().getType() == Material.ARMOR_STAND
+					&& ((land instanceof ILand && ((ILand) land).isBanned(event.getPlayer()))
+						|| !checkPermission(land, event.getPlayer(),
+								PermissionList.BUILD.getPermissionType())
+						|| !checkPermission(land, event.getPlayer(),
+								PermissionList.BUILD_PLACE.getPermissionType()))) {
+				messagePermission(player);
+				event.setCancelled(true);
+
+				// For head place fix (do not spawn a wither)
+			} else if(player.getItemInHand() != null
+					&& action == Action.RIGHT_CLICK_BLOCK
+					&& player.getItemInHand().getType() == Material.SKULL_ITEM
 					&& ((land instanceof ILand && ((ILand) land).isBanned(event.getPlayer()))
 						|| !checkPermission(land, event.getPlayer(),
 								PermissionList.BUILD.getPermissionType())

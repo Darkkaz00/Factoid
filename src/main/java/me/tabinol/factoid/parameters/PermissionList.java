@@ -76,6 +76,9 @@ public enum PermissionList {
     /** The open dispenser. */
     OPEN_DISPENSER(true),
     
+    /** The open jukebox. */
+    OPEN_JUKEBOX(true),
+    
     /** The use. */
     USE(true),
     

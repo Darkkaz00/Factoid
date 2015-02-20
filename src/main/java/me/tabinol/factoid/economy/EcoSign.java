@@ -17,6 +17,8 @@
  */
 package me.tabinol.factoid.economy;
 
+import java.util.HashSet;
+
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.exceptions.SignException;
 import me.tabinol.factoidapi.lands.ILand;
@@ -61,7 +63,7 @@ public class EcoSign {
 	public EcoSign(ILand land, Player player) throws SignException {
 
 		@SuppressWarnings("deprecation")
-		Block targetBlock = player.getTargetBlock(null, 10);
+		Block targetBlock = player.getTargetBlock(new HashSet<Byte>(), 10);
 		Block testBlock;
 		this.land = land;
 
