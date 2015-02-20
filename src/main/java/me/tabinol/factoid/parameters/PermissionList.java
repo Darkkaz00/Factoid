@@ -200,7 +200,10 @@ public enum PermissionList {
     TP_DEATH(false),
     
     /** The player is death on enter. */
-    LAND_DEATH(false);
+    LAND_DEATH(false),
+    
+    /** The crop trample */
+    CROP_TRAMPLE(true);
 
     /** The base value. */
     final boolean baseValue;

@@ -28,6 +28,7 @@ import me.tabinol.factoidapi.parameters.IFlagType;
 import me.tabinol.factoidapi.parameters.IFlagValue;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Creeper;
@@ -41,8 +42,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -219,6 +222,8 @@ public class WorldListener extends CommonListener implements Listener {
     public void onEntityChangeBlock(EntityChangeBlockEvent event) {
 
         IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(event.getBlock().getLocation());
+        Material matFrom = event.getBlock().getType();
+        Material matTo = event.getTo();
 
         // Enderman removeblock
         if ((event.getEntityType() == EntityType.ENDERMAN
@@ -226,6 +231,12 @@ public class WorldListener extends CommonListener implements Listener {
                 || (event.getEntityType() == EntityType.WITHER
                 && land.getFlagAndInherit(FlagList.WITHER_DAMAGE.getFlagType()).getValueBoolean() == false)) {
             event.setCancelled(true);
+        
+        // Crop trample
+        } else if (matFrom == Material.SOIL
+        		&& matTo == Material.DIRT
+                && land.getFlagAndInherit(FlagList.CROP_TRAMPLE.getFlagType()).getValueBoolean() == false) {
+        	event.setCancelled(true);
         }
     }
 
@@ -278,6 +289,41 @@ public class WorldListener extends CommonListener implements Listener {
                 || event.getEntity() instanceof Slime
                 || event.getEntity() instanceof Flying)
                 && land.getFlagAndInherit(FlagList.MOB_SPAWN.getFlagType()).getValueBoolean() == false)) {
+            event.setCancelled(true);
+        }
+    }
+
+    /**
+     * On leaves decay.
+     *
+     * @param event the event
+     */
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onLeavesDecay(LeavesDecayEvent event) {
+
+        IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(event.getBlock().getLocation());
+
+        if (land.getFlagAndInherit(FlagList.LEAF_DECAY.getFlagType()).getValueBoolean() == false) {
+            event.setCancelled(true);
+        }
+    }
+
+    /**
+     * On block from to.
+     *
+     * @param event the event
+     */
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onBlockFromTo(BlockFromToEvent event) {
+
+        IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(event.getBlock().getLocation());
+        Material ml = event.getBlock().getType();
+
+        // Liquid flow
+        if (((ml == Material.LAVA || ml == Material.STATIONARY_LAVA)
+        		&& land.getFlagAndInherit(FlagList.LAVA_FLOW.getFlagType()).getValueBoolean() == false)
+        		|| ((ml == Material.WATER || ml == Material.STATIONARY_WATER)
+                		&& land.getFlagAndInherit(FlagList.WATER_FLOW.getFlagType()).getValueBoolean() == false)) {
             event.setCancelled(true);
         }
     }

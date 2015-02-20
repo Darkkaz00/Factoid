@@ -66,6 +66,18 @@ public enum FlagList {
     
     /** The animal spawn. */
     ANIMAL_SPAWN(new Boolean(true)),
+    
+    /** The leaves decay */
+    LEAF_DECAY(new Boolean(true)),
+    
+    /** The crop trample */
+    CROP_TRAMPLE(new Boolean(true)),
+
+    /** The lava flow */
+    LAVA_FLOW(new Boolean(true)),
+
+    /** The water flow */
+    WATER_FLOW(new Boolean(true)),
 
     /** The full pvp. */
     FULL_PVP(new Boolean(true)),

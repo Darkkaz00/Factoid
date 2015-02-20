@@ -67,6 +67,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
@@ -852,6 +853,32 @@ public class PlayerListener extends CommonListener implements Listener {
 			}
 		}
 	}
+	
+    /**
+     * On entity change block.
+     *
+     * @param event the event
+     */
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onEntityChangeBlock(EntityChangeBlockEvent event) {
+
+        // Crop trample
+		IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(
+				event.getBlock().getLocation());
+        Material matFrom = event.getBlock().getType();
+        Material matTo = event.getTo();
+		Player player;
+		
+		if(event.getEntity() instanceof Player
+				&& playerConf.get(player = (Player) event.getEntity()) != null // Citizens bugfix
+		&& ((land instanceof ILand && ((ILand) land).isBanned(player))
+				|| (matFrom == Material.SOIL
+				&& matTo == Material.DIRT
+				&& !checkPermission(land, player,
+						PermissionList.CROP_TRAMPLE.getPermissionType())))) {
+			event.setCancelled(true);
+		}
+    }
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	// Must be after Essentials
