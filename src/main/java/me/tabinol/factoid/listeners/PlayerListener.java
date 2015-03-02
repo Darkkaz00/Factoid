@@ -48,6 +48,7 @@ import me.tabinol.factoidapi.utilities.StringChanges;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -788,8 +789,9 @@ public class PlayerListener extends CommonListener implements Listener {
 	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
 
 		if (!playerConf.get(event.getPlayer()).isAdminMod()) {
+			Block block = event.getBlockClicked().getRelative(event.getBlockFace());
 			IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(
-					event.getBlockClicked().getLocation());
+					block.getLocation());
 			Material mt = event.getBucket();
 
 			if ((land instanceof ILand && ((ILand) land).isBanned(event
