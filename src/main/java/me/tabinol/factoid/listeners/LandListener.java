@@ -18,6 +18,7 @@
 package me.tabinol.factoid.listeners;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.parameters.FlagList;
@@ -281,7 +282,9 @@ public class LandListener extends CommonListener implements Listener {
      */
     private void checkForBannedPlayers(ILand land, IPlayerContainer pc, String message, ArrayList<Player> kickPlayers) {
 
-    	for (Player players : land.getPlayersInLand()) {
+    	Player[] playersArray = land.getPlayersInLand().toArray(new Player[0]); // Fix ConcurrentModificationException
+    	
+    	for (Player players : playersArray) {
             if (pc.hasAccess(players)
                     && !land.isOwner(players)
                     && !playerConf.get(players).isAdminMod()
