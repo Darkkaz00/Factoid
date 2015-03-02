@@ -33,6 +33,7 @@ import me.tabinol.factoid.lands.types.Types;
 import me.tabinol.factoid.listeners.ChatListener;
 import me.tabinol.factoid.listeners.LandListener;
 import me.tabinol.factoid.listeners.PlayerListener;
+import me.tabinol.factoid.listeners.PlayerListener18;
 import me.tabinol.factoid.listeners.PvpListener;
 import me.tabinol.factoid.listeners.WorldListener;
 import me.tabinol.factoid.parameters.Parameters;
@@ -87,6 +88,9 @@ public class Factoid extends JavaPlugin implements IFactoid {
     /** The player listener. */
     private PlayerListener playerListener;
     
+    /** The player listener 18. */
+    private PlayerListener18 playerListener18;
+
     /** The player listener. */
     private PvpListener pvpListener;
 
@@ -195,6 +199,7 @@ public class Factoid extends JavaPlugin implements IFactoid {
         mavenAppProperties.loadProperties();
         // Static access to «this» Factoid
         thisPlugin = this;
+        BKVersion.initVersion();
         FactoidAPI.initFactoidPluginAccess();
         parameters = new Parameters();
         types = new Types();
@@ -215,6 +220,9 @@ public class Factoid extends JavaPlugin implements IFactoid {
         storageThread.loadAllAndStart();
         worldListener = new WorldListener();
         playerListener = new PlayerListener();
+        if(BKVersion.isPlayerInteractAtEntityEventExist()) {
+        	playerListener18 = new PlayerListener18();
+        }
         pvpListener = new PvpListener();
         landListener = new LandListener();
         chatListener = new ChatListener();
@@ -228,6 +236,9 @@ public class Factoid extends JavaPlugin implements IFactoid {
         playersCache.start();
         getServer().getPluginManager().registerEvents(worldListener, this);
         getServer().getPluginManager().registerEvents(playerListener, this);
+        if(BKVersion.isPlayerInteractAtEntityEventExist()) {
+        	getServer().getPluginManager().registerEvents(playerListener18, this);
+        }
         getServer().getPluginManager().registerEvents(pvpListener, this);
         getServer().getPluginManager().registerEvents(landListener, this);
         getServer().getPluginManager().registerEvents(chatListener, this);

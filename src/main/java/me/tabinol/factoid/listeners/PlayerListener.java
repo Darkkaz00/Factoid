@@ -17,12 +17,10 @@
  */
 package me.tabinol.factoid.listeners;
 
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import me.tabinol.factoid.BKVersion;
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ArgList;
 import me.tabinol.factoid.commands.executor.CommandCancel;
@@ -79,7 +77,6 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -98,15 +95,6 @@ import org.bukkit.plugin.PluginManager;
  */
 public class PlayerListener extends CommonListener implements Listener {
 
-	public final Material[] DOORS = { Material.WOODEN_DOOR, Material.TRAP_DOOR, Material.FENCE_GATE, 
-			Material.SPRUCE_DOOR, Material.SPRUCE_FENCE_GATE,
-			Material.BIRCH_DOOR, Material.BIRCH_FENCE_GATE,
-			Material.JUNGLE_DOOR, Material.JUNGLE_FENCE_GATE,
-			Material.ACACIA_DOOR, Material.ACACIA_FENCE_GATE,
-			Material.DARK_OAK_DOOR, Material.DARK_OAK_FENCE_GATE };
-	
-	private final Set<Material> doorsList; 
-	
 	/** The conf. */
 	private Config conf;
 
@@ -132,8 +120,6 @@ public class PlayerListener extends CommonListener implements Listener {
 		playerConf = Factoid.getThisPlugin().iPlayerConf();
 		timeCheck = DEFAULT_TIME_LAPS;
 		pm = Factoid.getThisPlugin().getServer().getPluginManager();
-		doorsList = EnumSet.noneOf(Material.class);
-		doorsList.addAll(Arrays.asList(DOORS));
 	}
 
 	/**
@@ -264,40 +250,6 @@ public class PlayerListener extends CommonListener implements Listener {
 		updatePosInfo(event, entry, event.getTo(), false);
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
-
-		IDummyLand land;
-		EntityType et = event.getRightClicked().getType();
-		Player player = event.getPlayer();
-		Material mat = player.getItemInHand().getType();
-		PlayerConfEntry entry;
-		Location loc = event.getRightClicked().getLocation();
-
-		Factoid.getThisPlugin().iLog().write(
-				"PlayerInteractAtEntity player name: " + event.getPlayer().getName()
-						+ ", Entity: " + et.name());
-
-		// Citizen bug, check if entry exist before
-		if ((entry = playerConf.get(player)) != null
-				&& !entry.isAdminMod()) {
-			land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(loc);
-			
-			// Remove and add an item from an armor stand
-			if(et == EntityType.ARMOR_STAND) {
-				if (((!checkPermission(land, event.getPlayer(), PermissionList.BUILD.getPermissionType())
-						|| !checkPermission(land, event.getPlayer(), PermissionList.BUILD_DESTROY.getPermissionType()))
-						&& mat == Material.AIR)
-						|| ((!checkPermission(land, event.getPlayer(), PermissionList.BUILD.getPermissionType())
-								|| !checkPermission(land, event.getPlayer(), PermissionList.BUILD_PLACE.getPermissionType()))
-								&& mat != Material.AIR)) {
-					messagePermission(player);
-					event.setCancelled(true);
-				}
-			}
-		}
-	}
-	
 	/**
 	 * On player interact.
 	 * 
@@ -399,7 +351,7 @@ public class PlayerListener extends CommonListener implements Listener {
 			land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(loc);
 			if ((land instanceof ILand && ((ILand) land).isBanned(player))
 					|| (((action == Action.RIGHT_CLICK_BLOCK // BEGIN of USE
-					&& (doorsList.contains(ml)
+					&& (BKVersion.isDoor(ml)
 							|| ml == Material.STONE_BUTTON
 							|| ml == Material.WOOD_BUTTON
 							|| ml == Material.LEVER
@@ -412,7 +364,7 @@ public class PlayerListener extends CommonListener implements Listener {
 																		// of
 																		// "USE"
 					|| (action == Action.RIGHT_CLICK_BLOCK
-							&& doorsList.contains(ml) && !checkPermission(
+							&& BKVersion.isDoor(ml) && !checkPermission(
 								land, player,
 								PermissionList.USE_DOOR.getPermissionType()))
 					|| (action == Action.RIGHT_CLICK_BLOCK
@@ -507,7 +459,7 @@ public class PlayerListener extends CommonListener implements Listener {
 				// For armor stand
 			} else if(player.getItemInHand() != null
 					&& action == Action.RIGHT_CLICK_BLOCK
-					&& player.getItemInHand().getType() == Material.ARMOR_STAND
+					&& BKVersion.isArmorStand(player.getItemInHand().getType())
 					&& ((land instanceof ILand && ((ILand) land).isBanned(event.getPlayer()))
 						|| !checkPermission(land, event.getPlayer(),
 								PermissionList.BUILD.getPermissionType())
@@ -761,7 +713,7 @@ public class PlayerListener extends CommonListener implements Listener {
 					&& !entry.isAdminMod()
 					&& ((land instanceof ILand && ((ILand) land)
 							.isBanned(player))
-							|| ((et == EntityType.ARMOR_STAND || entity instanceof Hanging)
+							|| ((BKVersion.isArmorStand(et) || entity instanceof Hanging)
 									&& (!checkPermission(land, player,
 											PermissionList.BUILD.getPermissionType())
 									|| !checkPermission(land, player,

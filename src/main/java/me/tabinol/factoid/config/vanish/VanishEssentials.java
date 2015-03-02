@@ -19,9 +19,9 @@ package me.tabinol.factoid.config.vanish;
 
 import com.earth2me.essentials.Essentials;
 
+import me.tabinol.factoid.BKVersion;
 import me.tabinol.factoid.Factoid;
 
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 
@@ -50,7 +50,7 @@ public class VanishEssentials implements Vanish {
     public boolean isVanished(Player player) {
         
         return (Factoid.getThisPlugin().iConf().isSpectatorIsVanish() 
-        		&& player.getGameMode() == GameMode.SPECTATOR)
+        		&& BKVersion.isSpectatorMode(player))
         		|| essentials.getUser(player).isVanished();
     }
 }
