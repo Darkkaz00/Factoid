@@ -22,6 +22,9 @@ import java.util.logging.Logger;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ArgList;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandExec;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.config.BannedWords;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.exceptions.FactoidLandException;
@@ -41,6 +44,7 @@ import org.bukkit.ChatColor;
 /**
  * The Class CommandCreate.
  */
+@InfoCommand(name="create", forceParameter=true)
 public class CommandCreate extends CommandExec {
 
     /**
@@ -51,7 +55,7 @@ public class CommandCreate extends CommandExec {
      */
     public CommandCreate(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, false, true);
+        super(entity);
     }
 
     /* (non-Javadoc)

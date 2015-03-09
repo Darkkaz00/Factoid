@@ -20,12 +20,16 @@ package me.tabinol.factoid.commands.executor;
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ArgList;
 import me.tabinol.factoid.commands.ChatPage;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandExec;
+import me.tabinol.factoid.commands.InfoCommand;
 import static me.tabinol.factoid.config.Config.NEWLINE;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.lands.areas.ICuboidArea;
 import me.tabinol.factoid.parameters.PermissionList;
 import me.tabinol.factoidapi.parameters.IPermissionType;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -34,6 +38,7 @@ import org.bukkit.entity.Player;
 /**
  * The Class CommandInfo.
  */
+@InfoCommand(name="info", aliases={"current", "here"})
 public class CommandInfo extends CommandExec {
 
     /** The area. */
@@ -53,7 +58,7 @@ public class CommandInfo extends CommandExec {
      */
     public CommandInfo(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, false, false);
+        super(entity);
         player = entity.player;
         Location playerloc = entity.player.getLocation();
         area = Factoid.getThisPlugin().iLands().getCuboidArea(playerloc);
@@ -70,7 +75,7 @@ public class CommandInfo extends CommandExec {
      */
     public CommandInfo(Player player, ICuboidArea area) throws FactoidCommandException {
 
-        super(null, false, false);
+        super(null);
         this.player = player;
         this.area = area;
         argList = null;

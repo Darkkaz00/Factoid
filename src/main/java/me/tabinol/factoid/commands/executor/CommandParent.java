@@ -20,15 +20,19 @@ package me.tabinol.factoid.commands.executor;
 import org.bukkit.ChatColor;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandExec;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.lands.collisions.Collisions.LandAction;
 
+@InfoCommand(name="parent", forceParameter=true)
 public class CommandParent extends CommandExec {
 	
 	public CommandParent(CommandEntities entity) throws FactoidCommandException {
 		
-		super(entity, false, true);
+		super(entity);
 	}
 	
 	@Override

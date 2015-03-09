@@ -33,7 +33,7 @@ import java.util.Scanner;
 public class FileCopy {
 
     /**
-     * Copy text from jav.
+     * Copy text from jar.
      *
      * @param in the file from (FileInputStream)
      * @param fileTo the file to (File)

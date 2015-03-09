@@ -18,7 +18,6 @@
 package me.tabinol.factoid.listeners;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.parameters.FlagList;

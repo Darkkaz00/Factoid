@@ -5,128 +5,130 @@ DISABLE: "Factoid est désactivé."
 CONSOLE: "Hé Console! attends...quoi?"
 HELP:
   NOHELP: "Pas d'aide disponible pour cette commande."
-  LISTSTART: "-liste des commandes-"
-  GENERAL:
-    1: "Tapez \"/factoid help\" <commande> pour l'aide sur la commande."
-    2: "-Commandes générales-"
-    3: "/factoid select : Sélectionner un terrain."
-    4: "/factoid info : Information sur le terrain."
-    5: "/factoid adminmod : Activer/Désactiver le mode admin."
-    6: "/factoid reload : Recharger le plugin."
-    7: "/factoid approve : Approuver ou non une action."
-    8: "/factoid list : Liste des terrains."
-    9: "/fatoid tp : Téléporter vers un terrain."
-    10: "-Commandes de terrains (un terrain doit être sélectionné)-"
-    11: "/factoid area : Étendues du terrain."
-    12: "/factoid ban : Bannissement sur un terrain."
-    13: "/factoid cancel : Annuler une action."
-    14: "/factoid create : Créer un terrain."
-    15: "/factoid expand : Étendre un terrain."
-    16: "/factoid flag : Drapeaux des terrains."
-    17: "/factoid kick : (*) Jeter un joueur hors du terrain."
-    18: "/factoid money : Argent du terrain."
-    19: "/factoid notify : (*) Activer/Désactiver la notification de terrain."
-    20: "/factoid owner : Le propriétaire du terrain."
-    21: "/factoid page : Voir la page du résultat d'une commande."
-    22: "/factoid parent : Ajuster le parent."
-    23: "/factoid permission : Permissions du terrain."
-    24: "/factoid priority : Priorité du terrain."
-    25: "/factoid remove : Effacer un terrain."
-    26: "/factoid rename : Renommer un terrain."
-    27: "/factoid rent : Mettre le terrain à loué."
-    28: "/factoid resident : Résidents du terrain."
-    29: "/factoid sale : Mettre le terrain à vendre."
-    30: "/factoid setspawn : Créer un point de téléportation."
-    31: "/factoid type : Set the type of the land."
-    32: "/factoid who : (*) Lister les joueurs sur un terrain."
-    33: "(*) Si un terrain n'est pas sélectionné, le nom du celui-ci peut être le dernier argument."
-  SELECT:
-    1: "/factoid select <here/nom du terrain> : Sélectionner un terrain pour une modification."
-    2: "/factoid select : Démarrer la sélection visuelle."
-    3: "/factoid select done : Conclure une sélection visuelle."
-    4: "/factoid select worldedit : Prendre une sélection WorldEdit."
-    5: "/factoid select info : Informations à propos de la sélection."
-  INFO:
-    1: "/factoid info [terrain] : Affiche les informations générales du terrain."
-  ADMINMOD:
-    1: "/factoid adminmod : Activer ou désactiver le mode admin."
-  RELOAD:
-    1: "/factoid reload : Recharge la configuration du plugin."
-  APPROVE:
-    1: "/factoid approve list : Affiche les actions à approuver."
-    2: "/factoid approve info <terrain> : Information sur une action."
-    3: "/factoid approve confirm <terrain> : Approuve une action."
-    4: "/factoid approve cancel <terrain> : Annule und action."
-    5: "/factoid approve clear : Efface la liste des actions à approver."
-  AREA:
-    1: "/factoid area list : Affiche les étendues."
-    2: "/factoid area add : Ajoute une étendue."
-    3: "/factoid area remove <num étendue nb> : Enlève une étendue."
-    4: "/factoid area replace : Remplace une étendue."
-  BAN:
-    1: "/factoid ban list : Affiche les joueurs/contenants bannis."
-    2: "/factoid ban add <contenant joueur> : Banne un joueur/contenant"
-    3: "/factoid ban remove <contenant joueur> : Débanne un joueur/contenant."
-  CANCEL:
-    1: "/factoid cancel : Annule une sélection ou une action."
-  CREATE:
-    1: "/factoid create <terrain> [parent]/[noparent] : Crée un terrain. Parent détecté automatiquement."
-  DEFAULT:
-    1: "/factoid default : Remet le terrain à sa configuration par défaut."
-  EXPAND:
-    1: "/factoid expand : Étendre un terrain."
-    2: "/factoid expand done : Terminer d'étendre un terrain."
-  FLAG:
-    1: "/factoid flag list : Afficher les drapeaux."
-    2: "/factoid flag set <drapeau> <drapeau> : Ajoute un drapeau."
-    3: "/factoid flag unset <drapeau> : Enlève un drapeau."
-  KICK:
-    1: "/factoid kick <joueur> [terrain] : Jeter un joueur hors du terrain."
-  LIST:
-    1: "/factoid land [joueur] / world [nom du monde] / type <type> : Liste des terrains."
-  MONEY:
-    1: "/factoid money balance : Montrer le montant d'argent du terrain."
-    2: "/factoid money deposit <montant> : Déposer de l'argent."
-    3: "/factoid money withdraw <montant> : Retirer de l'argent."
-  NOTIFY:
-    1: "/factoid notify [terrain] : Activer/Désactiver la notification de terrain."
-  OWNER:
-    1: "/factoid owner <contenant joueur> : Change le propriétaire du terrain."
-  PAGE:
-    1: "/factoid page <numéro de la page> : Affiche la page d'un résultat."
-  PARENT:
-    1: "/factoid parent <nom du parent> : Ajoute ou remplace le parent."
-    2: "/factoid parent unset : Enlever le parent."
-  PERMISSION:
-    1: "/factoid permission list : Affiche les permissions."
-    2: "/factoid permission set <contenant joueur> <perm> <valeur> : Ajoute une permission."
-    3: "/factoid flag unset unset <contenant joueur> <perm> : Enlève une permission."
-  PRIORITY:
-    1: "/factoid priority <nombre> : Change la priorité du terrain."
-  REMOVE:
-    1: "/factoid remove : Efface un terrain."
-  RENAME:
-    1: "/factoid rename <nouveau nom> : Renomme un terrain."
-  RENT:
-    1: "/factoid rent <prix> <nb de jours> [autorenouv true/false] : Mettre le terrain à louer."
-    2: "/factoid rent recreate : Déplacer ou recréer un panneau perdu."
-  RESIDENT:
-    1: "/factoid resident list : Affiche les résidents."
-    2: "/factoid resident add <contenant joueur> : Ajoute un résident."
-    3: "/factoid resident remove <contenant joueur> : Enlève un résident."
-  SALE:
-    1: "/factoid sale <prix> : Mettre le terrain à vendre."
-    2: "/factoid sale recreate : Déplacer ou recréer un panneau perdu."
-  SETSPAWN:
-    1: "/factoid setspawn : Créer un point de téléportation."
-  TP:
-    1: "/factoid tp <terrain> : Se téléporter vers le terrain"
-  TYPE:
-    1: "/factoid type list : Affiche les types disponibles."
-    2: "/factoid type <type> : Ajuste le type du terrain."
-    3: "/factoid type remove : Enlève le type du terrain."
-  WHO:
-    1: "/factoid who [terrain] : Lister les joueurs sur un terrain."
+  FACTOID:
+    LISTSTART: "-liste des commandes-"
+    GENERAL:
+      1: "Tapez \"/factoid help\" <commande> pour l'aide sur la commande."
+      2: "-Commandes générales-"
+      3: "/factoid select : Sélectionner un terrain."
+      4: "/factoid info : Information sur le terrain."
+      5: "/factoid adminmod : Activer/Désactiver le mode admin."
+      6: "/factoid reload : Recharger le plugin."
+      7: "/factoid approve : Approuver ou non une action."
+      8: "/factoid list : Liste des terrains."
+      9: "/fatoid tp : Téléporter vers un terrain."
+      10: "-Commandes de terrains (un terrain doit être sélectionné)-"
+      11: "/factoid area : Étendues du terrain."
+      12: "/factoid ban : Bannissement sur un terrain."
+      13: "/factoid cancel : Annuler une action."
+      14: "/factoid create : Créer un terrain."
+      15: "/factoid expand : Étendre un terrain."
+      16: "/factoid flag : Drapeaux des terrains."
+      17: "/factoid kick : (*) Jeter un joueur hors du terrain."
+      18: "/factoid money : Argent du terrain."
+      19: "/factoid notify : (*) Activer/Désactiver la notification de terrain."
+      20: "/factoid owner : Le propriétaire du terrain."
+      21: "/factoid page : Voir la page du résultat d'une commande."
+      22: "/factoid parent : Ajuster le parent."
+      23: "/factoid permission : Permissions du terrain."
+      24: "/factoid priority : Priorité du terrain."
+      25: "/factoid remove : Effacer un terrain."
+      26: "/factoid rename : Renommer un terrain."
+      27: "/factoid rent : Mettre le terrain à loué."
+      28: "/factoid resident : Résidents du terrain."
+      29: "/factoid sale : Mettre le terrain à vendre."
+      30: "/factoid setspawn : Créer un point de téléportation."
+      31: "/factoid type : Set the type of the land."
+      32: "/factoid who : (*) Lister les joueurs sur un terrain."
+      33: "(*) Si un terrain n'est pas sélectionné, le nom du celui-ci peut être le dernier argument."
+    SELECT:
+      1: "/factoid select <here/nom du terrain> : Sélectionner un terrain pour une modification."
+      2: "/factoid select : Démarrer la sélection visuelle."
+      3: "/factoid select done : Conclure une sélection visuelle."
+      4: "/factoid select worldedit : Prendre une sélection WorldEdit."
+      5: "/factoid select info : Informations à propos de la sélection."
+    INFO:
+      1: "/factoid info [terrain] : Affiche les informations générales du terrain."
+    ADMINMOD:
+      1: "/factoid adminmod : Activer ou désactiver le mode admin."
+    RELOAD:
+      1: "/factoid reload : Recharge la configuration du plugin."
+    APPROVE:
+      1: "/factoid approve list : Affiche les actions à approuver."
+      2: "/factoid approve info <terrain> : Information sur une action."
+      3: "/factoid approve confirm <terrain> : Approuve une action."
+      4: "/factoid approve cancel <terrain> : Annule und action."
+      5: "/factoid approve clear : Efface la liste des actions à approver."
+    AREA:
+      1: "/factoid area list : Affiche les étendues."
+      2: "/factoid area add : Ajoute une étendue."
+      3: "/factoid area remove <num étendue nb> : Enlève une étendue."
+      4: "/factoid area replace : Remplace une étendue."
+    BAN:
+      1: "/factoid ban list : Affiche les joueurs/contenants bannis."
+      2: "/factoid ban add <contenant joueur> : Banne un joueur/contenant"
+      3: "/factoid ban remove <contenant joueur> : Débanne un joueur/contenant."
+    CANCEL:
+      1: "/factoid cancel : Annule une sélection ou une action."
+    CREATE:
+      1: "/factoid create <terrain> [parent]/[noparent] : Crée un terrain. Parent détecté automatiquement."
+    DEFAULT:
+      1: "/factoid default : Remet le terrain à sa configuration par défaut."
+    EXPAND:
+      1: "/factoid expand : Étendre un terrain."
+      2: "/factoid expand done : Terminer d'étendre un terrain."
+    FLAG:
+      1: "/factoid flag list : Afficher les drapeaux."
+      2: "/factoid flag set <drapeau> <drapeau> : Ajoute un drapeau."
+      3: "/factoid flag unset <drapeau> : Enlève un drapeau."
+    KICK:
+      1: "/factoid kick <joueur> [terrain] : Jeter un joueur hors du terrain."
+    LIST:
+      1: "/factoid land [joueur] / world [nom du monde] / type <type> : Liste des terrains."
+    MONEY:
+      1: "/factoid money balance : Montrer le montant d'argent du terrain."
+      2: "/factoid money deposit <montant> : Déposer de l'argent."
+      3: "/factoid money withdraw <montant> : Retirer de l'argent."
+    NOTIFY:
+      1: "/factoid notify [terrain] : Activer/Désactiver la notification de terrain."
+    OWNER:
+      1: "/factoid owner <contenant joueur> : Change le propriétaire du terrain."
+    PAGE:
+      1: "/factoid page <numéro de la page> : Affiche la page d'un résultat."
+    PARENT:
+      1: "/factoid parent <nom du parent> : Ajoute ou remplace le parent."
+      2: "/factoid parent unset : Enlever le parent."
+    PERMISSION:
+      1: "/factoid permission list : Affiche les permissions."
+      2: "/factoid permission set <contenant joueur> <perm> <valeur> : Ajoute une permission."
+      3: "/factoid flag unset unset <contenant joueur> <perm> : Enlève une permission."
+    PRIORITY:
+      1: "/factoid priority <nombre> : Change la priorité du terrain."
+    REMOVE:
+      1: "/factoid remove : Efface un terrain."
+    RENAME:
+      1: "/factoid rename <nouveau nom> : Renomme un terrain."
+    RENT:
+      1: "/factoid rent <prix> <nb de jours> [autorenouv true/false] : Mettre le terrain à louer."
+      2: "/factoid rent recreate : Déplacer ou recréer un panneau perdu."
+    RESIDENT:
+      1: "/factoid resident list : Affiche les résidents."
+      2: "/factoid resident add <contenant joueur> : Ajoute un résident."
+      3: "/factoid resident remove <contenant joueur> : Enlève un résident."
+    SALE:
+      1: "/factoid sale <prix> : Mettre le terrain à vendre."
+      2: "/factoid sale recreate : Déplacer ou recréer un panneau perdu."
+    SETSPAWN:
+      1: "/factoid setspawn : Créer un point de téléportation."
+    TP:
+      1: "/factoid tp <terrain> : Se téléporter vers le terrain"
+    TYPE:
+      1: "/factoid type list : Affiche les types disponibles."
+      2: "/factoid type <type> : Ajuste le type du terrain."
+      3: "/factoid type remove : Enlève le type du terrain."
+    WHO:
+      1: "/factoid who [terrain] : Lister les joueurs sur un terrain."
+
 SCOREBOARD:
   LANDINFO: "Liste des joueurs"
 GENERAL:
@@ -171,7 +173,7 @@ COMMAND:
     INVALID: "La zone de téléportation est invalide."
     OUTSIDE: "Vous êtes à l'extérieur du terrain."
     CREATED: "La zone de téléportation est maintenant ici."
-  NOTEXIST: "Cette commande n'existe pas. Vous pouvez faire \"/factoid help\""
+  NOTEXIST: "Cette commande n'existe pas. Vous pouvez faire \"/% help\""
   CONFIRM: "Pour confirmer votre choix, tapez \"/factoid confirm\" ou pour annuler, tapez \"/factoid cancel\"."
   NOCONFIRM: "Aucune action à confirmer."
   PAGE:

@@ -21,7 +21,10 @@ import java.util.Map;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ChatPage;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandExec;
 import me.tabinol.factoid.commands.ConfirmEntry;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.commands.ConfirmEntry.ConfirmType;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
@@ -35,6 +38,7 @@ import org.bukkit.ChatColor;
 /**
  * The Class CommandArea.
  */
+@InfoCommand(name="area", forceParameter=true)
 public class CommandArea extends CommandExec {
 
     /**
@@ -45,7 +49,7 @@ public class CommandArea extends CommandExec {
      */
     public CommandArea(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, false, true);
+        super(entity);
     }
 
     /* (non-Javadoc)

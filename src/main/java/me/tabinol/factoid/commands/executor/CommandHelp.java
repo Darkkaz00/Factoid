@@ -19,21 +19,32 @@ package me.tabinol.factoid.commands.executor;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ChatPage;
-import me.tabinol.factoid.commands.ListCommands;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandExec;
+import me.tabinol.factoid.commands.InfoCommand;
+import me.tabinol.factoid.commands.MainCommand;
+import me.tabinol.factoid.commands.OnCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
+
 import org.bukkit.command.CommandSender;
 
 
 /**
  * The Class CommandHelp.
  */
+@InfoCommand(name="help", mainCommand={MainCommand.FACTOID, MainCommand.FACTION}, allowConsole=true)
 public class CommandHelp extends CommandExec {
 
     /** The sender. */
     private final CommandSender sender;
     
+    private final OnCommand onCommand;
+    
+    private final MainCommand mainCommand;
+
     /** The command name. */
-    private String commandName;
+    private String commandName = null;
+    
 
     /**
      * Instantiates a new command help.
@@ -43,23 +54,30 @@ public class CommandHelp extends CommandExec {
      */
     public CommandHelp(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, true, false);
+        super(entity);
         sender = entity.sender;
+        mainCommand = entity.mainCommand;
+        onCommand = entity.onCommand;
     }
 
     // Call directly the Help without verification CommandName is UPERCASE
     /**
      * Instantiates a new command help.
      *
+     * @param onCommand the on command
      * @param sender the sender
+     * @param mainCommand the main command
      * @param commandName the command name
      * @throws FactoidCommandException the factoid command exception
      */
-    public CommandHelp(CommandSender sender, String commandName) throws FactoidCommandException {
+    public CommandHelp(OnCommand onCommand, CommandSender sender, 
+    		MainCommand mainCommand, String commandName) throws FactoidCommandException {
 
-        super(null, true, false);
+        super(null);
         this.sender = sender;
-        this.commandName = commandName;
+        this.mainCommand = mainCommand;
+        this.commandName = commandName.toUpperCase();
+        this.onCommand = onCommand;
     }
 
     /* (non-Javadoc)
@@ -76,8 +94,8 @@ public class CommandHelp extends CommandExec {
             } else {
                 // Will throw an exception if the command name is invalid
                 try {
-                    ListCommands cl = ListCommands.valueOf(arg.toUpperCase());
-                    commandName = cl.name();
+                    InfoCommand infoCommand = onCommand.getInfoCommand(mainCommand, arg.toLowerCase());
+                    commandName = infoCommand.name();
                 } catch (IllegalArgumentException ex) {
                     commandName = "GENERAL";
                 }
@@ -94,11 +112,11 @@ public class CommandHelp extends CommandExec {
      */
     private void showHelp() throws FactoidCommandException {
 
-        String help = Factoid.getThisPlugin().iLanguage().getHelp(commandName);
+        String help = Factoid.getThisPlugin().iLanguage().getHelp(mainCommand.name(), commandName);
         
         // If there is no help for this command
         if(help == null) {
-            throw new FactoidCommandException("Command with no help", entity.player, "HELP.NOHELP");
+            throw new FactoidCommandException("Command with no help", sender, "HELP.NOHELP");
         }
         
         if (commandName.equals("GENERAL")) {

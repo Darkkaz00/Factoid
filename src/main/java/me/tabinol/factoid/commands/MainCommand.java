@@ -15,22 +15,16 @@
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.tabinol.factoid.commands.executor;
-
-import me.tabinol.factoid.exceptions.FactoidCommandException;
-
+package me.tabinol.factoid.commands;
 
 /**
- * The Interface CommandInterface.
+ * The Enum MainCommand.
  */
-public interface CommandInterface {
-
-    /**
-     * Command execute.
-     *
-     * @throws FactoidCommandException the factoid command exception
-     */
-    public void commandExecute() throws FactoidCommandException;
-    
-    
+public enum MainCommand {
+	
+	/** Factoid command. */
+	FACTOID,
+	
+	/** Faction command. */
+	FACTION
 }

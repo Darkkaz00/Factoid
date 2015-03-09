@@ -19,6 +19,9 @@ package me.tabinol.factoid.commands.executor;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ArgList;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandExec;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.config.players.PlayerConfEntry;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoidapi.lands.ILand;
@@ -29,6 +32,7 @@ import me.tabinol.factoid.selection.PlayerSelection.SelectionType;
 import me.tabinol.factoid.selection.region.ActiveAreaSelection;
 import me.tabinol.factoid.selection.region.AreaSelection;
 import me.tabinol.factoid.selection.region.LandSelection;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -37,6 +41,7 @@ import org.bukkit.entity.Player;
 /**
  * The Class CommandSelect.
  */
+@InfoCommand(name="select")
 public class CommandSelect extends CommandExec {
 
     /** The player. */
@@ -59,7 +64,7 @@ public class CommandSelect extends CommandExec {
      */
     public CommandSelect(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, false, false);
+        super(entity);
         player = entity.player;
         location = null;
         playerConf = entity.playerConf;
@@ -77,7 +82,7 @@ public class CommandSelect extends CommandExec {
      */
     public CommandSelect(Player player, ArgList argList, Location location) throws FactoidCommandException {
 
-        super(null, false, false);
+        super(null);
         this.player = player;
         this.location = location;
         playerConf = Factoid.getThisPlugin().iPlayerConf().get(player);

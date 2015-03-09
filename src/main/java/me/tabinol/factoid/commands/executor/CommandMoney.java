@@ -18,15 +18,20 @@
 package me.tabinol.factoid.commands.executor;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandExec;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.economy.PlayerMoney;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.parameters.PermissionList;
+
 import org.bukkit.ChatColor;
 
 
 /**
  * The Class CommandMoney.
  */
+@InfoCommand(name="money", forceParameter=true)
 public class CommandMoney extends CommandExec {
 
     /** The player money. */
@@ -40,7 +45,7 @@ public class CommandMoney extends CommandExec {
      */
     public CommandMoney(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, false, true);
+        super(entity);
         playerMoney = Factoid.getThisPlugin().iPlayerMoney();
     }
 

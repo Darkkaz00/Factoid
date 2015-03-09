@@ -21,6 +21,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandExec;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.config.BannedWords;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.exceptions.FactoidLandException;
@@ -32,6 +35,7 @@ import org.bukkit.ChatColor;
 /**
  * The Class CommandRename.
  */
+@InfoCommand(name="rename", forceParameter=true)
 public class CommandRename extends CommandExec {
 
     /**
@@ -42,7 +46,7 @@ public class CommandRename extends CommandExec {
      */
     public CommandRename(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, false, true);
+        super(entity);
     }
 
     /* (non-Javadoc)

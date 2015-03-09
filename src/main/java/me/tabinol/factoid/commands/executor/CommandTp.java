@@ -20,6 +20,9 @@ package me.tabinol.factoid.commands.executor;
 import org.bukkit.Location;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandExec;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.parameters.FlagList;
 import me.tabinol.factoidapi.parameters.IFlagValue;
@@ -30,6 +33,7 @@ import me.tabinol.factoidapi.utilities.StringChanges;
 /**
  * The Class CommandTp.
  */
+@InfoCommand(name="tp", forceParameter=true)
 public class CommandTp extends CommandExec {
 
     /**
@@ -40,7 +44,7 @@ public class CommandTp extends CommandExec {
      */
     public CommandTp(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, false, true);
+        super(entity);
     }
     
     /* (non-Javadoc)

@@ -18,14 +18,19 @@
 package me.tabinol.factoid.commands.executor;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandExec;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.parameters.PermissionList;
+
 import org.bukkit.ChatColor;
 
 
 /**
  * The Class CommandNotify.
  */
+@InfoCommand(name="notify")
 public class CommandNotify extends CommandExec {
 
     /**
@@ -36,7 +41,7 @@ public class CommandNotify extends CommandExec {
      */
     public CommandNotify(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, false, false);
+        super(entity);
     }
 
     /* (non-Javadoc)

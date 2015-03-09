@@ -15,52 +15,58 @@
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.tabinol.factoid.commands.executor;
+package me.tabinol.factoid.commands;
 
 import me.tabinol.factoid.Factoid;
-import me.tabinol.factoid.commands.ArgList;
-import me.tabinol.factoid.commands.ListCommands;
 import me.tabinol.factoid.config.players.PlayerConfEntry;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 
-// Contains general information for commandExecutor
 /**
- * The Class CommandEntities.
+ * Contains general information for commandExecutor
  */
 public class CommandEntities {
     
-    /** The command. */
-    protected final ListCommands command;
+    public final MainCommand mainCommand;
+	
+	/** The command. */
+    public final InfoCommand infoCommand;
     
     /** The sender. */
-    protected final CommandSender sender;
+    public final CommandSender sender;
     
     /** The arg list. */
-    protected final ArgList argList;
+    public final ArgList argList;
     
     /** The player. */
-    protected final Player player;
+    public final Player player;
     
     /** The player name. */
-    protected final String playerName;
+    public final String playerName;
     
     /** The player conf. */
-    protected final PlayerConfEntry playerConf;
+    public final PlayerConfEntry playerConf;
+    
+    public final OnCommand onCommand;
 
     /**
      * Instantiates a new command entities.
      *
-     * @param command the command
+     * @param mainCommand the main command
+     * @param commandValue the command value
      * @param sender the sender
      * @param argList the arg list
      */
-    public CommandEntities(ListCommands command, CommandSender sender, ArgList argList) {
+    public CommandEntities(MainCommand mainCommand, InfoCommand infoCommand, 
+    		CommandSender sender, ArgList argList, OnCommand onCommand) {
         
-        this.command = command;
+        this.mainCommand = mainCommand;
+    	this.infoCommand = infoCommand;
         this.sender = sender;
         this.argList = argList;
+        this.onCommand = onCommand;
 
         if (sender instanceof Player) {
             player = (Player) sender;
@@ -71,5 +77,7 @@ public class CommandEntities {
         playerName = sender.getName();
         playerConf = Factoid.getThisPlugin().iPlayerConf().get(sender);
     }
+    
+    
 
 }

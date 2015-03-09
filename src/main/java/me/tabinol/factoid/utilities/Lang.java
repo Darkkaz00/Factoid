@@ -34,7 +34,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 /**
  * The Class Lang.
  */
-public class Lang extends Thread {
+public class Lang {
 
     /** The Constant ACTUAL_VERSION. */
     public static final int ACTUAL_VERSION = Factoid.getMavenAppProperties().getPropertyInt("langVersion");
@@ -201,12 +201,13 @@ public class Lang extends Thread {
     /**
      * Gets the help.
      *
+     * @param mainCommand the main command
      * @param commandName the command name
      * @return the help
      */
-    public String getHelp(String commandName) {
+    public String getHelp(String mainCommand, String commandName) {
         
-        ConfigurationSection helpSec = langconfig.getConfigurationSection("HELP." + commandName);
+        ConfigurationSection helpSec = langconfig.getConfigurationSection("HELP." + mainCommand + "." + commandName);
         
         // No help for this command?
         if(helpSec == null) {

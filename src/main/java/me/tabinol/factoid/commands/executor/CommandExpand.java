@@ -18,18 +18,23 @@
 package me.tabinol.factoid.commands.executor;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandExec;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.lands.areas.ICuboidArea;
 import me.tabinol.factoid.selection.PlayerSelection.SelectionType;
 import me.tabinol.factoid.selection.region.AreaSelection;
 import me.tabinol.factoid.selection.region.ExpandAreaSelection;
+
 import org.bukkit.ChatColor;
 
 
 /**
  * The Class CommandExpand.
  */
+@InfoCommand(name="expand")
 public class CommandExpand extends CommandExec {
 
     /**
@@ -40,7 +45,7 @@ public class CommandExpand extends CommandExec {
      */
     public CommandExpand(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, false, false);
+        super(entity);
     }
 
     /* (non-Javadoc)

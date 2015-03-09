@@ -18,15 +18,20 @@
 package me.tabinol.factoid.commands.executor;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandExec;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.utilities.Calculate;
+
 import org.bukkit.ChatColor;
 
 
 /**
  * The Class CommandPriority.
  */
+@InfoCommand(name="priority", forceParameter=true)
 public class CommandPriority extends CommandExec {
 
     /**
@@ -37,7 +42,7 @@ public class CommandPriority extends CommandExec {
      */
     public CommandPriority(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, false, true);
+        super(entity);
     }
 
     /* (non-Javadoc)

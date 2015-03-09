@@ -24,6 +24,9 @@ import java.util.TreeMap;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ChatPage;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandExec;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoidapi.lands.ILand;
@@ -39,6 +42,7 @@ import org.bukkit.ChatColor;
 /**
  * The Class CommandApprove.
  */
+@InfoCommand(name="approve", allowConsole=true, forceParameter=true)
 public class CommandApprove extends CommandExec {
 
     /**
@@ -49,7 +53,7 @@ public class CommandApprove extends CommandExec {
      */
     public CommandApprove(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, true, true);
+        super(entity);
     }
 
     /* (non-Javadoc)

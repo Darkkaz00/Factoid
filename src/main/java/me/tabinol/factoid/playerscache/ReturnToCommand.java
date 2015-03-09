@@ -19,7 +19,7 @@ package me.tabinol.factoid.playerscache;
 
 import java.util.concurrent.Callable;
 
-import me.tabinol.factoid.commands.executor.CommandThreadExec;
+import me.tabinol.factoid.commands.CommandThreadExec;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 
 /**

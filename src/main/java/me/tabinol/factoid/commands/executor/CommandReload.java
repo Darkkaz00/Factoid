@@ -18,13 +18,18 @@
 package me.tabinol.factoid.commands.executor;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandExec;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
+
 import org.bukkit.ChatColor;
 
 
 /**
  * The Class CommandReload.
  */
+@InfoCommand(name="reload", allowConsole=true)
 public class CommandReload extends CommandExec {
     
     /**
@@ -35,7 +40,7 @@ public class CommandReload extends CommandExec {
      */
     public CommandReload(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, true, false);
+        super(entity);
     }
 
     /* (non-Javadoc)

@@ -18,6 +18,9 @@
 package me.tabinol.factoid.commands.executor;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandThreadExec;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.playerscache.PlayerCacheEntry;
 import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
@@ -28,6 +31,7 @@ import org.bukkit.ChatColor;
 /**
  * The Class CommandOwner.
  */
+@InfoCommand(name="owner", forceParameter=true)
 public class CommandOwner extends CommandThreadExec {
 
 	/**
@@ -38,7 +42,7 @@ public class CommandOwner extends CommandThreadExec {
      */
     public CommandOwner(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, false, true);
+        super(entity);
     }
 
     /* (non-Javadoc)

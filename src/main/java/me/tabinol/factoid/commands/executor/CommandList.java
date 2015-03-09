@@ -21,6 +21,9 @@ import java.util.Collection;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ChatPage;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandThreadExec;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoidapi.FactoidAPI;
 import me.tabinol.factoidapi.lands.ILand;
@@ -35,6 +38,7 @@ import org.bukkit.ChatColor;
  *
  * @author Tabinol
  */
+@InfoCommand(name="list")
 public class CommandList extends CommandThreadExec {
 
     private String worldName = null;
@@ -48,7 +52,7 @@ public class CommandList extends CommandThreadExec {
      */
     public CommandList(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, false, false);
+        super(entity);
 
     }
 

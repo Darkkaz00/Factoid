@@ -18,12 +18,16 @@
 package me.tabinol.factoid.commands.executor;
 
 import me.tabinol.factoid.commands.ChatPage;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandExec;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 
 
 /**
  * The Class CommandPage.
  */
+@InfoCommand(name="page", allowConsole=true, forceParameter=true)
 public class CommandPage extends CommandExec {
 
     /**
@@ -34,7 +38,7 @@ public class CommandPage extends CommandExec {
      */
     public CommandPage(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, true, true);
+        super(entity);
     }
 
     /* (non-Javadoc)

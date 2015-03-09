@@ -19,9 +19,13 @@ package me.tabinol.factoid.commands.executor;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ChatPage;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandExec;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.parameters.PermissionList;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -29,6 +33,7 @@ import org.bukkit.entity.Player;
 /**
  * The Class CommandWho.
  */
+@InfoCommand(name="who")
 public class CommandWho extends CommandExec {
 
     /**
@@ -39,7 +44,7 @@ public class CommandWho extends CommandExec {
      */
     public CommandWho(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, false, false);
+        super(entity);
     }
 
     /* (non-Javadoc)

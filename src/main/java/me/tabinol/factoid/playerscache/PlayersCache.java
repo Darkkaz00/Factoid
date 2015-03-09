@@ -37,7 +37,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.tabinol.factoid.Factoid;
-import me.tabinol.factoid.commands.executor.CommandThreadExec;
+import me.tabinol.factoid.commands.CommandThreadExec;
 import me.tabinol.factoid.playercontainer.PlayerContainerPlayerName;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 

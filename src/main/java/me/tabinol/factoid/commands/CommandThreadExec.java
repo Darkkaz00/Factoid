@@ -15,7 +15,7 @@
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.tabinol.factoid.commands.executor;
+package me.tabinol.factoid.commands;
 
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
@@ -35,14 +35,11 @@ public abstract class CommandThreadExec extends CommandExec {
 	 * Instantiates a new command thread exec.
 	 *
 	 * @param entity the entity
-	 * @param canFromConsole the can from console
-	 * @param needsMoreParameter the needs more parameter
 	 * @throws FactoidCommandException the factoid command exception
 	 */
-	public CommandThreadExec(CommandEntities entity,
-            boolean canFromConsole, boolean needsMoreParameter) throws FactoidCommandException {
+	public CommandThreadExec(CommandEntities entity) throws FactoidCommandException {
 	
-	super(entity, canFromConsole, needsMoreParameter);
+	super(entity);
 	}
 	
 	/**

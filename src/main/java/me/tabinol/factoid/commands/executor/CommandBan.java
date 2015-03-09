@@ -19,6 +19,9 @@ package me.tabinol.factoid.commands.executor;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ChatPage;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandThreadExec;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.parameters.PermissionList;
@@ -32,6 +35,7 @@ import org.bukkit.ChatColor;
 /**
  * The Class CommandBan.
  */
+@InfoCommand(name="ban", forceParameter=true)
 public class CommandBan extends CommandThreadExec {
 
 	private String fonction;
@@ -44,7 +48,7 @@ public class CommandBan extends CommandThreadExec {
      */
     public CommandBan(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, false, true);
+        super(entity);
     }
 
     /* (non-Javadoc)

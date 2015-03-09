@@ -18,15 +18,20 @@
 package me.tabinol.factoid.commands.executor;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandExec;
 import me.tabinol.factoid.commands.ConfirmEntry;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.lands.collisions.Collisions;
+
 import org.bukkit.ChatColor;
 
 
 /**
  * The Class CommandRemove.
  */
+@InfoCommand(name="remove")
 public class CommandRemove extends CommandExec {
 
     /**
@@ -37,7 +42,7 @@ public class CommandRemove extends CommandExec {
      */
     public CommandRemove(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, false, false);
+        super(entity);
     }
 
     /* (non-Javadoc)

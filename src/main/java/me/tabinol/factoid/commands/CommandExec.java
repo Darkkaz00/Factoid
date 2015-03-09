@@ -15,11 +15,13 @@
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.tabinol.factoid.commands.executor;
+package me.tabinol.factoid.commands;
 
 import java.util.Calendar;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.commands.executor.CommandCancel;
+import me.tabinol.factoid.commands.executor.CommandHelp;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoidapi.lands.ILand;
@@ -31,6 +33,7 @@ import me.tabinol.factoid.playercontainer.PlayerContainerOwner;
 import me.tabinol.factoidapi.parameters.IPermissionType;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -40,7 +43,7 @@ import org.bukkit.inventory.ItemStack;
 /**
  * The Class CommandExec.
  */
-public abstract class CommandExec implements CommandInterface {
+public abstract class CommandExec {
 
     /** The entity. */
     protected final CommandEntities entity;
@@ -58,12 +61,9 @@ public abstract class CommandExec implements CommandInterface {
      * Instantiates a new command exec.
      *
      * @param entity the entity
-     * @param canFromConsole the can from console
-     * @param needsMoreParameter the needs more parameter
      * @throws FactoidCommandException the factoid command exception
      */
-    protected CommandExec(CommandEntities entity,
-            boolean canFromConsole, boolean needsMoreParameter) throws FactoidCommandException {
+    protected CommandExec(CommandEntities entity) throws FactoidCommandException {
 
         this.entity = entity;
 
@@ -78,19 +78,28 @@ public abstract class CommandExec implements CommandInterface {
             land = entity.playerConf.getSelection().getLand();
         }
 
-        if (entity.player == null && !canFromConsole) {
+        if (entity.player == null && !entity.infoCommand.allowConsole()) {
 
             // Send a message if this command is player only
-            throw new FactoidCommandException("Impossible to do from console", entity.sender, "CONSOLE");
+            throw new FactoidCommandException("Impossible to do from console", Bukkit.getConsoleSender(), "CONSOLE");
         }
 
         // Show help if there is no more parameter and the command needs one
-        if (needsMoreParameter && entity.argList != null && entity.argList.isLast()) {
-            new CommandHelp(entity.sender, entity.command.name()).commandExecute();
+        if (entity.infoCommand.forceParameter() && entity.argList != null && entity.argList.isLast()) {
+            new CommandHelp(entity.onCommand, entity.sender, 
+            		entity.infoCommand.mainCommand()[0], entity.infoCommand.name()).commandExecute();
             isExecutable = false;
         }
     }
 
+    /**
+     * Command execute.
+     *
+     * @throws FactoidCommandException the factoid command exception
+     */
+    public abstract void commandExecute() throws FactoidCommandException;
+    
+    
     /**
      * Checks if is executable.
      *

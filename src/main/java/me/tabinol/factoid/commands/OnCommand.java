@@ -18,22 +18,21 @@
 package me.tabinol.factoid.commands;
 
 import java.lang.reflect.InvocationTargetException;
-
-import me.tabinol.factoid.commands.executor.CommandEntities;
-import me.tabinol.factoid.commands.executor.CommandExec;
-import me.tabinol.factoid.commands.executor.CommandHelp;
-import me.tabinol.factoid.exceptions.FactoidCommandException;
-import me.tabinol.factoidapi.utilities.StringChanges;
-
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.CommandExecutor;
-
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.tabinol.factoid.Factoid;
-import static me.tabinol.factoid.commands.ListCommands.valueOf;
+import me.tabinol.factoid.commands.executor.CommandHelp;
+import me.tabinol.factoid.exceptions.FactoidCommandException;
+
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.reflections.Reflections;
 
 
 /**
@@ -41,11 +40,36 @@ import static me.tabinol.factoid.commands.ListCommands.valueOf;
  */
 public class OnCommand extends Thread implements CommandExecutor {
 
-    /**
+	private final Map<MainCommand, Map<String, Class<?>>> commands = new EnumMap<MainCommand, Map<String, Class<?>>>(MainCommand.class);
+	
+	/**
      * Instantiates a new on command.
      */
     public OnCommand() {
+    	
+    	// Create Command list
+    	for(MainCommand mainCommandList : MainCommand.values()) {
+    		commands.put(mainCommandList, new TreeMap<String, Class<?>>());
+    	}
+    	
+    	
+    	// Gets all annotations
+    	Reflections reflections = new Reflections("me.tabinol.factoid.commands.executor");
+    	Set<Class<?>> classCommands = 
+    		    reflections.getTypesAnnotatedWith(InfoCommand.class);
+    	
+		for(Class<?> presentClass : classCommands) {
 
+			// Store command information
+        	InfoCommand infoCommand = presentClass.getAnnotation(InfoCommand.class);
+        	for(MainCommand command : infoCommand.mainCommand()) {
+            	Map<String, Class<?>> subCommand = commands.get(command);
+            	subCommand.put(infoCommand.name().toLowerCase(), presentClass);
+            	for(String alias : infoCommand.aliases()) {
+            		subCommand.put(alias.toLowerCase(), presentClass);
+           		}
+        	}
+        }
     }
 
     /* (non-Javadoc)
@@ -56,10 +80,10 @@ public class OnCommand extends Thread implements CommandExecutor {
 
         // Others commands then /factoid, /claim and /fd will not be send.
         
-        ArgList argList = new ArgList(arg, sender);
+    	ArgList argList = new ArgList(arg, sender);
             try {
                 // Check the command to send
-                getCommand(sender, argList);
+                getCommand(sender, cmd, argList);
                 return true;
                 // If error on command, send the message to the player
             } catch (FactoidCommandException ex) {
@@ -68,39 +92,36 @@ public class OnCommand extends Thread implements CommandExecutor {
     }
 
     // Get command from args
-    /**
-     * Gets the command.
-     *
-     * @param sender the sender
-     * @param argList the arg list
-     * @throws FactoidCommandException the factoid command exception
-     */
-    public void getCommand(CommandSender sender, ArgList argList) throws FactoidCommandException {
+    private void getCommand(CommandSender sender, Command cmd, ArgList argList) throws FactoidCommandException {
 
         try {
-            ListCommands cl;
-
-            String command = argList.getNext();
-
+            MainCommand mainCommand = MainCommand.valueOf(cmd.getName().toUpperCase());
+            
             // Show help if there is no arguments
-            if (command == null) {
-                new CommandHelp(sender, "GENERAL").commandExecute();
+            if (argList.isLast()) {
+                new CommandHelp(this, sender, mainCommand, "GENERAL").commandExecute();
                 return;
             }
 
+            String command = argList.getNext().toLowerCase();
+
             // take the name
-            cl = getCommandValue(command, sender);
+            Class<?> cv = commands.get(mainCommand).get(command.toLowerCase());
+            
+            // The command does not exist
+            if(cv == null) {
+            	throw new FactoidCommandException("Command not existing", sender, "COMMAND.NOTEXIST", mainCommand.name());
+            }
             
             // Remove page from memory if needed
-            if(cl != ListCommands.PAGE) {
+            if(cv != commands.get(MainCommand.FACTOID).get("page")) {
                 Factoid.getThisPlugin().iPlayerConf().get(sender).setChatPage(null);
             }
 
-            // Do the command (get the class name from the CommandName)
-            Class<?> commandClass = Class.forName("me.tabinol.factoid.commands.executor.Command"
-                    + StringChanges.FirstUpperThenLower(cl.name()));
-            CommandExec ce = (CommandExec) commandClass.getConstructor(CommandEntities.class)
-                    .newInstance(new CommandEntities(cl, sender, argList));
+            // Do the command
+            InfoCommand ci = cv.getAnnotation(InfoCommand.class);
+            CommandExec ce = (CommandExec) cv.getConstructor(CommandEntities.class)
+                    .newInstance(new CommandEntities(mainCommand, ci, sender, argList, this));
             if (ce.isExecutable()) {
                 ce.commandExecute();
             }
@@ -110,9 +131,6 @@ public class OnCommand extends Thread implements CommandExecutor {
             Logger.getLogger(OnCommand.class.getName()).log(Level.SEVERE, "General Error on Command class find", ex);
             throw new FactoidCommandException("General Error on Command class find", sender, "GENERAL.ERROR");
         } catch (SecurityException ex) {
-            Logger.getLogger(OnCommand.class.getName()).log(Level.SEVERE, "General Error on Command class find", ex);
-            throw new FactoidCommandException("General Error on Command class find", sender, "GENERAL.ERROR");
-        } catch (ClassNotFoundException ex) {
             Logger.getLogger(OnCommand.class.getName()).log(Level.SEVERE, "General Error on Command class find", ex);
             throw new FactoidCommandException("General Error on Command class find", sender, "GENERAL.ERROR");
         } catch (InstantiationException ex) {
@@ -129,37 +147,15 @@ public class OnCommand extends Thread implements CommandExecutor {
             throw new FactoidCommandException("General Error on Command class find", sender, "GENERAL.ERROR");
         }
     }
-
-    // Get the command value from command list
-    /**
-     * Gets the command value.
-     *
-     * @param command the command
-     * @param sender the sender
-     * @return the command value
-     * @throws FactoidCommandException the factoid command exception
-     */
-    private ListCommands getCommandValue(String command, CommandSender sender) throws FactoidCommandException {
-
-        ListCommands cl;
-
-        try {
-            cl = valueOf(command.toUpperCase());
-        } catch (IllegalArgumentException e) {
-
-            // Check if the second name works
-            ListCommands.SecondName sn = null;
-            try {
-                sn = ListCommands.SecondName.valueOf(command.toUpperCase());
-            } catch (IllegalArgumentException e2) {
-
-                // The command does not exist
-                throw new FactoidCommandException("Command not existing", sender, "COMMAND.NOTEXIST");
-            }
-            cl = sn.mainCommand;
-        }
-
-        return cl;
-
+    
+    public InfoCommand getInfoCommand(MainCommand mainCommand, String command) {
+    	
+    	Class<?> infoClass = commands.get(mainCommand).get(command.toLowerCase());
+    	
+    	if(infoClass == null) {
+    		return null;
+    	}
+    	
+    	return infoClass.getAnnotation(InfoCommand.class);
     }
 }

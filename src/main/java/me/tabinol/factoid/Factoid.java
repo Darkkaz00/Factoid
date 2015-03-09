@@ -243,6 +243,7 @@ public class Factoid extends JavaPlugin implements IFactoid {
         getServer().getPluginManager().registerEvents(landListener, this);
         getServer().getPluginManager().registerEvents(chatListener, this);
         getCommand("factoid").setExecutor(CommandListener);
+        getCommand("faction").setExecutor(CommandListener);
         log.write(iLanguage().getMessage("ENABLE"));
         
         // Start Plugin Metrics
@@ -289,8 +290,6 @@ public class Factoid extends JavaPlugin implements IFactoid {
         approveNotif.stopNextRun();
         storageThread.stopNextRun();
         ((PlayerStaticConfig) playerConf).removeAll();
-        log.interrupt();
-        language.interrupt();
     }
 
     /**

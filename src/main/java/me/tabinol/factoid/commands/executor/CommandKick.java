@@ -19,6 +19,9 @@ package me.tabinol.factoid.commands.executor;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ArgList;
+import me.tabinol.factoid.commands.CommandEntities;
+import me.tabinol.factoid.commands.CommandExec;
+import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.parameters.PermissionList;
 
@@ -29,6 +32,7 @@ import org.bukkit.entity.Player;
 /**
  * The Class CommandKick.
  */
+@InfoCommand(name="kick", forceParameter=true)
 public class CommandKick extends CommandExec {
 
     /** The arg list. */
@@ -45,7 +49,7 @@ public class CommandKick extends CommandExec {
      */
     public CommandKick(CommandEntities entity) throws FactoidCommandException {
 
-        super(entity, false, true);
+        super(entity);
         argList = entity.argList;
         player = entity.player;
 

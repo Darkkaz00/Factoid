@@ -29,7 +29,7 @@ import me.tabinol.factoid.Factoid;
 /**
  * The Class Log.
  */
-public class Log extends Thread {
+public class Log {
 
     /** The Folder. */
     public File Folder;

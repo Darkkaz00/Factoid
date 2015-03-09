@@ -18,6 +18,7 @@
 package me.tabinol.factoid.commands.executor;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.commands.CommandExec;
 import me.tabinol.factoid.economy.EcoSign;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.exceptions.SignException;
@@ -49,7 +50,7 @@ public class CommandEcosign extends CommandExec {
 	public CommandEcosign(IPlayerConfEntry entry, ILand land, Action action,
 			SignType signType) throws FactoidCommandException {
 
-		super(null, false, false);
+		super(null);
 		this.player = entry.getPlayer();
 		playerConf = entry;
 		this.land = land;
