@@ -203,7 +203,10 @@ public enum PermissionList {
     LAND_DEATH(false),
     
     /** The crop trample */
-    CROP_TRAMPLE(true);
+    CROP_TRAMPLE(true),
+    
+    /** The god */
+    GOD(false);
 
     /** The base value. */
     final boolean baseValue;

@@ -68,6 +68,7 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.PotionSplashEvent;
@@ -994,6 +995,25 @@ public class PlayerListener extends CommonListener implements Listener {
 						return;
 					}
 				}
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onEntityDamage(EntityDamageEvent event) {
+
+		if(event.getEntityType() != EntityType.PLAYER) {
+			return;
+		}
+		
+		Player player = (Player) event.getEntity();
+		
+		if(playerConf.get(player) != null) {
+		
+			IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(player.getLocation());
+			
+			if (!checkPermission(land, player, PermissionList.GOD.getPermissionType())) {
+				event.setCancelled(true);
 			}
 		}
 	}
