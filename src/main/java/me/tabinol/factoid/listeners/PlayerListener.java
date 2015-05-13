@@ -39,10 +39,12 @@ import me.tabinol.factoid.parameters.FlagList;
 import me.tabinol.factoid.parameters.PermissionList;
 import me.tabinol.factoid.selection.region.PlayerMoveListen;
 import me.tabinol.factoid.selection.region.RegionSelection;
+import me.tabinol.factoidapi.FactoidAPI;
 import me.tabinol.factoidapi.config.players.IPlayerConfEntry;
 import me.tabinol.factoidapi.event.PlayerLandChangeEvent;
 import me.tabinol.factoidapi.lands.IDummyLand;
 import me.tabinol.factoidapi.lands.ILand;
+import me.tabinol.factoidapi.parameters.IParameters.SpecialPermPrefix;
 import me.tabinol.factoidapi.utilities.StringChanges;
 
 import org.bukkit.ChatColor;
@@ -143,21 +145,6 @@ public class PlayerListener extends CommonListener implements Listener {
 
 		updatePosInfo(event, entry, player.getLocation(), true);
 
-		// Note pour kaz00 : L'endroit correct pour mettre ceci serait
-		// dans public void onPlayerLandChange(PlayerLandChangeEvent event)
-		// (LandListener.java)
-		// J'ai réglé un bug de joueur «null» et je l'ai désactiver pour ne pas
-		// le voit tout de suite en prod. Tu le l'activera si tu veux travailler
-		// dessus.
-		/*
-		 * Land landScoreboard =
-		 * Factoid.getThisPlugin().iLands().getLand(player.getLocation()); if (landScoreboard
-		 * != null) { for (Player playerInLand :
-		 * landScoreboard.getPlayersInLand()) {
-		 * Factoid.getThisPlugin().iScoreboard().sendScoreboard
-		 * (landScoreboard.getPlayersInLand(), playerInLand,
-		 * landScoreboard.getName()); } }
-		 */
 		// Check if AdminMod is auto
 		if (player.hasPermission("factoid.adminmod.auto")) {
 			playerConf.get(player).setAdminMod(true);
@@ -495,22 +482,33 @@ public class PlayerListener extends CommonListener implements Listener {
 	public void onBlockPlace(BlockPlaceEvent event) {
 
 		// Check for fire init
+		Player player = event.getPlayer();
+		
 		if(event.getBlock().getType() == Material.FIRE) {
-			if(checkForPutFire(event, event.getPlayer())) {
+			if(checkForPutFire(event, player)) {
 				event.setCancelled(true);
 			}
-		} else if (!playerConf.get(event.getPlayer()).isAdminMod()) {
+		} else if (!playerConf.get(player).isAdminMod()) {
 
 			IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(
 					event.getBlock().getLocation());
+			Material mat = event.getBlock().getType(); 
 
-			if ((land instanceof ILand && ((ILand) land).isBanned(event
-					.getPlayer()))
-					|| !checkPermission(land, event.getPlayer(),
-							PermissionList.BUILD.getPermissionType())
-					|| !checkPermission(land, event.getPlayer(),
-							PermissionList.BUILD_PLACE.getPermissionType())) {
-				messagePermission(event.getPlayer());
+			if (land instanceof ILand && ((ILand) land).isBanned(player)) {
+				// Player banned!!
+				messagePermission(player);
+				event.setCancelled(true);
+			
+			} else if(!checkPermission(land, player, PermissionList.BUILD.getPermissionType())
+					|| !checkPermission(land, player, PermissionList.BUILD_PLACE.getPermissionType())) {
+				if(checkPermission(land, player, 
+						FactoidAPI.iParameters().getSpecialPermission(SpecialPermPrefix.PLACE, mat))) {
+					messagePermission(player);
+					event.setCancelled(true);
+				}
+			} else if(!checkPermission(land, player, 
+					FactoidAPI.iParameters().getSpecialPermission(SpecialPermPrefix.NOPLACE, mat))) {
+				messagePermission(player);
 				event.setCancelled(true);
 			}
 		}
@@ -577,18 +575,31 @@ public class PlayerListener extends CommonListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {
 
-		if (!playerConf.get(event.getPlayer()).isAdminMod()) {
+		Player player = event.getPlayer();
+		
+		if (!playerConf.get(player).isAdminMod()) {
 
 			IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(
 					event.getBlock().getLocation());
+			Material mat = event.getBlock().getType();
 
-			if ((land instanceof ILand && (((ILand) land).isBanned(event.getPlayer())
-					|| hasEcoSign((Land) land, event.getBlock())))
-					|| !checkPermission(land, event.getPlayer(),
+			if (land instanceof ILand && (((ILand) land).isBanned(player)
+					|| hasEcoSign((Land) land, event.getBlock()))) {
+				// Player banned (or ecosign)
+				messagePermission(player);
+				event.setCancelled(true);
+			} else if (!checkPermission(land, player,
 							PermissionList.BUILD.getPermissionType())
-					|| !checkPermission(land, event.getPlayer(),
+					|| !checkPermission(land, player,
 							PermissionList.BUILD_DESTROY.getPermissionType())) {
-				messagePermission(event.getPlayer());
+				if(checkPermission(land, player,
+						FactoidAPI.iParameters().getSpecialPermission(SpecialPermPrefix.DESTROY, mat))) {
+					messagePermission(player);
+					event.setCancelled(true);
+				}
+			} else if(!checkPermission(land, player,
+						FactoidAPI.iParameters().getSpecialPermission(SpecialPermPrefix.NODESTROY, mat))) {
+				messagePermission(player);
 				event.setCancelled(true);
 			}
 		}

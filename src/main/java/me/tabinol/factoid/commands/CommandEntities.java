@@ -23,12 +23,12 @@ import me.tabinol.factoid.config.players.PlayerConfEntry;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-
 /**
- * Contains general information for commandExecutor
+ * Contains general information for commandExecutor.
  */
 public class CommandEntities {
     
+    /** The main command. */
     public final MainCommand mainCommand;
 	
 	/** The command. */
@@ -49,15 +49,17 @@ public class CommandEntities {
     /** The player conf. */
     public final PlayerConfEntry playerConf;
     
+    /** The on command. */
     public final OnCommand onCommand;
 
     /**
      * Instantiates a new command entities.
      *
      * @param mainCommand the main command
-     * @param commandValue the command value
+     * @param infoCommand the info command
      * @param sender the sender
      * @param argList the arg list
+     * @param onCommand the on command
      */
     public CommandEntities(MainCommand mainCommand, InfoCommand infoCommand, 
     		CommandSender sender, ArgList argList, OnCommand onCommand) {

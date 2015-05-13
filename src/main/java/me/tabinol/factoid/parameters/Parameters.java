@@ -18,10 +18,16 @@
 package me.tabinol.factoid.parameters;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
 
+import org.bukkit.Material;
+
+import me.tabinol.factoid.Factoid;
 import me.tabinol.factoidapi.parameters.IParameters;
 
 
@@ -40,6 +46,9 @@ public class Parameters implements IParameters {
     
     /** List of unregistered flags for an update **/
     protected final List<LandFlag> unRegisteredFlags;
+    
+    /** Special permission Map Prefix-->Material-->PermissionType */
+    private final Map<SpecialPermPrefix, Map<Material, PermissionType>> specialPermMap;
 
     /**
      * Instantiates a new parameters.
@@ -56,6 +65,16 @@ public class Parameters implements IParameters {
         }
         for (FlagList flagList : FlagList.values()) {
             flagList.setFlagType(registerFlagType(flagList.name(), flagList.baseValue));
+        }
+        // Add special permissions (PLACE_XXX and DESTROY_XXX, NOPLACE_XXX, NODESTROY_XXX)
+        specialPermMap = new EnumMap<SpecialPermPrefix, Map<Material, PermissionType>>(SpecialPermPrefix.class);
+        
+        for(SpecialPermPrefix pref : SpecialPermPrefix.values()) {
+        	Map<Material, PermissionType> matPerms = new EnumMap<Material, PermissionType>(Material.class);
+            for(Material mat : Material.values()) {
+            	matPerms.put(mat, registerPermissionType(pref.name() + "_" + mat.name(), false));
+            }
+            specialPermMap.put(pref, matPerms);
         }
     }
 
@@ -183,5 +202,16 @@ public class Parameters implements IParameters {
         }
         
         return ft;
+    }
+    
+    public final PermissionType getSpecialPermission(SpecialPermPrefix prefix, Material mat) {
+    	
+    	Map<Material, PermissionType> matPerms = specialPermMap.get(prefix);
+    	
+    	if(matPerms == null) {
+    		return null;
+    	}
+    	
+    	return matPerms.get(mat);
     }
 }

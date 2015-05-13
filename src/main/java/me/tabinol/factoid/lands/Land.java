@@ -915,9 +915,9 @@ public class Land extends DummyLand implements ILand {
     }
     
     /* (non-Javadoc)
-     * @see me.tabinol.factoidapi.lands.ILand#addFlag(me.tabinol.factoidapi.parameters.ILandFlag, java.lang.Object, boolean)
+     * @see me.tabinol.factoidapi.lands.ILand#addFlag(me.tabinol.factoidapi.parameters.IFlagType, java.lang.Object, boolean)
      */
-    public void addFlag(ILandFlag flagType, Object value, boolean inheritance) {
+    public void addFlag(IFlagType flagType, Object value, boolean inheritance) {
 
     	addFlag(new LandFlag((FlagType) flagType, value, inheritance));
     }
