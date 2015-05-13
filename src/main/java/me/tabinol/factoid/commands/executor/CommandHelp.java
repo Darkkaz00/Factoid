@@ -94,8 +94,13 @@ public class CommandHelp extends CommandExec {
             } else {
                 // Will throw an exception if the command name is invalid
                 try {
-                    InfoCommand infoCommand = onCommand.getInfoCommand(mainCommand, arg.toLowerCase());
-                    commandName = infoCommand.name();
+                    InfoCommand infoCommand = onCommand.getInfoCommand(mainCommand, arg);
+                    if(infoCommand != null) {
+                    	commandName = infoCommand.name().toUpperCase();
+                    } else {
+                    	// Invalid command, just arg and will run Exception with showHelp()
+                    	commandName = arg;
+                    }
                 } catch (IllegalArgumentException ex) {
                     commandName = "GENERAL";
                 }
