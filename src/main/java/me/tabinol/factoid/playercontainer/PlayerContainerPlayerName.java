@@ -3,6 +3,7 @@ package me.tabinol.factoid.playercontainer;
 import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -48,6 +49,12 @@ public class PlayerContainerPlayerName extends PlayerContainer {
     public boolean hasAccess(Player player) {
         
          return false;
+    }
+
+    @Override
+    public boolean hasAccess(Player player, ILand land) {
+        
+        return hasAccess(player);
     }
 
     /* (non-Javadoc)

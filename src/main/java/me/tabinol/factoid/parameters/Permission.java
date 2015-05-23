@@ -50,6 +50,11 @@ public class Permission implements IPermission {
         this.heritable = heritable;
     }
 
+    public Permission copyOf() {
+    	
+    	return new Permission(permType, value, heritable);
+    }
+    
     /**
      * Gets the perm type.
      *

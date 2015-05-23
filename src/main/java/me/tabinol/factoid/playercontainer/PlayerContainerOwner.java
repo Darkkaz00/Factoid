@@ -69,10 +69,20 @@ public class PlayerContainerOwner extends PlayerContainer implements IPlayerCont
      */
     @Override
     public boolean hasAccess(Player player) {
+    	
+    	return hasAccess(player, land);
+    }
+        
+    @Override
+    public boolean hasAccess(Player player, ILand land) {
         
         boolean value;
         ILand parent;
     	
+    	if(land == null) {
+    		return false;
+    	}
+        
     	value = land.getOwner().hasAccess(player);
     	
     	if(!value && (parent = land.getParent()) != null 
@@ -83,7 +93,8 @@ public class PlayerContainerOwner extends PlayerContainer implements IPlayerCont
     	
     	return value;
     }
-        
+
+
     /**
      * Gets the land.
      *

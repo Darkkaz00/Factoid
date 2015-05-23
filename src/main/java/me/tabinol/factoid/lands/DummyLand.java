@@ -23,16 +23,17 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.parameters.PermissionList;
+import me.tabinol.factoid.playercontainer.PlayerContainer;
+import me.tabinol.factoidapi.FactoidAPI;
 import me.tabinol.factoidapi.event.LandModifyEvent;
-import me.tabinol.factoidapi.event.PlayerContainerAddNoEnterEvent;
 import me.tabinol.factoidapi.event.LandModifyEvent.LandModifyReason;
+import me.tabinol.factoidapi.event.PlayerContainerAddNoEnterEvent;
 import me.tabinol.factoidapi.lands.IDummyLand;
 import me.tabinol.factoidapi.parameters.IFlagType;
 import me.tabinol.factoidapi.parameters.IFlagValue;
 import me.tabinol.factoidapi.parameters.ILandFlag;
 import me.tabinol.factoidapi.parameters.IPermission;
-import me.tabinol.factoid.parameters.PermissionList;
-import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoidapi.parameters.IPermissionType;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 
@@ -86,6 +87,25 @@ public class DummyLand implements IDummyLand {
         return Factoid.getThisPlugin().getServer().getWorld(worldName);
     }
 
+    public void copyPermsFlagsTo(IDummyLand desLand) {
+    	
+    	// copy permissions
+    	for(Map.Entry<IPlayerContainer, TreeMap<IPermissionType, IPermission>> pcEntry : permissions.entrySet()) {
+    		
+    		TreeMap<IPermissionType, IPermission> perms = new TreeMap<IPermissionType, IPermission>(); 
+    		for(Map.Entry<IPermissionType, IPermission> permEntry : pcEntry.getValue().entrySet()) {
+    			perms.put(permEntry.getKey(), permEntry.getValue().copyOf());
+    		}
+    		((DummyLand) desLand).permissions.put(pcEntry.getKey(), perms);
+    	}
+
+    	// copy flags
+    	for(Map.Entry<IFlagType, ILandFlag> flagEntry : flags.entrySet()) {
+    		
+    		((DummyLand) desLand).flags.put(flagEntry.getKey(), flagEntry.getValue().copyOf());
+    	}
+    }
+    
     /**
      * Adds the permission.
      *
@@ -248,9 +268,22 @@ public class DummyLand implements IDummyLand {
      */
     protected Boolean getPermission(Player player, 
     		me.tabinol.factoidapi.parameters.IPermissionType pt, boolean onlyInherit) {
+    	
+    	return getPermission(player, pt, onlyInherit, null);
+    }
+    
+    // Land parameter is only to paste to default parameters for a land
+    private Boolean getPermission(Player player, 
+    		me.tabinol.factoidapi.parameters.IPermissionType pt, boolean onlyInherit, Land land) {
 
         for (Map.Entry<IPlayerContainer, TreeMap<IPermissionType, IPermission>> permissionEntry : permissions.entrySet()) {
-            if (permissionEntry.getKey().hasAccess(player)) {
+            boolean value;
+        	if(land != null) {
+            	value = permissionEntry.getKey().hasAccess(player, land);
+            } else {
+            	value = permissionEntry.getKey().hasAccess(player);
+            }
+        	if (value) {
                 IPermission perm = permissionEntry.getValue().get(pt);
                 if (perm != null) {
                     Factoid.getThisPlugin().iLog().write("Container: " + permissionEntry.getKey().toString() + ", PermissionType: " + perm.getPermType() + ", Value: " + perm.getValue() + ", Heritable: " + perm.isHeritable());
@@ -261,6 +294,13 @@ public class DummyLand implements IDummyLand {
             }
         }
 
+        // Check in default permissions
+        if(!onlyInherit && this instanceof Land) {
+
+            return ((Lands) FactoidAPI.iLands()).getDefaultConf(((Land) this).getType()).getPermission(
+            		player, pt, onlyInherit, (Land) this);
+        }
+        
         return null;
     }
 
@@ -360,16 +400,21 @@ public class DummyLand implements IDummyLand {
      * @param onlyInherit the only inherit
      * @return the flag value
      */
-    protected IFlagValue getFlag(IFlagType ft, 
-    		boolean onlyInherit) {
+    protected IFlagValue getFlag(IFlagType ft, boolean onlyInherit) {
 
-        ILandFlag flag = flags.get(ft);
+    	ILandFlag flag = flags.get(ft);
         if (flag != null) {
             Factoid.getThisPlugin().iLog().write("Flag: " + flag.toString());
 
             if ((onlyInherit && flag.isHeritable()) || !onlyInherit) {
                 return flag.getValue();
             }
+        }
+
+        // Check in default flags
+        if(!onlyInherit && this instanceof Land) {
+
+        	return ((Lands) FactoidAPI.iLands()).getDefaultConf(((Land) this).getType()).getFlag(ft, onlyInherit);
         }
 
         return null;

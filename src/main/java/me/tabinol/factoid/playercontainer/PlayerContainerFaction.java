@@ -85,6 +85,12 @@ public class PlayerContainerFaction extends PlayerContainer implements IPlayerCo
         return faction.isPlayerInList(Factoid.getThisPlugin().iPlayerConf().get(player).getPlayerContainer());
     }
 
+    @Override
+    public boolean hasAccess(Player player, ILand land) {
+        
+        return hasAccess(player);
+    }
+
     /* (non-Javadoc)
      * @see me.tabinol.factoid.playercontainer.PlayerContainer#getPrint()
      */

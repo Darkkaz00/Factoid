@@ -136,6 +136,9 @@ GENERAL:
   MISSINGPERMISSIONHERE: "Sorry, you don't have the permission here."
   ERROR: "An Error Occur Please contact an Administrator."
   MISSINGINFO: "Some information is missing. Check your command again."
+  FROMDEFAULTTYPE: "Inheritance from default type '%':"
+  FROMPARENT: "Inheritance from parent '%':"
+  FROMWORLD: "Inheritance from world '%':"
   QUIT:
     EXPENDMODE: "Quit the Expand Mode before."
     FLAGSMODE: "Quit the Flags Mode before."
@@ -243,7 +246,6 @@ COMMAND:
     FLAGNULL: "This Flag doesn't exist."
     ISDONE: "you have set '%' to '%'."
     LISTSTART: "-Flags of '%'-"
-    LISTROWNULL: "No Flags."
     REMOVENOTEXIST: "Not in flag list."
     REMOVEISDONE: "you have removed '%' from flag list."
   CONTAINERTYPE:
@@ -264,7 +266,6 @@ COMMAND:
     PLAYERCONTAINERTYPENULL: "This type doesn't exist."
     ISDONE: "you have set the permission '%' to '%' for '%'"
     LISTSTART: "-Permissions of '%'-"
-    LISTROWNULL: "No Permissions."
     NOENTERNOTINSPAWN: "You can't disable the LAND_ENTER permission where the world spawn is."
     REMOVENOTEXIST: "Not in permission list."
     REMOVEISDONE: "you have removed '%' from permission list."

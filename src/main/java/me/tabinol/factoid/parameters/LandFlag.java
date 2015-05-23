@@ -58,6 +58,11 @@ public class LandFlag implements ILandFlag {
         }
     }
 
+    public LandFlag copyOf() {
+    	
+    	return new LandFlag(flagType, value.copyOf(), heritable);
+    }
+    
     /**
      * Equals.
      *

@@ -17,18 +17,21 @@
  */
 package me.tabinol.factoid.config;
 
+import static me.tabinol.factoid.config.Config.GLOBAL;
+
 import java.io.File;
 import java.util.Set;
 import java.util.TreeMap;
 
 import me.tabinol.factoid.Factoid;
-import static me.tabinol.factoid.config.Config.GLOBAL;
 import me.tabinol.factoid.lands.DummyLand;
 import me.tabinol.factoid.parameters.FlagType;
 import me.tabinol.factoid.parameters.FlagValue;
 import me.tabinol.factoid.parameters.LandFlag;
 import me.tabinol.factoid.parameters.Permission;
 import me.tabinol.factoid.playercontainer.PlayerContainer;
+import me.tabinol.factoidapi.FactoidAPI;
+import me.tabinol.factoidapi.lands.types.IType;
 import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -52,6 +55,9 @@ public class WorldConfig {
     /** The world config. */
     private final FileConfiguration worldConfig;
 
+    /** Default config (No Type or global) */
+    private DummyLand defaultConfNoType;
+
     /**
      * Instantiates a new world config.
      */
@@ -68,8 +74,11 @@ public class WorldConfig {
         }
         landDefault = YamlConfiguration.loadConfiguration(new File(thisPlugin.getDataFolder(), "landdefault.yml"));
         worldConfig = YamlConfiguration.loadConfiguration(new File(thisPlugin.getDataFolder(), "worldconfig.yml"));
+        
+        // Create default (whitout type)
+        defaultConfNoType = getLandDefaultConf();
     }
-
+    
     /**
      * Gets the land outside area.
      *
@@ -79,42 +88,76 @@ public class WorldConfig {
 
         TreeMap<String, DummyLand> landList = new TreeMap<String, DummyLand>();
         Set<String> keys = worldConfig.getConfigurationSection("").getKeys(false);
-
+        
+        // We have to take _global_ first then others
         for (String worldName : keys) {
-            String worldNameLower = worldName.toLowerCase();
-            Factoid.getThisPlugin().iLog().write("Create conf for World: " + worldNameLower);
-            landList.put(worldNameLower, landCreate(worldNameLower, worldConfig, worldName + ".ContainerPermissions",
-                    worldName + ".ContainerFlags"));
+        	if(worldName.equalsIgnoreCase(GLOBAL)) {
+            	createConfForWorld(worldName, landList, false);
+        	}
+        }
+        
+        // The none-global
+        for (String worldName : keys) {
+        	if(!worldName.equalsIgnoreCase(GLOBAL)) {
+            	createConfForWorld(worldName, landList, true);
+        	}
         }
 
         return landList;
     }
-
+    
+    private void createConfForWorld(String worldName, TreeMap<String, DummyLand> landList, boolean copyFromGlobal) {
+    	
+        String worldNameLower = worldName.toLowerCase();
+        Factoid.getThisPlugin().iLog().write("Create conf for World: " + worldNameLower);
+        DummyLand dl = new DummyLand(worldName);
+        if(copyFromGlobal) {
+        	landList.get(GLOBAL).copyPermsFlagsTo(dl);
+        }
+        landList.put(worldNameLower, landModify(dl, worldConfig, 
+        		worldName + ".ContainerPermissions", worldName + ".ContainerFlags"));
+    }
+    
     /**
      * Gets the land default conf.
      *
      * @return the land default conf
      */
-    public DummyLand getLandDefaultConf() {
+    private DummyLand getLandDefaultConf() {
 
         Factoid.getThisPlugin().iLog().write("Create default conf for lands");
-        return landCreate(GLOBAL, landDefault, "ContainerPermissions", "ContainerFlags");
+        return landModify(new DummyLand(GLOBAL), landDefault, "ContainerPermissions", "ContainerFlags");
     }
 
     /**
-     * Land create.
-     *
-     * @param worldName the world name
-     * @param fc the fc
-     * @param perms the perms
-     * @param flags the flags
-     * @return the dummy land
+     * Gets the default conf for each type
+     * @return a TreeMap of default configuration
      */
-    private DummyLand landCreate(String worldName, FileConfiguration fc, String perms, String flags) {
+    public TreeMap<IType, DummyLand> getTypeDefaultConf() {
+    	
+        Factoid.getThisPlugin().iLog().write("Create default conf for lands");
+    	TreeMap<IType, DummyLand> defaultConf = new TreeMap<IType, DummyLand>();
 
-        DummyLand dl = new DummyLand(worldName);
-        ConfigurationSection csPerm = fc.getConfigurationSection(perms);
-        ConfigurationSection csFlags = fc.getConfigurationSection(flags);
+    	for(IType type : FactoidAPI.iTypes().getTypes()) {
+    		ConfigurationSection typeConf = landDefault.getConfigurationSection(type.getName());
+    		DummyLand dl = new DummyLand(type.getName());
+            defaultConfNoType.copyPermsFlagsTo(dl);
+    		defaultConf.put(type, landModify(dl, typeConf, 
+    				"ContainerPermissions", "ContainerFlags"));
+    	}
+    	
+    	return defaultConf;
+    }
+
+    private DummyLand landModify(DummyLand dl, ConfigurationSection fc, String perms, String flags) {
+
+        ConfigurationSection csPerm = null;
+        ConfigurationSection csFlags = null;
+        
+        if(fc != null) {
+            csPerm = fc.getConfigurationSection(perms);
+            csFlags = fc.getConfigurationSection(flags);
+        }
 
         // Add permissions
         if (csPerm != null) {
@@ -165,7 +208,7 @@ public class WorldConfig {
                         fc.getBoolean(flags + "." + flag + ".Heritable")));
             }
         }
-
+        
         return dl;
     }
 }

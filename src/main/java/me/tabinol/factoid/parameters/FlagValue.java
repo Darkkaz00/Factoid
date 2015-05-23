@@ -43,6 +43,24 @@ public class FlagValue implements IFlagValue {
 		this.value = value;
 	}
 	
+	
+	public FlagValue copyOf() {
+		
+		if(value instanceof Boolean) {
+			return new FlagValue(Boolean.valueOf((Boolean)value));
+		} else if(value instanceof Double) {
+			return new FlagValue(Double.valueOf((Double)value));
+		} else if(value instanceof String) {
+			return new FlagValue(String.valueOf((String)value));
+		} else if(value instanceof String[]) {
+			String[] newStr = new String[((String[]) value).length];
+			for(int t = 0; t < ((String[]) value).length; t ++) {
+				newStr[t] = String.valueOf(((String[]) value)[t]);
+			}
+			return new FlagValue(newStr);
+		}
+		return new FlagValue(value);
+	}
 	/**
 	 * Sets the value.
 	 *

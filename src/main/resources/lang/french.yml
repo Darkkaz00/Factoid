@@ -136,6 +136,9 @@ GENERAL:
   MISSINGPERMISSIONHERE: "Désolé, vous n'avez pas la permission à cet endroit."
   ERROR: "Il y a une erreur, contactez un administrateur."
   MISSINGINFO: "Il manque des informations, vérifier la commande."
+  FROMDEFAULTTYPE: "héritage du défaut type '%':"
+  FROMPARENT: "héritage du parent '%':"
+  FROMWORLD: "héritage du monde '%':"
   QUIT:
     EXPENDMODE: "Quittez le mode expansion."
     FLAGSMODE: "Quittez le mode drapeau avant."
@@ -243,7 +246,6 @@ COMMAND:
     FLAGNULL: "Le drapeau n'existe pas."
     ISDONE: "Vous avez mis '%' à '%'."
     LISTSTART: "-Drapeaux de '%'-"
-    LISTROWNULL: "Pas de drapeau."
     REMOVENOTEXIST: "Pas dans la liste des drapeaux."
     REMOVEISDONE: "Vous avez enlevé '%' de la liste des drapeaux."
   CONTAINERTYPE:
@@ -264,7 +266,6 @@ COMMAND:
     PLAYERCONTAINERTYPENULL: "Ce type n'existe pas."
     ISDONE: "Vous avez ajusté la permission '%' à '%' pour '%'"
     LISTSTART: "-Permissions de '%'-"
-    LISTROWNULL: "Pas de Permissions."
     NOENTERNOTINSPAWN: "Vous ne pouvez pas enlever la permission LAND_ENTER où le SPAWN est situé."
     REMOVENOTEXIST: "Pas de permission dans la liste."
     REMOVEISDONE: "Vous avez enlevé '%' de la liste des permissions."

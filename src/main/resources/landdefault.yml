@@ -1,4 +1,7 @@
-ContainerPermissions:          # Default configuration when a land is created
+# Default for land type (/Factoid type) at the end of this file
+
+                               # Default configuration when a land is created (all lands)
+ContainerPermissions:          # Permissions
   Visitor:
     BUCKET_WATER:
       Value: false
@@ -89,7 +92,17 @@ ContainerPermissions:          # Default configuration when a land is created
     LAND_NOTIFY:
       Value: true
       Heritable: false
-ContainerFlags:
+ContainerFlags:                # Flags
   CREEPER_DAMAGE:
     Value: false
     Heritable: true
+
+# Here is the configuration for specific types in config.yml
+admin:                         # The name of the type
+  ContainerPermissions:
+    Resident:
+      BUILD:
+        Value: false
+        Heritable: false
+  ContainerFlags:
+      

@@ -65,6 +65,12 @@ public class PlayerContainerEverybody extends PlayerContainer implements IPlayer
         return true;
     }
     
+    @Override
+    public boolean hasAccess(Player player, ILand land) {
+        
+        return true;
+    }
+
     /* (non-Javadoc)
      * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#setLand(me.tabinol.factoid.lands.Land)
      */

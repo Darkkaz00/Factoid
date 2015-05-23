@@ -75,6 +75,12 @@ public class PlayerContainerPermission extends PlayerContainer
         return player.hasPermission(perm);
     }
 
+    @Override
+    public boolean hasAccess(Player player, ILand land) {
+        
+        return hasAccess(player);
+    }
+
     /* (non-Javadoc)
      * @see me.tabinol.factoid.playercontainer.PlayerContainer#getPrint()
      */

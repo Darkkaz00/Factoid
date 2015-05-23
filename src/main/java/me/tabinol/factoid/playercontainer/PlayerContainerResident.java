@@ -70,8 +70,18 @@ public class PlayerContainerResident extends PlayerContainer
      */
     @Override
     public boolean hasAccess(Player player) {
+    	
+    	return hasAccess(player, land);
+    }
+    
+    @Override
+    public boolean hasAccess(Player player, ILand land) {
         
-        boolean value = land.isResident(player);
+        if(land == null) {
+        	return false;
+        }
+    	
+    	boolean value = land.isResident(player);
         ILand actual = land;
         ILand parent;
 
@@ -84,7 +94,7 @@ public class PlayerContainerResident extends PlayerContainer
     	
     	return value;
     }
-    
+
     /**
      * Gets the land.
      *

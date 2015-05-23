@@ -70,7 +70,17 @@ public class PlayerContainerVisitor extends PlayerContainer
     @Override
     public boolean hasAccess(Player player) {
         
-        return !land.getOwner().hasAccess(player)
+    	return hasAccess(player, land);
+    }
+    
+    @Override
+    public boolean hasAccess(Player player, ILand land) {
+
+    	if(land == null) {
+    		return false;
+    	}
+
+    	return !land.getOwner().hasAccess(player)
                 && !land.isResident(player)
                 && !land.isTenant(player);
     }

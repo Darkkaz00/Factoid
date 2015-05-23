@@ -65,6 +65,12 @@ public class PlayerContainerNobody extends PlayerContainer implements IPlayerCon
         return false;
     }
 
+    @Override
+    public boolean hasAccess(Player player, ILand land) {
+        
+        return false;
+    }
+
     /* (non-Javadoc)
      * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#setLand(me.tabinol.factoid.lands.Land)
      */

@@ -19,7 +19,7 @@ package me.tabinol.factoid.lands.types;
 
 import me.tabinol.factoidapi.lands.types.IType;
 
-public class Type implements IType {
+public class Type implements IType, Comparable<Type> {
 
 	private final String typeName;
 	
@@ -28,6 +28,12 @@ public class Type implements IType {
 		this.typeName = typeName;
 	}
 	
+	@Override
+    public int compareTo(Type arg0) {
+	    
+		return typeName.compareTo(arg0.typeName);
+    }
+
 	@Override
 	public String getName() {
 

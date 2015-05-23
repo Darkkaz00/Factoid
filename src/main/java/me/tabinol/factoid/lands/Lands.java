@@ -78,14 +78,11 @@ public class Lands implements ILands {
     /** The land list. */
     private final TreeMap<String, ILand> landList; // Tree by name
     
-    /** The global area. */
-    private final DummyLand globalArea; // GLOBAL configuration
-    
     /** The outside area. */
     protected TreeMap<String, DummyLand> outsideArea; // Outside a Land (in specific worlds)
     
     /** The default conf. */
-    protected DummyLand defaultConf; // Default config of a land, String = "global" or WorldName
+    private TreeMap<IType, DummyLand> defaultConf; // Default config of a land
     
     /** The pm. */
     private final PluginManager pm;
@@ -102,8 +99,8 @@ public class Lands implements ILands {
     /**
      * Instantiates a new lands.
      */
-    @SuppressWarnings("unchecked")
-	public Lands() {
+	@SuppressWarnings("unchecked")
+    public Lands() {
 
         areaList = new TreeMap[4];
         pm = Factoid.getThisPlugin().getServer().getPluginManager();
@@ -114,10 +111,9 @@ public class Lands implements ILands {
 
         // Load World Config
         this.outsideArea = worldConfig.getLandOutsideArea();
-        this.globalArea = outsideArea.get(Config.GLOBAL);
 
         // Load Land default
-        this.defaultConf = worldConfig.getLandDefaultConf();
+        this.defaultConf = worldConfig.getTypeDefaultConf();
 
         landList = new TreeMap<String, ILand>();
         landUUIDList = new TreeMap<UUID, ILand>();
@@ -126,6 +122,11 @@ public class Lands implements ILands {
         forRent = new HashSet<ILand>();
     }
 
+    public DummyLand getDefaultConf(IType type) {
+    	
+    	return defaultConf.get(type);
+    }
+    
     /**
      * Gets the approve list.
      *
@@ -469,11 +470,14 @@ public class Lands implements ILands {
      */
     public DummyLand getOutsideArea(String worldName) {
 
-        DummyLand dummyLand;
         String worldNameLower = worldName.toLowerCase();
+        DummyLand dummyLand = outsideArea.get(worldNameLower);
 
-        if ((dummyLand = outsideArea.get(worldNameLower)) == null) {
-            outsideArea.put(worldNameLower, dummyLand = new DummyLand(worldNameLower));
+        // Not exist, create one
+        if (dummyLand == null) {
+        	dummyLand = new DummyLand(worldNameLower);
+        	outsideArea.get(Config.GLOBAL).copyPermsFlagsTo(dummyLand);
+            outsideArea.put(worldNameLower, dummyLand);
         }
 
         return dummyLand;
@@ -572,9 +576,6 @@ public class Lands implements ILands {
         if ((dl = outsideArea.get(worldName.toLowerCase())) != null && (result = dl.getPermission(player, pt, onlyInherit)) != null) {
             return result;
         }
-        if ((result = globalArea.getPermission(player, pt, onlyInherit)) != null) {
-            return result;
-        }
 
         return pt.getDefaultValue();
     }
@@ -593,9 +594,6 @@ public class Lands implements ILands {
         DummyLand dl;
 
         if ((dl = outsideArea.get(worldName.toLowerCase())) != null && (result = dl.getFlag(ft, onlyInherit)) != null) {
-            return result;
-        }
-        if ((result = globalArea.getFlag(ft, onlyInherit)) != null) {
             return result;
         }
 

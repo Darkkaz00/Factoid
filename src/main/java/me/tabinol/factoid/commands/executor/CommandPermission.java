@@ -17,6 +17,8 @@
  */
 package me.tabinol.factoid.commands.executor;
 
+import java.util.LinkedList;
+
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ChatPage;
 import me.tabinol.factoid.commands.CommandEntities;
@@ -25,8 +27,12 @@ import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.lands.Lands;
 import me.tabinol.factoid.parameters.PermissionList;
 import me.tabinol.factoid.playerscache.PlayerCacheEntry;
+import me.tabinol.factoidapi.FactoidAPI;
+import me.tabinol.factoidapi.lands.IDummyLand;
+import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.parameters.IPermission;
 import me.tabinol.factoidapi.parameters.IPermissionType;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
@@ -39,6 +45,9 @@ import org.bukkit.ChatColor;
  */
 @InfoCommand(name="permission", forceParameter=true)
 public class CommandPermission extends CommandThreadExec {
+
+	private LinkedList<IDummyLand> precDL; // Listed Precedent lands (no duplicates)
+	private StringBuilder stList;
 
 	private String fonction;
 
@@ -76,23 +85,78 @@ public class CommandPermission extends CommandThreadExec {
 
         } else if (fonction.equalsIgnoreCase("list")) {
 
-            StringBuilder stList = new StringBuilder();
-            if (!land.getSetPCHavePermission().isEmpty()) {
-                for (IPlayerContainer pc : land.getSetPCHavePermission()) {
-                    stList.append(ChatColor.WHITE).append(pc.getPrint()).append(":");
-                    for (IPermission perm : land.getPermissionsForPC(pc)) {
-                        stList.append(" ").append(ChatColor.YELLOW).append(perm.getPermType().getPrint()).append(":").append(perm.getValuePrint());
-                    }
-                    stList.append(Config.NEWLINE);
-                }
-            } else {
-                entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.PERMISSION.LISTROWNULL"));
-            }
+        	precDL = new LinkedList<IDummyLand>();
+        	stList = new StringBuilder();
+
+        	// For the actual land
+        	importDisplayPermsFrom(land, false);
+        	
+        	// For default Type
+        	if(land.getType() != null) {
+            	stList.append(ChatColor.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("GENERAL.FROMDEFAULTTYPE",
+        				land.getType().getName())).append(Config.NEWLINE);
+            	importDisplayPermsFrom(((Lands) FactoidAPI.iLands()).getDefaultConf(land.getType()), false);
+        	}
+        	
+        	// For parent (if exist)
+        	ILand parLand = land;
+        	while((parLand = parLand.getParent()) != null) {
+        		stList.append(ChatColor.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("GENERAL.FROMPARENT",
+        				ChatColor.GREEN + parLand.getName() + ChatColor.DARK_GRAY)).append(Config.NEWLINE);
+        		importDisplayPermsFrom(parLand, true);
+        	}
+        	
+        	// For world
+        	stList.append(ChatColor.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("GENERAL.FROMWORLD",
+    				land.getWorldName())).append(Config.NEWLINE);
+        	importDisplayPermsFrom(((Lands) FactoidAPI.iLands()).getOutsideArea(land.getWorldName()), true);
+        	
             new ChatPage("COMMAND.PERMISSION.LISTSTART", stList.toString(), entity.player, land.getName()).getPage(1);
 
         } else {
             throw new FactoidCommandException("Missing information command", entity.player, "GENERAL.MISSINGINFO");
         }
+    }
+
+    private void importDisplayPermsFrom(IDummyLand land, boolean onlyInherit) {
+    	
+        boolean addToList = false;
+    	
+    	for (IPlayerContainer pc : land.getSetPCHavePermission()) {
+        	StringBuilder stSubList = new StringBuilder();
+        	
+        	for (IPermission perm : land.getPermissionsForPC(pc)) {
+                if((!onlyInherit || perm.isHeritable()) && !permInList(pc, perm)) {
+                	addToList = true;
+                    stSubList.append(" ").append(perm.getPermType().getPrint()).append(":").append(perm.getValuePrint());
+                }
+            }
+        	
+        	// Append to list
+        	if(stSubList.length() > 0) {
+                stList.append(ChatColor.WHITE).append(pc.getPrint()).append(":");
+            	stList.append(stSubList).append(Config.NEWLINE);
+        	}
+        	
+        }
+        
+    	if(addToList) {
+        	precDL.add(land);
+    	}
+    }
+    
+    private boolean permInList(IPlayerContainer pc, IPermission perm) {
+    	
+    	for(IDummyLand listLand : precDL) {
+    		for(IPlayerContainer listPC : listLand.getSetPCHavePermission()) {
+    			for(IPermission listPerm : listLand.getPermissionsForPC(listPC))
+    			if(perm.getPermType() == listPerm.getPermType()) {
+    				return true;
+    			}
+    		}
+    	}
+    	
+    	return false;
     }
 
     /* (non-Javadoc)

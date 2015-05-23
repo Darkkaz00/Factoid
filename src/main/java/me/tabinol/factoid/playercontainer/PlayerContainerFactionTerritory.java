@@ -78,6 +78,12 @@ public class PlayerContainerFactionTerritory extends PlayerContainer
         return land.getFactionTerritory().isPlayerInList(Factoid.getThisPlugin().iPlayerConf().get(player).getPlayerContainer());
     }
 
+    @Override
+    public boolean hasAccess(Player player, ILand land) {
+        
+        return hasAccess(player);
+    }
+
     /**
      * Gets the land.
      *

@@ -163,7 +163,6 @@ public class Land extends DummyLand implements ILand {
      * @param areaId the area id
      * @param type the type
      */
-    @SuppressWarnings("unchecked")
 	protected Land(String landName, UUID uuid, IPlayerContainer owner,
             ICuboidArea area, int genealogy, Land parent, int areaId, IType type) {
 
@@ -178,41 +177,21 @@ public class Land extends DummyLand implements ILand {
         }
         this.owner = owner;
         this.genealogy = genealogy;
-        if (!Factoid.getThisPlugin().iStorageThread().isInLoad()) {
-            if (!Factoid.getThisPlugin().iLands().defaultConf.flags.isEmpty()) {
-                flags = (TreeMap<IFlagType, ILandFlag>) Factoid.getThisPlugin().iLands().defaultConf.flags.clone();
-            }
-            copyPerms();
-        }
         addArea(area, areaId);
     }
 
     /**
      * Sets the default.
      */
-    @SuppressWarnings("unchecked")
 	public void setDefault() {
         owner = new PlayerContainerNobody();
         residents = new TreeSet<IPlayerContainer>();
         playerNotify = new TreeSet<IPlayerContainerPlayer>();
         permissions = new TreeMap<IPlayerContainer, TreeMap<IPermissionType, IPermission>>();
-        flags = (TreeMap<IFlagType, ILandFlag>) Factoid.getThisPlugin().iLands().defaultConf.flags.clone();
-        copyPerms();
+        flags = new TreeMap<IFlagType, ILandFlag>();
         doSave();
     }
 
-    /**
-     * Copy perms.
-     */
-    @SuppressWarnings("unchecked")
-	private void copyPerms() {
-
-        for (IPlayerContainer pc : Factoid.getThisPlugin().iLands().defaultConf.permissions.keySet()) {
-            permissions.put(PlayerContainer.create(
-            		this, pc.getContainerType(), pc.getName()),
-                    (TreeMap<IPermissionType, IPermission>) Factoid.getThisPlugin().iLands().defaultConf.permissions.get(pc).clone());
-        }
-    }
 
     /**
      * Adds the area.
