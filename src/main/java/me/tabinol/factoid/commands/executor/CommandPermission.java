@@ -148,11 +148,13 @@ public class CommandPermission extends CommandThreadExec {
     private boolean permInList(IPlayerContainer pc, IPermission perm) {
     	
     	for(IDummyLand listLand : precDL) {
-    		for(IPlayerContainer listPC : listLand.getSetPCHavePermission()) {
-    			for(IPermission listPerm : listLand.getPermissionsForPC(listPC))
-    			if(perm.getPermType() == listPerm.getPermType()) {
-    				return true;
-    			}
+			
+    		if(listLand.getSetPCHavePermission().contains(pc)) {
+        		for(IPermission listPerm : listLand.getPermissionsForPC(pc)) {
+        			if(perm.getPermType() == listPerm.getPermType()) {
+        				return true;
+        			}
+        		}
     		}
     	}
     	
