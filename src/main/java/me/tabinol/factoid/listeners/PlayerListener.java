@@ -345,7 +345,9 @@ public class PlayerListener extends CommonListener implements Listener {
 							|| ml == Material.WOOD_BUTTON
 							|| ml == Material.LEVER
 							|| ml == Material.TRAPPED_CHEST
-							|| ml == Material.ENCHANTMENT_TABLE || ml == Material.ANVIL)) 
+							|| ml == Material.ENCHANTMENT_TABLE || ml == Material.ANVIL
+							|| ml == Material.MOB_SPAWNER || ml == Material.DAYLIGHT_DETECTOR
+							|| ml == Material.DAYLIGHT_DETECTOR_INVERTED)) 
 							|| (action == Action.PHYSICAL && (ml == Material.WOOD_PLATE
 							|| ml == Material.STONE_PLATE || ml == Material.STRING))) && !checkPermission(
 								land, player,
@@ -377,6 +379,10 @@ public class PlayerListener extends CommonListener implements Listener {
 					|| (action == Action.PHYSICAL && ml == Material.STRING && !checkPermission(
 							land, player,
 							PermissionList.USE_STRING.getPermissionType()))
+					|| (action == Action.RIGHT_CLICK_BLOCK && ml == Material.MOB_SPAWNER
+					        && !checkPermission(land, player, PermissionList.USE_MOBSPAWNER.getPermissionType()))
+					|| (action == Action.RIGHT_CLICK_BLOCK && (ml == Material.DAYLIGHT_DETECTOR || ml == Material.DAYLIGHT_DETECTOR_INVERTED)
+					        && !checkPermission(land, player, PermissionList.USE_LIGHTDETECTOR.getPermissionType()))
 					|| (action == Action.RIGHT_CLICK_BLOCK && ml == Material.ENCHANTMENT_TABLE
 							&& !checkPermission(land, player, PermissionList.USE_ENCHANTTABLE.getPermissionType()))
 					|| (action == Action.RIGHT_CLICK_BLOCK && ml == Material.ANVIL

@@ -106,6 +106,12 @@ public enum PermissionList {
     /** The use anvil **/
     USE_ANVIL(true),
     
+    /** The mob spawner **/
+    USE_MOBSPAWNER(true),
+    
+    /** For daylight detector **/
+    USE_LIGHTDETECTOR(true), 
+    
     /** The animal kill. */
     ANIMAL_KILL(true),
 
