@@ -130,6 +130,15 @@ public class WorldConfig {
     }
 
     /**
+     * Get the default configuration of a land without a Type.
+     * @return The land configuration (DummyLand)
+     */
+    public DummyLand getDefaultconfNoType() {
+    	
+    	return defaultConfNoType;
+    }
+
+    /**
      * Gets the default conf for each type
      * @return a TreeMap of default configuration
      */

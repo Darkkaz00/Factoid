@@ -81,8 +81,10 @@ public class Lands implements ILands {
     /** The outside area. */
     protected TreeMap<String, DummyLand> outsideArea; // Outside a Land (in specific worlds)
     
+    private final DummyLand defaultConfNoType; // Default config (Type not exist or Type null)
+    
     /** The default conf. */
-    private TreeMap<IType, DummyLand> defaultConf; // Default config of a land
+    private final TreeMap<IType, DummyLand> defaultConf; // Default config of a land
     
     /** The pm. */
     private final PluginManager pm;
@@ -114,6 +116,7 @@ public class Lands implements ILands {
 
         // Load Land default
         this.defaultConf = worldConfig.getTypeDefaultConf();
+        this.defaultConfNoType = worldConfig.getDefaultconfNoType();
 
         landList = new TreeMap<String, ILand>();
         landUUIDList = new TreeMap<UUID, ILand>();
@@ -124,7 +127,21 @@ public class Lands implements ILands {
 
     public DummyLand getDefaultConf(IType type) {
     	
-    	return defaultConf.get(type);
+    	DummyLand land;
+    	
+    	// No type? Return default config
+    	if(type == null) {
+    		return defaultConfNoType;
+    	}
+    	
+    	land = defaultConf.get(type);
+    	
+    	// Type not found? Return default config
+    	if(land == null) {
+    		return defaultConfNoType;
+    	}
+    	
+    	return land;
     }
     
     /**
