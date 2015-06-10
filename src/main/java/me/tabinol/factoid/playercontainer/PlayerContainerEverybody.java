@@ -28,7 +28,7 @@ import org.bukkit.entity.Player;
 /**
  * The Class PlayerContainerEverybody.
  */
-public class PlayerContainerEverybody extends PlayerContainer implements IPlayerContainerEverybody {
+public class PlayerContainerEverybody extends PlayerContainer {
 
     /**
      * Instantiates a new player container everybody.

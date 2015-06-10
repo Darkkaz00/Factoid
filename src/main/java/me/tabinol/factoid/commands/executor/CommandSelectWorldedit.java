@@ -27,7 +27,7 @@ import me.tabinol.factoid.config.players.PlayerConfEntry;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.selection.region.AreaSelection;
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 import org.bukkit.entity.Player;
 
 
@@ -77,7 +77,7 @@ public class CommandSelectWorldedit {
                 throw new FactoidCommandException("CommandSelectWorldEdit", player, "COMMAND.SELECT.WORLDEDIT.NOSELECTIONNED");
             }
 
-            player.sendMessage(ChatColor.GREEN + "[Factoid] " + ChatColor.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.WORLDEDIT.SELECTIONNED"));
+            player.sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.WORLDEDIT.SELECTIONNED"));
             Factoid.getThisPlugin().iLog().write(Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.WORLDEDIT.SELECTIONNED"));
             
             AreaSelection select = new AreaSelection(player, new CuboidArea(player.getWorld().getName(), 

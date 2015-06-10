@@ -17,7 +17,7 @@
  */
 package me.tabinol.factoid.commands.executor;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 import org.bukkit.Location;
 
 import me.tabinol.factoid.Factoid;
@@ -67,7 +67,7 @@ public class CommandSetspawn extends CommandExec {
         LandFlag flag = new LandFlag(FlagList.SPAWN.getFlagType(), posStr, true);
         ((Land) land).addFlag(flag);
         
-        entity.player.sendMessage(ChatColor.GREEN + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.TP.CREATED"));
+        entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.TP.CREATED"));
 	}
 
 }

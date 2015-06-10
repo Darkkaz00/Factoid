@@ -24,7 +24,7 @@ import me.tabinol.factoidapi.parameters.IFlagType;
 /**
  * The Class FlagType.
  */
-public class FlagType extends ParameterType implements IFlagType {
+public class FlagType extends ParameterType {
 
     /** The default value. */
     private FlagValue defaultValue;

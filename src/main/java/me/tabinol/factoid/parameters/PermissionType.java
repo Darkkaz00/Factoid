@@ -23,7 +23,7 @@ import me.tabinol.factoidapi.parameters.IPermissionType;
 /**
  * The Class PermissionType.
  */
-public class PermissionType extends ParameterType implements IPermissionType {
+public class PermissionType extends ParameterType {
     
     /** The default value. */
     private boolean defaultValue;

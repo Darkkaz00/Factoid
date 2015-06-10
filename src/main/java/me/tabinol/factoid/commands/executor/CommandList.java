@@ -30,7 +30,7 @@ import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.lands.types.IType;
 import me.tabinol.factoid.playerscache.PlayerCacheEntry;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 
 
 /**
@@ -119,7 +119,7 @@ public class CommandList extends CommandThreadExec {
 
         // Get the list of the land
         StringBuilder stList = new StringBuilder();
-        stList.append(ChatColor.YELLOW);
+        stList.append(ChatStyle.YELLOW);
 
         for (ILand land : lands) {
             if (((worldName != null && worldName.equals(land.getWorldName()))

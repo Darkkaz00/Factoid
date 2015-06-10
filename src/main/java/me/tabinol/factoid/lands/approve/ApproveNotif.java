@@ -22,7 +22,7 @@ import java.util.logging.Level;
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.utilities.FactoidRunnable;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 import org.bukkit.entity.Player;
 
 
@@ -79,7 +79,7 @@ public class ApproveNotif extends FactoidRunnable {
      */
     public void notifyForApprove(String landName, String playerName) {
 
-        notifyPlayer(Factoid.getThisPlugin().iLanguage().getMessage("COLLISION.SHOW.NOTIFYLAND", landName, playerName + ChatColor.GREEN));
+        notifyPlayer(Factoid.getThisPlugin().iLanguage().getMessage("COLLISION.SHOW.NOTIFYLAND", landName, playerName + ChatStyle.GREEN));
     }
 
     /**
@@ -102,7 +102,7 @@ public class ApproveNotif extends FactoidRunnable {
 
         for (Player players : Factoid.getThisPlugin().getServer().getOnlinePlayers()) {
             if (players.hasPermission(PERM_APPROVE)) {
-                players.sendMessage(ChatColor.GREEN + "[Factoid] " + message);
+                players.sendMessage(ChatStyle.GREEN + "[Factoid] " + message);
             }
         }
 

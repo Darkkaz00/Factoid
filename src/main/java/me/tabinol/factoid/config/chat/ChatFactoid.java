@@ -28,7 +28,7 @@ public class ChatFactoid implements Chat {
 	 * @see me.tabinol.factoid.config.chat.Chat#isSpy(org.bukkit.entity.Player)
 	 */
 	@Override
-	public boolean isSpy(Player player) {
+	public boolean isSpy(FPlayer player) {
 
 		return player.hasPermission("factoid.socialspy");
 	}
@@ -37,7 +37,7 @@ public class ChatFactoid implements Chat {
 	 * @see me.tabinol.factoid.config.chat.Chat#isMuted(org.bukkit.entity.Player)
 	 */
 	@Override
-	public boolean isMuted(Player player) {
+	public boolean isMuted(FPlayer player) {
 
 		return false;
 	}

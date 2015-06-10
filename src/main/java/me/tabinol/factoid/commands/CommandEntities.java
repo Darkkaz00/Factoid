@@ -17,8 +17,8 @@
  */
 package me.tabinol.factoid.commands;
 
-import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.config.players.PlayerConfEntry;
+import me.tabinol.factoidapi.FactoidAPI;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -77,7 +77,7 @@ public class CommandEntities {
         }
         
         playerName = sender.getName();
-        playerConf = Factoid.getThisPlugin().iPlayerConf().get(sender);
+        playerConf = (PlayerConfEntry) FactoidAPI.iPlayerConf().get(sender);
     }
     
     

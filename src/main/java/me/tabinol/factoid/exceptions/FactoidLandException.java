@@ -53,6 +53,6 @@ public class FactoidLandException extends AFactoidLandException {
         }
         bf.append(", Action: ").append(action.toString()).append(", Error: ").append(error.toString());
 
-        Factoid.getThisPlugin().iLog().write(bf.toString());
+        Factoid.getFactoidLog().write(bf.toString());
     }
 }

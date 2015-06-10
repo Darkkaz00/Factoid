@@ -29,12 +29,15 @@ import java.util.UUID;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.lands.areas.CuboidArea;
+import me.tabinol.factoid.lands.areas.Point;
+import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.parameters.FlagType;
 import me.tabinol.factoid.parameters.LandFlag;
 import me.tabinol.factoid.parameters.Permission;
 import me.tabinol.factoid.parameters.PermissionType;
 import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoid.playercontainer.PlayerContainerNobody;
+import me.tabinol.factoidapi.FactoidAPI;
 import me.tabinol.factoidapi.event.LandModifyEvent;
 import me.tabinol.factoidapi.event.LandModifyEvent.LandModifyReason;
 import me.tabinol.factoidapi.event.PlayerContainerLandBanEvent;
@@ -50,14 +53,10 @@ import me.tabinol.factoidapi.parameters.IPermissionType;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainerPlayer;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-
-
 /**
  * The Class Land.
  */
-public class Land extends DummyLand implements ILand {
+public class Land extends {
 
     /** The Constant DEFAULT_PRIORITY. */
     public static final short DEFAULT_PRIORITY = 10;
@@ -91,7 +90,7 @@ public class Land extends DummyLand implements ILand {
     private int genealogy = 0; // 0 = first, 1 = child, 2 = child of child, ...
     
     /** The parent. */
-    private me.tabinol.factoidapi.lands.ILand parent = null;
+    private Land parent = null;
     
     /** The owner. */
     private IPlayerContainer owner;
@@ -115,13 +114,13 @@ public class Land extends DummyLand implements ILand {
     private Set<IPlayerContainerPlayer> playerNotify = new TreeSet<IPlayerContainerPlayer>();
     
     /** The players in land. */
-    private final Set<Player> playersInLand = new HashSet<Player>();
+    private final Set<FPlayer> playersInLand = new TreeSet<FPlayer>();
     // Economy
     /** The for sale. */
     private boolean forSale = false;
     
     /** The for sale sign location */
-    private Location forSaleSignLoc = null;
+    private Point forSaleSignLoc = null;
     
     /** The sale price. */
     private double salePrice = 0;
@@ -130,7 +129,7 @@ public class Land extends DummyLand implements ILand {
     private boolean forRent = false;
     
     /** The for rent sign location */
-    private Location forRentSignLoc = null;
+    private Point forRentSignLoc = null;
     
     /** The rent price. */
     private double rentPrice = 0;
@@ -226,7 +225,7 @@ public class Land extends DummyLand implements ILand {
     public void addArea(ICuboidArea area, double price) {
 
         if(price > 0) {
-        	Factoid.getThisPlugin().iLands().getPriceFromPlayer(worldName, owner, price);
+        	((Lands) FactoidAPI.iLands()).getPriceFromPlayer(worldName, owner, price);
         }
         addArea(area);
     }
@@ -241,7 +240,7 @@ public class Land extends DummyLand implements ILand {
 
         ((CuboidArea) area).setLand(this);
         areas.put(key, area);
-        Factoid.getThisPlugin().iLands().addAreaToList(area);
+        ((Lands) FactoidAPI.iLands()).addAreaToList(area);
         doSave();
         
         // Start Event
@@ -260,7 +259,7 @@ public class Land extends DummyLand implements ILand {
         ICuboidArea area;
 
         if ((area = areas.remove(key)) != null) {
-            Factoid.getThisPlugin().iLands().removeAreaFromList(area);
+        	((Lands) FactoidAPI.iLands()).removeAreaFromList(area);
             doSave();
             
             // Start Event
@@ -301,7 +300,7 @@ public class Land extends DummyLand implements ILand {
     public boolean replaceArea(int key, ICuboidArea newArea, double price) {
 
         if (price > 0) {
-        	Factoid.getThisPlugin().iLands().getPriceFromPlayer(worldName, owner, price);
+        	((Lands) FactoidAPI.iLands()).getPriceFromPlayer(worldName, owner, price);
         }
 
         return replaceArea(key, newArea);
@@ -319,10 +318,10 @@ public class Land extends DummyLand implements ILand {
         ICuboidArea area;
 
         if ((area = areas.remove(key)) != null) {
-            Factoid.getThisPlugin().iLands().removeAreaFromList(area);
+        	((Lands) FactoidAPI.iLands()).removeAreaFromList(area);
             ((CuboidArea) newArea).setLand(this);
             areas.put(key, newArea);
-            Factoid.getThisPlugin().iLands().addAreaToList(newArea);
+            ((Lands) FactoidAPI.iLands()).addAreaToList(newArea);
             doSave();
 
             // Start Event
@@ -399,7 +398,7 @@ public class Land extends DummyLand implements ILand {
      * @param loc the loc
      * @return true, if is location inside
      */
-    public boolean isLocationInside(Location loc) {
+    public boolean isLocationInside(Point loc) {
 
         for (ICuboidArea area1 : areas.values()) {
             if (area1.isLocationInside(loc)) {
@@ -478,7 +477,7 @@ public class Land extends DummyLand implements ILand {
     protected void setName(String newName) {
 
         setAutoSave(false);
-        Factoid.getThisPlugin().iStorageThread().removeLand(this);
+        Factoid.getStorageThread().removeLand(this);
         this.name = newName;
         setAutoSave(true);
         doSave();
@@ -504,7 +503,7 @@ public class Land extends DummyLand implements ILand {
      * @param player the player
      * @return true, if is owner
      */
-    public boolean isOwner(Player player) {
+    public boolean isOwner(FPlayer player) {
 
         return owner.hasAccess(player);
     }
@@ -605,7 +604,7 @@ public class Land extends DummyLand implements ILand {
      * @param player the player
      * @return true, if is resident
      */
-    public boolean isResident(Player player) {
+    public boolean isResident(FPlayer player) {
 
         for (IPlayerContainer resident : residents) {
             if (resident.hasAccess(player)) {
@@ -668,7 +667,7 @@ public class Land extends DummyLand implements ILand {
      * @param player the player
      * @return true, if is banned
      */
-    public boolean isBanned(Player player) {
+    public boolean isBanned(FPlayer player) {
 
         for (IPlayerContainer banned : banneds) {
             if (banned.hasAccess(player)) {
@@ -728,23 +727,23 @@ public class Land extends DummyLand implements ILand {
     	
     	// Remove files
     	removeChildFiles();
-		Factoid.getThisPlugin().iStorageThread().removeLand(name, genealogy);
+		Factoid.getStorageThread().removeLand(name, genealogy);
     	
     	// remove parent (if needed)
     	if(parent != null) {
             ((Land)parent).removeChild(uuid);
             parent = null;
             genealogy = 0;
-            Factoid.getThisPlugin().iLog().write("remove parent from land: " + name);
+            Factoid.getFactoidLog().write("remove parent from land: " + name);
     	}
     	
     	// Add parent
     	if(newParent != null) {
     		((Land)newParent).addChild(this);
-    		parent = newParent;
+    		parent = (Land) newParent;
     		priority = parent.getPriority();
     		genealogy = parent.getGenealogy() + 1;
-            Factoid.getThisPlugin().iLog().write("add parent " + parent.getName() + " to land: " + name);
+            Factoid.getFactoidLog().write("add parent " + parent.getName() + " to land: " + name);
     	}
     	
     	// Save
@@ -758,7 +757,7 @@ public class Land extends DummyLand implements ILand {
     	
     	for(ILand child : children.values()) {
     		child.setAutoSave(false);
-    		Factoid.getThisPlugin().iStorageThread().removeLand((Land)child);
+    		Factoid.getStorageThread().removeLand((Land)child);
     		((Land)child).removeChildFiles();
     	}
     }
@@ -870,7 +869,7 @@ public class Land extends DummyLand implements ILand {
      */
     public void forceSave() {
 
-        Factoid.getThisPlugin().iStorageThread().saveLand(this);
+        Factoid.getStorageThread().saveLand(this);
     }
 
     /* (non-Javadoc)
@@ -909,7 +908,7 @@ public class Land extends DummyLand implements ILand {
      * @param onlyInherit the only inherit
      * @return the boolean
      */
-    protected Boolean checkLandPermissionAndInherit(Player player, IPermissionType pt, boolean onlyInherit) {
+    protected Boolean checkLandPermissionAndInherit(FPlayer player, IPermissionType pt, boolean onlyInherit) {
 
         Boolean permValue;
 
@@ -919,7 +918,7 @@ public class Land extends DummyLand implements ILand {
             return ((Land) parent).checkPermissionAndInherit(player, pt, true);
         }
 
-        return Factoid.getThisPlugin().iLands().getPermissionInWorld(worldName, player, pt, true);
+        return ((Lands) FactoidAPI.iLands()).getPermissionInWorld(worldName, player, pt, true);
     }
 
     /**
@@ -939,7 +938,7 @@ public class Land extends DummyLand implements ILand {
             return ((Land) parent).getFlagAndInherit(ft, true);
         }
 
-        return Factoid.getThisPlugin().iLands().getFlagInWorld(worldName, ft, true);
+        return ((Lands) FactoidAPI.iLands()).getFlagInWorld(worldName, ft, true);
     }
 
     /**
@@ -1025,7 +1024,7 @@ public class Land extends DummyLand implements ILand {
      *
      * @param player the player
      */
-    public void addPlayerInLand(Player player) {
+    public void addPlayerInLand(FPlayer player) {
 
         playersInLand.add(player);
     }
@@ -1036,7 +1035,7 @@ public class Land extends DummyLand implements ILand {
      * @param player the player
      * @return true, if successful
      */
-    public boolean removePlayerInLand(Player player) {
+    public boolean removePlayerInLand(FPlayer player) {
 
         return playersInLand.remove(player);
     }
@@ -1048,7 +1047,7 @@ public class Land extends DummyLand implements ILand {
      * @param player the player
      * @return true, if is player in land
      */
-    public boolean isPlayerInLand(Player player) {
+    public boolean isPlayerInLand(FPlayer player) {
 
         return playersInLand.contains(player);
     }
@@ -1060,11 +1059,11 @@ public class Land extends DummyLand implements ILand {
      * @param fromPlayer the from player
      * @return true, if is playerin land no vanish
      */
-    public boolean isPlayerinLandNoVanish(Player player, Player fromPlayer) {
+    public boolean isPlayerinLandNoVanish(FPlayer player, FPlayer fromPlayer) {
 
         if (playersInLand.contains(player)
-                && (!Factoid.getThisPlugin().iPlayerConf().isVanished(player) 
-                		|| Factoid.getThisPlugin().iPlayerConf().get(fromPlayer).isAdminMod())) {
+                && (!FactoidAPI.iPlayerConf().isVanished(player) 
+                		|| FactoidAPI.iPlayerConf().get(fromPlayer).isAdminMod())) {
             return true;
         }
 
@@ -1083,7 +1082,7 @@ public class Land extends DummyLand implements ILand {
      *
      * @return the players in land
      */
-    public Set<Player> getPlayersInLand() {
+    public Set<FPlayer> getPlayersInLand() {
 
         return playersInLand;
     }
@@ -1093,9 +1092,9 @@ public class Land extends DummyLand implements ILand {
      *
      * @return the players in land and children
      */
-    public Set<Player> getPlayersInLandAndChildren() {
+    public Set<FPlayer> getPlayersInLandAndChildren() {
     	
-    	Set<Player> playLandChild = new HashSet<Player>();
+    	Set<FPlayer> playLandChild = new TreeSet<FPlayer>();
     	
     	playLandChild.addAll(playersInLand);
     	
@@ -1112,12 +1111,12 @@ public class Land extends DummyLand implements ILand {
      * @param fromPlayer the from player
      * @return the players in land no vanish
      */
-    public Set<Player> getPlayersInLandNoVanish(Player fromPlayer) {
+    public Set<FPlayer> getPlayersInLandNoVanish(FPlayer fromPlayer) {
 
-        Set<Player> playerList = new HashSet<Player>();
+        Set<FPlayer> playerList = new TreeSet<FPlayer>();
 
-        for (Player player : playersInLand) {
-            if (!Factoid.getThisPlugin().iPlayerConf().isVanished(player) || Factoid.getThisPlugin().iPlayerConf().get(fromPlayer).isAdminMod()) {
+        for (FPlayer player : playersInLand) {
+            if (!FactoidAPI.iPlayerConf().isVanished(player) || FactoidAPI.iPlayerConf().get(fromPlayer).isAdminMod()) {
                 playerList.add(player);
             }
         }
@@ -1145,27 +1144,27 @@ public class Land extends DummyLand implements ILand {
      * @param salePrice the sale price
      * @param signLoc the sign location
      */
-    public void setForSale(boolean isForSale, double salePrice, Location signLoc) {
+    public void setForSale(boolean isForSale, double salePrice, Point signLoc) {
 
         forSale = isForSale;
         if (forSale) {
             this.salePrice = salePrice;
             this.forSaleSignLoc = signLoc;
-            Factoid.getThisPlugin().iLands().addForSale(this);
+            ((Lands) FactoidAPI.iLands()).addForSale(this);
         } else {
             this.salePrice = 0;
             this.forSaleSignLoc = null;
-            Factoid.getThisPlugin().iLands().removeForSale(this);
+            ((Lands) FactoidAPI.iLands()).removeForSale(this);
         }
         doSave();
     }
 
-    public Location getSaleSignLoc() {
+    public Point getSaleSignLoc() {
     	
     	return forSaleSignLoc;
     }
 
-    public void setSaleSignLoc(Location forSaleSignLoc) {
+    public void setSaleSignLoc(Point forSaleSignLoc) {
     	
     	this.forSaleSignLoc = forSaleSignLoc;
     	doSave();
@@ -1199,23 +1198,23 @@ public class Land extends DummyLand implements ILand {
      * @param rentAutoRenew the rent auto renew
      * @param signLoc the sign location
      */
-    public void setForRent(double rentPrice, int rentRenew, boolean rentAutoRenew, Location signLoc) {
+    public void setForRent(double rentPrice, int rentRenew, boolean rentAutoRenew, Point signLoc) {
 
         forRent = true;
         this.rentPrice = rentPrice;
         this.rentRenew = rentRenew;
         this.rentAutoRenew = rentAutoRenew;
         this.forRentSignLoc = signLoc;
-        Factoid.getThisPlugin().iLands().addForRent(this);
+        ((Lands) FactoidAPI.iLands()).addForRent(this);
         doSave();
     }
 
-    public Location getRentSignLoc() {
+    public Point getRentSignLoc() {
     	
     	return forRentSignLoc;
     }
     
-    public void setRentSignLoc(Location forRentSignLoc) {
+    public void setRentSignLoc(Point forRentSignLoc) {
     	
     	this.forRentSignLoc = forRentSignLoc;
     	doSave();
@@ -1231,7 +1230,7 @@ public class Land extends DummyLand implements ILand {
         rentRenew = 0;
         rentAutoRenew = false;
         forRentSignLoc = null;
-        Factoid.getThisPlugin().iLands().removeForRent(this);
+        ((Lands) FactoidAPI.iLands()).removeForRent(this);
         doSave();
     }
 
@@ -1323,7 +1322,7 @@ public class Land extends DummyLand implements ILand {
      * @param player the player
      * @return true, if is tenant
      */
-    public boolean isTenant(Player player) {
+    public boolean isTenant(FPlayer player) {
 
         return rented && tenant.hasAccess(player);
     }

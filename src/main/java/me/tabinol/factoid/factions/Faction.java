@@ -28,7 +28,7 @@ import me.tabinol.factoidapi.playercontainer.IPlayerContainerPlayer;
 /**
  * The Class Faction.
  */
-public class Faction implements IFaction {
+public class Faction {
 
     /** The name. */
     private String name;
@@ -85,7 +85,7 @@ public class Faction implements IFaction {
 
         players.add(player);
         doSave();
-        Factoid.getThisPlugin().iLog().write(player.toString() + " is added in faction " + name);
+        Factoid.getFactoidLog().write(player.toString() + " is added in faction " + name);
     }
 
     /**
@@ -98,7 +98,7 @@ public class Faction implements IFaction {
 
         if (players.remove(player)) {
             doSave();
-            Factoid.getThisPlugin().iLog().write(player.toString() + " is removed in faction " + name);
+            Factoid.getFactoidLog().write(player.toString() + " is removed in faction " + name);
             return true;
         }
 
@@ -141,8 +141,8 @@ public class Faction implements IFaction {
      */
     public void forceSave() {
         
-        Factoid.getThisPlugin().iStorageThread().saveFaction(this);
-        Factoid.getThisPlugin().iLog().write("Faction " + name + " is saved.");
+        Factoid.getStorageThread().saveFaction(this);
+        Factoid.getFactoidLog().write("Faction " + name + " is saved.");
     }
     
     /**

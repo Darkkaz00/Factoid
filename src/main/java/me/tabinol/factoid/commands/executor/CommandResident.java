@@ -29,7 +29,7 @@ import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 import me.tabinol.factoid.playerscache.PlayerCacheEntry;
 import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 
 
 /**
@@ -88,11 +88,11 @@ public class CommandResident extends CommandThreadExec {
                     if (stList.length() != 0) {
                         stList.append(" ");
                     }
-                    stList.append(ChatColor.WHITE).append(pc.getPrint());
+                    stList.append(ChatStyle.WHITE).append(pc.getPrint());
                 }
                 stList.append(Config.NEWLINE);
             } else {
-                entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.RESIDENT.LISTROWNULL"));
+                entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.RESIDENT.LISTROWNULL"));
             }
             new ChatPage("COMMAND.RESIDENT.LISTSTART", stList.toString(), entity.player, land.getName()).getPage(1);
         
@@ -113,7 +113,7 @@ public class CommandResident extends CommandThreadExec {
         if (fonction.equalsIgnoreCase("add")) {
 
             land.addResident(pc);
-            entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.RESIDENT.ISDONE", pc.getPrint(), land.getName()));
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.RESIDENT.ISDONE", pc.getPrint(), land.getName()));
             Factoid.getThisPlugin().iLog().write("Resident added: " + pc.toString());
 
         } else if (fonction.equalsIgnoreCase("remove")) {
@@ -121,7 +121,7 @@ public class CommandResident extends CommandThreadExec {
             if (!land.removeResident(pc)) {
                 throw new FactoidCommandException("Resident", entity.player, "COMMAND.RESIDENT.REMOVENOTEXIST");
             }
-            entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.RESIDENT.REMOVEISDONE", pc.getPrint(), land.getName()));
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.RESIDENT.REMOVEISDONE", pc.getPrint(), land.getName()));
             Factoid.getThisPlugin().iLog().write("Resident removed: " + pc.toString());
         }
 	}

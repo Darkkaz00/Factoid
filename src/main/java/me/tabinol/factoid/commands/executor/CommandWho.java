@@ -26,7 +26,7 @@ import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.parameters.PermissionList;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 import org.bukkit.entity.Player;
 
 
@@ -66,7 +66,7 @@ public class CommandWho extends CommandExec {
         if (stList.length() != 0) {
             new ChatPage("COMMAND.WHO.LISTSTART", stList.toString(), entity.player, land.getName()).getPage(1);
         } else {
-            entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.WHO.LISTNULL", land.getName()));
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.WHO.LISTNULL", land.getName()));
         }
     }
 }

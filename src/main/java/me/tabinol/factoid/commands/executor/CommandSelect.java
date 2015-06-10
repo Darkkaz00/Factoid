@@ -33,7 +33,7 @@ import me.tabinol.factoid.selection.region.ActiveAreaSelection;
 import me.tabinol.factoid.selection.region.AreaSelection;
 import me.tabinol.factoid.selection.region.LandSelection;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -148,17 +148,17 @@ public class CommandSelect extends CommandExec {
 
                         playerConf.getSelection().addSelection(new LandSelection(player, landtest));
 
-                        player.sendMessage(ChatColor.GREEN + "[Factoid] " + ChatColor.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.SELECTEDLAND", landtest.getName()));
+                        player.sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.SELECTEDLAND", landtest.getName()));
                         playerConf.setAutoCancelSelect(true);
                     } else {
 
-                        player.sendMessage(ChatColor.RED + "[Factoid] " + ChatColor.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.ALREADY"));
+                        player.sendMessage(ChatStyle.RED + "[Factoid] " + ChatStyle.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.ALREADY"));
                     }
                 }
             } else {
 
-                player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.JOINMODE"));
-                player.sendMessage(ChatColor.DARK_GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.HINT", ChatColor.ITALIC.toString(), ChatColor.RESET.toString(), ChatColor.DARK_GRAY.toString()));
+                player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.JOINMODE"));
+                player.sendMessage(ChatStyle.DARK_GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.HINT", ChatStyle.ITALIC.toString(), ChatStyle.RESET.toString(), ChatStyle.DARK_GRAY.toString()));
                 ActiveAreaSelection select = new ActiveAreaSelection(player);
                 playerConf.getSelection().addSelection(select);
                 playerConf.setAutoCancelSelect(true);
@@ -197,10 +197,10 @@ public class CommandSelect extends CommandExec {
 
         if (!select.getCollision()) {
 
-            player.sendMessage(ChatColor.GREEN + "[Factoid] " + ChatColor.DARK_GRAY
+            player.sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.DARK_GRAY
                     + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.LAND.NOCOLLISION"));
         } else {
-            player.sendMessage(ChatColor.GREEN + "[Factoid] " + ChatColor.RED
+            player.sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.RED
                     + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.LAND.COLLISION"));
         }
     }
@@ -219,20 +219,20 @@ public class CommandSelect extends CommandExec {
         AreaSelection select = (AreaSelection) playerConf.getSelection().getSelection(SelectionType.AREA);
         ICuboidArea area = select.getCuboidArea();
 
-        player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.INFO.INFO1",
+        player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.INFO.INFO1",
                 area.getPrint()));
-        player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.INFO.INFO2",
+        player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.INFO.INFO2",
                 area.getTotalBlock() + ""));
 
         // Price (economy)
         price = playerConf.getSelection().getLandCreatePrice();
         if (price != 0L) {
-            player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.INFO.INFO3",
+            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.INFO.INFO3",
                     Factoid.getThisPlugin().iPlayerMoney().toFormat(price)));
         }
         price = playerConf.getSelection().getAreaAddPrice();
         if (price != 0L) {
-            player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.INFO.INFO4",
+            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.INFO.INFO4",
                     Factoid.getThisPlugin().iPlayerMoney().toFormat(price)));
         }
     }

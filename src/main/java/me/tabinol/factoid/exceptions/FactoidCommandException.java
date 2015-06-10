@@ -18,7 +18,8 @@
 package me.tabinol.factoid.exceptions;
 
 import me.tabinol.factoid.Factoid;
-import org.bukkit.ChatColor;
+import me.tabinol.factoid.utilities.ChatStyle;
+
 import org.bukkit.command.CommandSender;
 
 
@@ -44,12 +45,12 @@ public class FactoidCommandException extends Exception {
         
         super(logMsg);
         if (sender != null) {
-            Factoid.getThisPlugin().iLog().write("Player: " + sender.getName() + ", Lang Msg: " + langMsg + ", " + logMsg);
+            Factoid.getFactoidLog().write("Player: " + sender.getName() + ", Lang Msg: " + langMsg + ", " + logMsg);
         } else {
-            Factoid.getThisPlugin().iLog().write(logMsg);
+            Factoid.getFactoidLog().write(logMsg);
         }
         if (sender != null) {
-            sender.sendMessage(ChatColor.RED + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage(langMsg, param));
+            sender.sendMessage(ChatStyle.RED + "[Factoid] " + Factoid.getLanguage().getMessage(langMsg, param));
         }
     }
 }

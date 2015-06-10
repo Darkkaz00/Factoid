@@ -24,7 +24,7 @@ import me.tabinol.factoid.commands.ConfirmEntry;
 import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 
 
 /**
@@ -54,6 +54,6 @@ public class CommandDefault extends CommandExec {
         checkPermission(true, true, null, null);
         
         entity.playerConf.setConfirm(new ConfirmEntry(ConfirmEntry.ConfirmType.LAND_DEFAULT, land, 0));
-        entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CONFIRM"));
+        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CONFIRM"));
     }
 }

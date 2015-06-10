@@ -28,7 +28,7 @@ import me.tabinol.factoid.selection.PlayerSelection.SelectionType;
 import me.tabinol.factoid.selection.region.AreaSelection;
 import me.tabinol.factoid.selection.region.ExpandAreaSelection;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 
 
 /**
@@ -66,8 +66,8 @@ public class CommandExpand extends CommandExec {
                 throw new FactoidCommandException("Player Expand", entity.player, "COMMAND.EXPAND.ALREADY");
             }
 
-            entity.player.sendMessage(ChatColor.GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.EXPAND.JOINMODE"));
-            entity.player.sendMessage(ChatColor.DARK_GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.EXPAND.HINT", ChatColor.ITALIC.toString(), ChatColor.RESET.toString(), ChatColor.DARK_GRAY.toString()));
+            entity.player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.EXPAND.JOINMODE"));
+            entity.player.sendMessage(ChatStyle.DARK_GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.EXPAND.HINT", ChatStyle.ITALIC.toString(), ChatStyle.RESET.toString(), ChatStyle.DARK_GRAY.toString()));
             Factoid.getThisPlugin().iLog().write(entity.player.getName() + " have join ExpandMode.");
 
             // Check the selection before (if exist)
@@ -88,8 +88,8 @@ public class CommandExpand extends CommandExec {
         } else if (curArg.equalsIgnoreCase("done")) {
 
             // Expand done
-            entity.player.sendMessage(ChatColor.GREEN + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.EXPAND.COMPLETE"));
-            entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.EXPAND.QUITMODE"));
+            entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.EXPAND.COMPLETE"));
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.EXPAND.QUITMODE"));
             Factoid.getThisPlugin().iLog().write(entity.playerName + " have quit ExpandMode.");
 
             ICuboidArea area = entity.playerConf.getSelection().getCuboidArea();
@@ -98,10 +98,10 @@ public class CommandExpand extends CommandExec {
                 entity.playerConf.getSelection().addSelection(new AreaSelection(entity.player, area));
 
                 if (!((AreaSelection) entity.playerConf.getSelection().getSelection(SelectionType.AREA)).getCollision()) {
-                    entity.player.sendMessage(ChatColor.GREEN + "[Factoid] " + ChatColor.DARK_GRAY
+                    entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.DARK_GRAY
                             + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.LAND.NOCOLLISION"));
                 } else {
-                    entity.player.sendMessage(ChatColor.GREEN + "[Factoid] " + ChatColor.RED
+                    entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.RED
                             + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.LAND.COLLISION"));
                 }
             }

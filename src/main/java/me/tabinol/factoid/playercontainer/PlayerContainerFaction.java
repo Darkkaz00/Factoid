@@ -24,14 +24,14 @@ import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainerFaction;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 import org.bukkit.entity.Player;
 
 
 /**
  * The Class PlayerContainerFaction.
  */
-public class PlayerContainerFaction extends PlayerContainer implements IPlayerContainerFaction {
+public class PlayerContainerFaction extends PlayerContainer {
 
     /** The faction. */
     private IFaction faction;
@@ -97,7 +97,7 @@ public class PlayerContainerFaction extends PlayerContainer implements IPlayerCo
     @Override
     public String getPrint() {
 
-        return ChatColor.GOLD + "F:" + ChatColor.WHITE + name;
+        return ChatStyle.GOLD + "F:" + ChatStyle.WHITE + name;
     }
 
     /* (non-Javadoc)

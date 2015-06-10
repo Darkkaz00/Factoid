@@ -26,7 +26,7 @@ import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainerPlayer;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -34,8 +34,7 @@ import org.bukkit.entity.Player;
 /**
  * The Class PlayerContainerPlayer.
  */
-public class PlayerContainerPlayer extends PlayerContainer 
-	implements IPlayerContainerPlayer {
+public class PlayerContainerPlayer extends PlayerContainer {
 
     /** The minecraft uuid. */
     private final UUID minecraftUUID;
@@ -99,13 +98,13 @@ public class PlayerContainerPlayer extends PlayerContainer
         StringBuilder sb = new StringBuilder();
         String playerName = getPlayerName();
         
-        sb.append(ChatColor.DARK_RED).append("P:");
+        sb.append(ChatStyle.DARK_RED).append("P:");
         
         if(playerName != null) {
-        	sb.append(ChatColor.WHITE).append(playerName);
+        	sb.append(ChatStyle.WHITE).append(playerName);
         } else {
         	// Player never connected on the server, show UUID
-        	sb.append(ChatColor.DARK_GRAY).append("ID-" + minecraftUUID);
+        	sb.append(ChatStyle.DARK_GRAY).append("ID-" + minecraftUUID);
         }
         
         return sb.toString();

@@ -15,6 +15,7 @@
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */ 
+
 package me.tabinol.factoid;
 
 import java.io.IOException;
@@ -33,9 +34,11 @@ import me.tabinol.factoid.lands.types.Types;
 import me.tabinol.factoid.listeners.ChatListener;
 import me.tabinol.factoid.listeners.LandListener;
 import me.tabinol.factoid.listeners.PlayerListener;
-import me.tabinol.factoid.listeners.PlayerListener18;
 import me.tabinol.factoid.listeners.PvpListener;
 import me.tabinol.factoid.listeners.WorldListener;
+import me.tabinol.factoid.minecraft.Server;
+import me.tabinol.factoid.minecraft.bukkit.ServerBukkit;
+import me.tabinol.factoid.minecraft.sponge.ServerSponge;
 import me.tabinol.factoid.parameters.Parameters;
 import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoid.playerscache.PlayersCache;
@@ -50,22 +53,26 @@ import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.lands.areas.ICuboidArea;
 import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
 
-import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.MetricsLite;
-
 /**
- * The Class Factoid.
+ * Main class for both (Bukkit and Sponge).
  */
-public class Factoid extends JavaPlugin implements IFactoid {
+public class Factoid {
 
 	/**  The Economy schedule interval. */
 	public static final int ECO_SCHEDULE_INTERVAL = 20 * 60 * 5;
 	
+	public enum ServerType {
+		BUKKIT,
+		SPONGE;
+	}
+	
+	private static ServerType serverType;
+	
     /** The maven app properties. */
     private static MavenAppProperties mavenAppProperties;
 
-    /** The this plugin. */
-    private static Factoid thisPlugin;
+    /** The Minecraft logger */
+    private static Server minecraftServer; 
 
     /** The factions. */
     protected static Factions factions;
@@ -79,29 +86,23 @@ public class Factoid extends JavaPlugin implements IFactoid {
     /** The parameters. */
     protected static Parameters parameters;
     
+    /** The player money. */
+    private static PlayerMoney playerMoney;
+    
+    /** The language. */
+    private static Lang language;
+
+    /** The log. */
+    private static Log log;
+    
+    /** The storage thread. */
+    private static StorageThread storageThread = null;
+    
+    /** The players cache. */
+    private static PlayersCache playersCache;
+    
     /** The player conf. */
     protected PlayerStaticConfig playerConf;
-
-    /** The Command listener. */
-    private OnCommand CommandListener;
-    
-    /** The player listener. */
-    private PlayerListener playerListener;
-    
-    /** The player listener 18. */
-    private PlayerListener18 playerListener18;
-
-    /** The player listener. */
-    private PvpListener pvpListener;
-
-    /** The world listener. */
-    private WorldListener worldListener;
-    
-    /** The land listener. */
-    private LandListener landListener;
-    
-    /** The chat listener. */
-    private ChatListener chatListener;
 
     /**  The economy scheduler. */
     private EcoScheduler ecoScheduler;
@@ -109,29 +110,18 @@ public class Factoid extends JavaPlugin implements IFactoid {
     /** The approve notif. */
     private ApproveNotif approveNotif;
     
-    /** The storage thread. */
-    private StorageThread storageThread = null;
-    
-    /** The log. */
-    private Log log;
-    
     /** The conf. */
-    private Config conf;
-    
-    /** The language. */
-    private Lang language;
+    private static Config conf;
     
     /** The depend plugin. */
     private DependPlugin dependPlugin;
     
-    /** The player money. */
-    private PlayerMoney playerMoney;
-    
     /** The Scoreboard. */
     private ScoreBoard Scoreboard;
     
-    /** The players cache. */
-    private PlayersCache playersCache;
+    /**************************************************************************
+     * Static methods (gets)
+     *************************************************************************/
     
     /**
      * Gets the maven app properties.
@@ -143,64 +133,91 @@ public class Factoid extends JavaPlugin implements IFactoid {
         return mavenAppProperties;
     }
 
-    /**
-     * Gets the this plugin.
-     *
-     * @return the this plugin
-     */
-    public static Factoid getThisPlugin() {
-
-        return thisPlugin;
-    }
-
-    /**
-     * Gets the factions.
-     *
-     * @return the factions
-     * @deprecated Please use FactoidAPI
-     */
-    @Deprecated
-    public static Factions getFactions() {
-
-        return factions;
-    }
-
-    /**
-     * Gets the parameters.
-     *
-     * @return the parameters
-     * @deprecated Please use FactoidAPI
-     */
-    @Deprecated
-    public static Parameters getParameters() {
-        
-        return parameters;
-    }
-
-    /**
-     * Gets the lands.
-     *
-     * @return the lands
-     * @deprecated Please use FactoidAPI
-     */
-    @Deprecated
-    public static Lands getLands() {
-
-        return lands;
+    public static ServerType getServerType() {
+    	
+    	return serverType;
     }
     
-    /* (non-Javadoc)
-     * @see org.bukkit.plugin.java.JavaPlugin#onEnable()
-     */
-    @Override
-    public void onEnable() {
+    public static Server getServer() {
+    	
+    	return minecraftServer;
+    }
+    
+    public static Config getConf() {
+    	
+    	return conf;
+    }
+    
+    public static Lang getLanguage() {
 
+        return language;
+    }
+    
+    public static PlayerMoney getPlayerMoney() {
+
+        return playerMoney;
+    }
+    
+    public static Log getFactoidLog() {
+
+        return log;
+    }
+
+    public static StorageThread getStorageThread() {
+
+        return storageThread;
+    }
+
+    public static PlayersCache getPlayersCache() {
+    	
+    	return playersCache;
+    }
+    
+    public static Lands getLands() {
+    	
+    	return lands;
+    }
+    
+    public static Factions getFactions() {
+    	
+    	return factions;
+    }
+    
+    public static Types getTypes() {
+    	
+    	return types;
+    }
+    
+    public static Parameters getParameters() {
+    	
+    	return parameters;
+    }
+    
+    /**************************************************************************
+     * Server init, start and stop
+     *************************************************************************/
+
+    /**
+     * Main declaration (start) for both Bukkit and Sponge
+     * @param serverType BUKKIT or SPONGE
+     */
+    public Factoid(ServerType serverType) {
+
+    	// Init Server dependencies
+    	Factoid.serverType = serverType;
         mavenAppProperties = new MavenAppProperties();
         mavenAppProperties.loadProperties();
-        // Static access to «this» Factoid
-        thisPlugin = this;
-        BKVersion.initVersion();
+        
+        // Init Server access
+        if(serverType == ServerType.BUKKIT) {
+        	initBukkit();
+        } else {
+        	initSponge();
+        }
+        // Init API
         FactoidAPI.initFactoidPluginAccess();
+        
+        // Init Factoid
         parameters = new Parameters();
         types = new Types();
         conf = new Config();
@@ -218,15 +235,6 @@ public class Factoid extends JavaPlugin implements IFactoid {
         factions = new Factions();
         lands = new Lands();
         storageThread.loadAllAndStart();
-        worldListener = new WorldListener();
-        playerListener = new PlayerListener();
-        if(BKVersion.isPlayerInteractAtEntityEventExist()) {
-        	playerListener18 = new PlayerListener18();
-        }
-        pvpListener = new PvpListener();
-        landListener = new LandListener();
-        chatListener = new ChatListener();
-        CommandListener = new OnCommand();
         Scoreboard = new ScoreBoard();
         approveNotif = new ApproveNotif();
         approveNotif.runApproveNotifLater();
@@ -234,27 +242,19 @@ public class Factoid extends JavaPlugin implements IFactoid {
         ecoScheduler.runTaskTimer(this, ECO_SCHEDULE_INTERVAL, ECO_SCHEDULE_INTERVAL);
         playersCache = new PlayersCache();
         playersCache.start();
-        getServer().getPluginManager().registerEvents(worldListener, this);
-        getServer().getPluginManager().registerEvents(playerListener, this);
-        if(BKVersion.isPlayerInteractAtEntityEventExist()) {
-        	getServer().getPluginManager().registerEvents(playerListener18, this);
-        }
-        getServer().getPluginManager().registerEvents(pvpListener, this);
-        getServer().getPluginManager().registerEvents(landListener, this);
-        getServer().getPluginManager().registerEvents(chatListener, this);
-        getCommand("factoid").setExecutor(CommandListener);
-        getCommand("faction").setExecutor(CommandListener);
-        log.write(iLanguage().getMessage("ENABLE"));
-        
-        // Start Plugin Metrics
-        try {
-            MetricsLite metrics = new MetricsLite(this);
-            metrics.start();
-        } catch (IOException e) {
-            // Failed to submit the stats :-(
-        }
+        log.write(getLanguage().getMessage("ENABLE"));
+    }
+    
+    private void initBukkit() {
+    	
+    	minecraftServer = new ServerBukkit();
     }
 
+    private void initSponge() {
+    	
+    	minecraftServer = new ServerSponge();
+    }
+    
     /**
      * Reload.
      */
@@ -279,28 +279,18 @@ public class Factoid extends JavaPlugin implements IFactoid {
         approveNotif.runApproveNotifLater();
     }
 
-    /* (non-Javadoc)
-     * @see org.bukkit.plugin.java.JavaPlugin#onDisable()
-     */
-    @Override
-    public void onDisable() {
+    protected void serverStop() {
 
-        log.write(iLanguage().getMessage("DISABLE"));
+        log.write(getLanguage().getMessage("DISABLE"));
         playersCache.stopNextRun();
         approveNotif.stopNextRun();
         storageThread.stopNextRun();
         ((PlayerStaticConfig) playerConf).removeAll();
     }
 
-    /**
-     * I conf.
-     *
-     * @return the config
-     */
-    public Config iConf() {
-
-        return conf;
-    }
+    /**************************************************************************
+     * Non-Static methods (gets)
+     *************************************************************************/
 
     /* (non-Javadoc)
      * @see me.tabinol.factoidapi.IFactoid#iPlayerConf()
@@ -311,16 +301,6 @@ public class Factoid extends JavaPlugin implements IFactoid {
     }
 
     /**
-     * I language.
-     *
-     * @return the lang
-     */
-    public Lang iLanguage() {
-
-        return language;
-    }
-
-    /**
      * I scoreboard.
      *
      * @return the score board
@@ -328,16 +308,6 @@ public class Factoid extends JavaPlugin implements IFactoid {
     public ScoreBoard iScoreboard() {
 
         return Scoreboard;
-    }
-
-    /**
-     * I log.
-     *
-     * @return the log
-     */
-    public Log iLog() {
-
-        return log;
     }
 
     /* (non-Javadoc)
@@ -370,16 +340,6 @@ public class Factoid extends JavaPlugin implements IFactoid {
     }
 
     /**
-     * I storage thread.
-     *
-     * @return the storage thread
-     */
-    public StorageThread iStorageThread() {
-
-        return storageThread;
-    }
-
-    /**
      * I depend plugin.
      *
      * @return the depend plugin
@@ -399,26 +359,6 @@ public class Factoid extends JavaPlugin implements IFactoid {
         return approveNotif;
     }
 
-    /**
-     * I player money.
-     *
-     * @return the player money
-     */
-    public PlayerMoney iPlayerMoney() {
-
-        return playerMoney;
-    }
-    
-    /**
-     * I players cache.
-     *
-     * @return the players cache
-     */
-    public PlayersCache iPlayersCache() {
-    	
-    	return playersCache;
-    }
-    
     /*
      * Creators to forward
      */

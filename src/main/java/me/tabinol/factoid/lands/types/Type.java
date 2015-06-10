@@ -19,7 +19,7 @@ package me.tabinol.factoid.lands.types;
 
 import me.tabinol.factoidapi.lands.types.IType;
 
-public class Type implements IType, Comparable<Type> {
+public class Type implements Comparable<Type> {
 
 	private final String typeName;
 	

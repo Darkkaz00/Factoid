@@ -14,36 +14,34 @@
 
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-package me.tabinol.factoid.config.players;
+ */ 
 
-    // Entries for each player
+package me.tabinol.factoid.minecraft;
+
+import java.util.UUID;
+
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ChatPage;
 import me.tabinol.factoid.commands.ConfirmEntry;
-import me.tabinol.factoidapi.config.players.IPlayerConfEntry;
-import me.tabinol.factoidapi.lands.IDummyLand;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainerPlayer;
+import me.tabinol.factoid.config.players.PlayerAutoCancelSelect;
+import me.tabinol.factoid.lands.DummyLand;
+import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.playercontainer.PlayerContainerPlayer;
 import me.tabinol.factoid.selection.PlayerSelection;
 
-import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-
 /**
- * The Class PlayerConfEntry.
+ * This class represent a console sender.
+ * This class replace also the old abandoned class PlayerConfEntry (with FPlayer)
+ * @author Tabinol
+ *
  */
-public class PlayerConfEntry implements IPlayerConfEntry {
-
-    /** The sender. */
-    private final CommandSender sender; // The player (or sender)
-    
-    /** The player. */
-    private final Player player; // The player (if is not console)
-    
-    /** The player selection. */
+public abstract class FSender implements FSenderInterface, Comparable<FSender> {
+	
+    /**************************************************************************
+     * Settings for player and Sender
+     *************************************************************************/
+	
+	/** The player selection. */
     private final PlayerSelection playerSelection; // Player Lands, areas and visual selections
     
     /** The admin mod. */
@@ -59,10 +57,10 @@ public class PlayerConfEntry implements IPlayerConfEntry {
     private long lastMoveUpdate = 0; // Time of lastupdate for PlayerEvents
     
     /** The last land. */
-    private IDummyLand lastLand = null; // Last Land for player
+    private DummyLand lastLand = null; // Last Land for player
     
     /** The last loc. */
-    private Location lastLoc = null; // Present location
+    private Point lastLoc = null; // Present location
     
     /** The tp cancel. */
     private boolean tpCancel = false; // If the player has a teleportation cacelled
@@ -71,54 +69,59 @@ public class PlayerConfEntry implements IPlayerConfEntry {
     private PlayerAutoCancelSelect cancelSelect = null; // Auto cancel selection system
     
     /** The pcp. */
-    private IPlayerContainerPlayer pcp; // PlayerContainerPlayer for this player
-
+    private PlayerContainerPlayer pcp; // PlayerContainerPlayer for this player
+	
+    /**************************************************************************
+     * Constructor
+     *************************************************************************/
+    
     /**
-     * Instantiates a new player conf entry.
-     *
-     * @param sender the sender
+     * Constructor for a player
+     * @param uuid
      */
-    PlayerConfEntry(CommandSender sender) {
+    protected FSender(UUID uuid) {
 
-        this.sender = sender;
-        if (sender instanceof Player) {
-            player = (Player) sender;
-            playerSelection = new PlayerSelection(this);
-            pcp = new PlayerContainerPlayer(player.getUniqueId());
-        } else {
-            player = null;
-            playerSelection = null;
-            pcp = null;
-        }
+        playerSelection = new PlayerSelection(this);
+        pcp = new PlayerContainerPlayer(uuid);
     }
-
-    /* (non-Javadoc)
-	 * @see me.tabinol.factoid.config.players.IPlayerConfEntry#getPlayerContainer()
-	 */
-    @Override
-	public IPlayerContainerPlayer getPlayerContainer() {
+    
+    /**
+     * Constructor for the console
+     */
+    protected FSender() {
+    	
+        playerSelection = null;
+        pcp = null;
+    }
+    
+    /**************************************************************************
+     * Methods
+     *************************************************************************/
+    
+	@Override
+    public int compareTo(FSender arg0) {
+		
+		if(this instanceof FPlayer) {
+			if(arg0 instanceof FPlayer) {
+				return ((FPlayer) this).getName().compareTo(((FPlayer) arg0).getName());
+			} else {
+				return -1;
+			}
+		} else {
+			if(arg0 instanceof FPlayer) {
+				return 1;
+			} else {
+				// FSender and FSender
+				return 0;
+			}
+		}
+    }
+	
+	public PlayerContainerPlayer getPlayerContainer() {
         
         return pcp;
     }
     
-    /* (non-Javadoc)
-	 * @see me.tabinol.factoid.config.players.IPlayerConfEntry#getSender()
-	 */
-    @Override
-	public CommandSender getSender() {
-
-        return sender;
-    }
-
-    /* (non-Javadoc)
-	 * @see me.tabinol.factoid.config.players.IPlayerConfEntry#getPlayer()
-	 */
-    @Override
-	public Player getPlayer() {
-
-        return player;
-    }
-
     /**
      * Gets the selection.
      *
@@ -129,14 +132,10 @@ public class PlayerConfEntry implements IPlayerConfEntry {
         return playerSelection;
     }
 
-    /* (non-Javadoc)
-	 * @see me.tabinol.factoid.config.players.IPlayerConfEntry#isAdminMod()
-	 */
-    @Override
 	public boolean isAdminMod() {
 
         // Security for adminmod
-        if (adminMod == true && !sender.hasPermission("factoid.adminmod")) {
+        if (adminMod == true && !hasPermission("factoid.adminmod")) {
             adminMod = false;
             return false;
         }
@@ -194,10 +193,6 @@ public class PlayerConfEntry implements IPlayerConfEntry {
         chatPage = page;
     }
 
-    /* (non-Javadoc)
-	 * @see me.tabinol.factoid.config.players.IPlayerConfEntry#getLastMoveUpdate()
-	 */
-    @Override
 	public long getLastMoveUpdate() {
 
         return lastMoveUpdate;
@@ -213,11 +208,7 @@ public class PlayerConfEntry implements IPlayerConfEntry {
         lastMoveUpdate = lastMove;
     }
 
-    /* (non-Javadoc)
-	 * @see me.tabinol.factoid.config.players.IPlayerConfEntry#getLastLand()
-	 */
-    @Override
-	public IDummyLand getLastLand() {
+	public DummyLand getLastLand() {
 
         return lastLand;
     }
@@ -227,16 +218,12 @@ public class PlayerConfEntry implements IPlayerConfEntry {
      *
      * @param land the new last land
      */
-    public void setLastLand(IDummyLand land) {
+    public void setLastLand(DummyLand land) {
 
         lastLand = land;
     }
 
-    /* (non-Javadoc)
-	 * @see me.tabinol.factoid.config.players.IPlayerConfEntry#getLastLoc()
-	 */
-    @Override
-	public Location getLastLoc() {
+	public Point getLastLoc() {
 
         return lastLoc;
     }
@@ -246,7 +233,7 @@ public class PlayerConfEntry implements IPlayerConfEntry {
      *
      * @param loc the new last loc
      */
-    public void setLastLoc(Location loc) {
+    public void setLastLoc(Point loc) {
 
         lastLoc = loc;
     }
@@ -279,7 +266,7 @@ public class PlayerConfEntry implements IPlayerConfEntry {
      */
     public void setAutoCancelSelect(boolean value) {
 
-        Long timeTick = Factoid.getThisPlugin().iConf().getSelectAutoCancel();
+        Long timeTick = Factoid.getConf().getSelectAutoCancel();
 
         if (timeTick == 0) {
             return;
@@ -303,4 +290,11 @@ public class PlayerConfEntry implements IPlayerConfEntry {
             cancelSelect.stopNextRun();
         }
     }
+
+    /**************************************************************************
+     * Abstract methods
+     *************************************************************************/
+
+	public abstract void sendMessage(String msg);
+	public abstract boolean hasPermission(String perm);
 }

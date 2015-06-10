@@ -23,7 +23,7 @@ import me.tabinol.factoid.commands.CommandExec;
 import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 
 
 /**
@@ -53,9 +53,9 @@ public class CommandAdminmod extends CommandExec {
         
         if (entity.playerConf.isAdminMod()) {
             entity.playerConf.setAdminMod(false);
-            entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.ADMINMOD.QUIT"));
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.ADMINMOD.QUIT"));
         } else {
-            entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.ADMINMOD.JOIN"));
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.ADMINMOD.JOIN"));
             entity.playerConf.setAdminMod(true);
         }
     }

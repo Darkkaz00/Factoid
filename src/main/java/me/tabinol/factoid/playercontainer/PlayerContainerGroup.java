@@ -23,15 +23,14 @@ import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainerGroup;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 import org.bukkit.entity.Player;
 
 
 /**
  * The Class PlayerContainerGroup.
  */
-public class PlayerContainerGroup extends PlayerContainer 
-	implements IPlayerContainerGroup {
+public class PlayerContainerGroup extends PlayerContainer {
     
     /**
      * Instantiates a new player container group.
@@ -87,7 +86,7 @@ public class PlayerContainerGroup extends PlayerContainer
     @Override
     public String getPrint() {
         
-        return ChatColor.BLUE + "G:" + ChatColor.WHITE + name;
+        return ChatStyle.BLUE + "G:" + ChatStyle.WHITE + name;
     }
 
     /* (non-Javadoc)

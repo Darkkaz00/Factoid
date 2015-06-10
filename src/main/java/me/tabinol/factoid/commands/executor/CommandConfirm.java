@@ -28,7 +28,7 @@ import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.exceptions.FactoidLandException;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 
 
 /**
@@ -68,7 +68,7 @@ public class CommandConfirm extends CommandExec {
                     Logger.getLogger(CommandConfirm.class.getName()).log(Level.SEVERE, "On land remove", ex);
                     throw new FactoidCommandException("On land remove", entity.player, "GENERAL.ERROR");
                 }
-                entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.REMOVE.DONE.LAND", confirmEntry.land.getName(), i + ""));
+                entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.REMOVE.DONE.LAND", confirmEntry.land.getName(), i + ""));
                 Factoid.getThisPlugin().iLog().write(entity.playerName + " confirm for removing " + confirmEntry.land.getName());
 
             } else if (confirmEntry.confirmType == ConfirmEntry.ConfirmType.REMOVE_AREA) {
@@ -78,14 +78,14 @@ public class CommandConfirm extends CommandExec {
                     throw new FactoidCommandException("Area", entity.player, "COMMAND.REMOVE.AREA.INVALID");
                 }
                 entity.playerConf.getSelection().refreshLand();
-                entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.REMOVE.DONE.AREA", confirmEntry.land.getName()));
+                entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.REMOVE.DONE.AREA", confirmEntry.land.getName()));
                 Factoid.getThisPlugin().iLog().write("area " + confirmEntry.areaNb + " for land " + confirmEntry.land.getName() + " is removed by " + entity.playerName);
 
             } else if (confirmEntry.confirmType == ConfirmEntry.ConfirmType.LAND_DEFAULT) {
 
                 // Set to default
                 confirmEntry.land.setDefault();
-                entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SETDEFAULT.ISDONE", confirmEntry.land.getName()));
+                entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SETDEFAULT.ISDONE", confirmEntry.land.getName()));
                 Factoid.getThisPlugin().iLog().write("The land " + confirmEntry.land.getName() + "is set to default configuration by " + entity.playerName);
             }
             

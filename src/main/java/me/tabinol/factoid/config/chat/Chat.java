@@ -17,7 +17,7 @@
  */
 package me.tabinol.factoid.config.chat;
 
-import org.bukkit.entity.Player;
+import me.tabinol.factoid.minecraft.FPlayer;
 
 /**
  * The Interface Chat.
@@ -30,7 +30,7 @@ public interface Chat {
 	 * @param player the player
 	 * @return true, if is spy
 	 */
-	public boolean isSpy(Player player);
+	public boolean isSpy(FPlayer player);
 	
 	/**
 	 * Checks if is muted.
@@ -38,5 +38,5 @@ public interface Chat {
 	 * @param player the player
 	 * @return true, if is muted
 	 */
-	public boolean isMuted(Player player);
+	public boolean isMuted(FPlayer player);
 }

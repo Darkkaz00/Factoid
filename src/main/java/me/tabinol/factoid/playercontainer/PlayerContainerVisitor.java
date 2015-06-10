@@ -28,8 +28,7 @@ import org.bukkit.entity.Player;
 /**
  * The Class PlayerContainerVisitor.
  */
-public class PlayerContainerVisitor extends PlayerContainer
-	implements IPlayerContainerVisitor {
+public class PlayerContainerVisitor extends PlayerContainer {
     
     /** The land. */
     private ILand land;

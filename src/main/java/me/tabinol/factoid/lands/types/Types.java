@@ -23,7 +23,7 @@ import java.util.TreeMap;
 import me.tabinol.factoidapi.lands.types.IType;
 import me.tabinol.factoidapi.lands.types.ITypes;
 
-public class Types implements ITypes {
+public class Types {
 
 	final private TreeMap<String, IType> types;
 	

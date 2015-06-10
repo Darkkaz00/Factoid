@@ -29,7 +29,7 @@ import org.bukkit.entity.Player;
 /**
  * The Class PlayerContainerOwner.
  */
-public class PlayerContainerOwner extends PlayerContainer implements IPlayerContainerOwner {
+public class PlayerContainerOwner extends PlayerContainer {
 
     /** The land. */
     private ILand land;

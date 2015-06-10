@@ -21,9 +21,10 @@ import java.util.HashSet;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.exceptions.SignException;
+import me.tabinol.factoid.utilities.ChatStyle;
+import me.tabinol.factoidapi.FactoidAPI;
 import me.tabinol.factoidapi.lands.ILand;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -97,7 +98,7 @@ public class EcoSign {
 			throw new SignException();
 		}
 		
-		Factoid.getThisPlugin().iLog().write("SignToCreate: PlayerYaw: " + player.getLocation().getYaw() +
+		Factoid.getFactoidLog().write("SignToCreate: PlayerYaw: " + player.getLocation().getYaw() +
 				", Location: " + location.toString() + ", Facing: " + facing.name() +
 				", isWallSign: " + isWallSign);
 	}
@@ -150,11 +151,11 @@ public class EcoSign {
 	public void createSignForSale(double price) throws SignException {
 
 		String[] lines = new String[4];
-		lines[0] = ChatColor.GREEN
-				+ Factoid.getThisPlugin().iLanguage().getMessage("SIGN.SALE.FORSALE");
-		lines[1] = ChatColor.GREEN + land.getName();
+		lines[0] = ChatStyle.GREEN
+				+ Factoid.getLanguage().getMessage("SIGN.SALE.FORSALE");
+		lines[1] = ChatStyle.GREEN + land.getName();
 		lines[2] = "";
-		lines[3] = ChatColor.BLUE + Factoid.getThisPlugin().iPlayerMoney().toFormat(price);
+		lines[3] = ChatStyle.BLUE + Factoid.getPlayerMoney().toFormat(price);
 
 		createSign(lines);
 	}
@@ -174,23 +175,23 @@ public class EcoSign {
 		String[] lines = new String[4];
 
 		if (tenantName != null) {
-			lines[0] = ChatColor.RED
-					+ Factoid.getThisPlugin().iLanguage().getMessage("SIGN.RENT.RENTED");
-			lines[1] = ChatColor.RED + tenantName;
+			lines[0] = ChatStyle.RED
+					+ Factoid.getLanguage().getMessage("SIGN.RENT.RENTED");
+			lines[1] = ChatStyle.RED + tenantName;
 		} else {
-			lines[0] = ChatColor.GREEN
-					+ Factoid.getThisPlugin().iLanguage().getMessage("SIGN.RENT.FORRENT");
-			lines[1] = ChatColor.GREEN + land.getName();
+			lines[0] = ChatStyle.GREEN
+					+ Factoid.getLanguage().getMessage("SIGN.RENT.FORRENT");
+			lines[1] = ChatStyle.GREEN + land.getName();
 		}
 
 		if (autoRenew) {
-			lines[2] = ChatColor.BLUE
-					+ Factoid.getThisPlugin().iLanguage().getMessage("SIGN.RENT.AUTORENEW");
+			lines[2] = ChatStyle.BLUE
+					+ Factoid.getLanguage().getMessage("SIGN.RENT.AUTORENEW");
 		} else {
 			lines[2] = "";
 		}
 
-		lines[3] = ChatColor.BLUE + Factoid.getThisPlugin().iPlayerMoney().toFormat(price)
+		lines[3] = ChatStyle.BLUE + Factoid.getPlayerMoney().toFormat(price)
 				+ "/" + renew;
 
 		createSign(lines);
@@ -207,7 +208,7 @@ public class EcoSign {
 		Block blockPlace = location.getBlock();
 
 		// Impossible to create the sign here
-		if (Factoid.getThisPlugin().iLands().getLand(location) != land) {
+		if (FactoidAPI.iLands().getLand(location) != land) {
 			throw new SignException();
 		}
 

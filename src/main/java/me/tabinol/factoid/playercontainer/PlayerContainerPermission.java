@@ -22,7 +22,7 @@ import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainerPermission;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
@@ -30,8 +30,7 @@ import org.bukkit.permissions.Permission;
 /**
  * The Class PlayerContainerPermission.
  */
-public class PlayerContainerPermission extends PlayerContainer 
-	implements IPlayerContainerPermission {
+public class PlayerContainerPermission extends PlayerContainer {
 
     /** The perm. */
     private Permission perm;
@@ -87,7 +86,7 @@ public class PlayerContainerPermission extends PlayerContainer
     @Override
     public String getPrint() {
 
-        return ChatColor.GRAY + "B:" + ChatColor.WHITE + name;
+        return ChatStyle.GRAY + "B:" + ChatStyle.WHITE + name;
     }
 
     /* (non-Javadoc)

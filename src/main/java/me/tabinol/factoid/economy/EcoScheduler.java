@@ -23,6 +23,7 @@ import java.util.Calendar;
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.exceptions.SignException;
 import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoidapi.FactoidAPI;
 import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainerPlayer;
 
@@ -38,14 +39,14 @@ public class EcoScheduler extends BukkitRunnable {
     	Calendar now = Calendar.getInstance();
     	
     	// Check for rent renew
-    	for(ILand land : Factoid.getThisPlugin().iLands().getForRent()) {
+    	for(ILand land : FactoidAPI.iLands().getForRent()) {
     		
     		long nextPaymentTime = land.getLastPaymentTime().getTime() + (86400000 * land.getRentRenew());
     		
     		if(land.isRented() && nextPaymentTime < now.getTimeInMillis()) {
     			
     			//Check if the tenant has enough money or time limit whit no auto renew 
-    			if(Factoid.getThisPlugin().iPlayerMoney().getPlayerBalance(land.getTenant().getOfflinePlayer(), land.getWorldName()) < land.getRentPrice()
+    			if(Factoid.getPlayerMoney().getPlayerBalance(land.getTenant().getOfflinePlayer(), land.getWorldName()) < land.getRentPrice()
     					|| !land.getRentAutoRenew()) {
     				
 					// Unrent
@@ -61,10 +62,10 @@ public class EcoScheduler extends BukkitRunnable {
     			} else {
     			
     				// renew rent
-    				Factoid.getThisPlugin().iPlayerMoney().getFromPlayer(land.getTenant().getOfflinePlayer(), 
+    				Factoid.getPlayerMoney().getFromPlayer(land.getTenant().getOfflinePlayer(), 
     					land.getWorldName(), land.getRentPrice());
     				if(land.getOwner() instanceof IPlayerContainerPlayer) {
-        				Factoid.getThisPlugin().iPlayerMoney().giveToPlayer(((IPlayerContainerPlayer)land.getOwner()).getOfflinePlayer(), 
+        				Factoid.getPlayerMoney().giveToPlayer(((IPlayerContainerPlayer)land.getOwner()).getOfflinePlayer(), 
         					land.getWorldName(), land.getRentPrice());
     				}
     				((Land) land).setLastPaymentTime(new Timestamp(now.getTime().getTime()));

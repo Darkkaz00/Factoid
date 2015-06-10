@@ -4,7 +4,7 @@ import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 import org.bukkit.entity.Player;
 
 
@@ -65,8 +65,8 @@ public class PlayerContainerPlayerName extends PlayerContainer {
 
         StringBuilder sb = new StringBuilder();
         
-        sb.append(ChatColor.DARK_RED).append("P:");
-       	sb.append(ChatColor.GRAY).append(name);
+        sb.append(ChatStyle.DARK_RED).append("P:");
+       	sb.append(ChatStyle.GRAY).append(name);
 
        	return sb.toString();
     }

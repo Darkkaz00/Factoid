@@ -19,13 +19,13 @@ package me.tabinol.factoid.parameters;
 
 import me.tabinol.factoidapi.parameters.IPermission;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 
 
 /**
  * The Class Permission.
  */
-public class Permission implements IPermission {
+public class Permission {
 
     /** The perm type. */
     PermissionType permType;
@@ -83,9 +83,9 @@ public class Permission implements IPermission {
     public final String getValuePrint() {
 
         if (value) {
-            return "" + ChatColor.GREEN + value;
+            return "" + ChatStyle.GREEN + value;
         } else {
-            return "" + ChatColor.RED + value;
+            return "" + ChatStyle.RED + value;
         }
     }
 

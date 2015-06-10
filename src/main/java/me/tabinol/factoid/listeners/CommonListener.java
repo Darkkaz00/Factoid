@@ -20,10 +20,11 @@ package me.tabinol.factoid.listeners;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.utilities.ChatStyle;
 import me.tabinol.factoidapi.lands.IDummyLand;
 import me.tabinol.factoidapi.parameters.IPermissionType;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -38,6 +39,12 @@ import org.bukkit.entity.Projectile;
  */
 public class CommonListener {
 	
+	public enum Click {
+		RIGHT,
+		LEFT,
+		NONE;
+	}
+	
 	/**
 	 * Check permission.
 	 * 
@@ -49,7 +56,7 @@ public class CommonListener {
 	 *            the pt
 	 * @return true, if successful
 	 */
-	protected boolean checkPermission(IDummyLand land, Player player,
+	protected boolean checkPermission(IDummyLand land, FPlayer player,
 			IPermissionType pt) {
 
 		return land.checkPermissionAndInherit(player, pt) == pt
@@ -62,35 +69,10 @@ public class CommonListener {
 	 * @param player
 	 *            the player
 	 */
-	protected void messagePermission(Player player) {
+	protected void messagePermission(FPlayer player) {
 
-		player.sendMessage(ChatColor.GRAY + "[Factoid] "
-				+ Factoid.getThisPlugin().iLanguage().getMessage("GENERAL.MISSINGPERMISSION"));
-	}
-	
-	/**
-	 * Gets the source player from entity or projectile
-	 *
-	 * @param entity the entity
-	 * @return the source player
-	 */
-	protected Player getSourcePlayer(Entity entity) {
-		
-		Projectile damagerProjectile;
-
-		// Check if the damager is a player
-		if (entity instanceof Player) {
-			return (Player) entity;
-		} else if (entity instanceof Projectile
-				&& entity.getType() != EntityType.EGG
-				&& entity.getType() != EntityType.SNOWBALL) {
-			damagerProjectile = (Projectile) entity;
-			if (damagerProjectile.getShooter() instanceof Player) {
-				return (Player) damagerProjectile.getShooter();
-			}
-		}
-		
-		return null;
+		player.sendMessage(ChatStyle.GRAY + "[Factoid] "
+				+ Factoid.getLanguage().getMessage("GENERAL.MISSINGPERMISSION"));
 	}
 	
 	/**

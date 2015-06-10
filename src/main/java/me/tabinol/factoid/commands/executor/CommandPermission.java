@@ -37,7 +37,7 @@ import me.tabinol.factoidapi.parameters.IPermission;
 import me.tabinol.factoidapi.parameters.IPermissionType;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 
 
 /**
@@ -93,7 +93,7 @@ public class CommandPermission extends CommandThreadExec {
         	
         	// For default Type
         	if(land.getType() != null) {
-            	stList.append(ChatColor.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("GENERAL.FROMDEFAULTTYPE",
+            	stList.append(ChatStyle.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("GENERAL.FROMDEFAULTTYPE",
         				land.getType().getName())).append(Config.NEWLINE);
             	importDisplayPermsFrom(((Lands) FactoidAPI.iLands()).getDefaultConf(land.getType()), false);
         	}
@@ -101,13 +101,13 @@ public class CommandPermission extends CommandThreadExec {
         	// For parent (if exist)
         	ILand parLand = land;
         	while((parLand = parLand.getParent()) != null) {
-        		stList.append(ChatColor.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("GENERAL.FROMPARENT",
-        				ChatColor.GREEN + parLand.getName() + ChatColor.DARK_GRAY)).append(Config.NEWLINE);
+        		stList.append(ChatStyle.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("GENERAL.FROMPARENT",
+        				ChatStyle.GREEN + parLand.getName() + ChatStyle.DARK_GRAY)).append(Config.NEWLINE);
         		importDisplayPermsFrom(parLand, true);
         	}
         	
         	// For world
-        	stList.append(ChatColor.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("GENERAL.FROMWORLD",
+        	stList.append(ChatStyle.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("GENERAL.FROMWORLD",
     				land.getWorldName())).append(Config.NEWLINE);
         	importDisplayPermsFrom(((Lands) FactoidAPI.iLands()).getOutsideArea(land.getWorldName()), true);
         	
@@ -134,7 +134,7 @@ public class CommandPermission extends CommandThreadExec {
         	
         	// Append to list
         	if(stSubList.length() > 0) {
-                stList.append(ChatColor.WHITE).append(pc.getPrint()).append(":");
+                stList.append(ChatStyle.WHITE).append(pc.getPrint()).append(":");
             	stList.append(stSubList).append(Config.NEWLINE);
         	}
         	
@@ -184,8 +184,8 @@ public class CommandPermission extends CommandThreadExec {
                 throw new FactoidCommandException("Permission", entity.player, "COMMAND.PERMISSION.NOENTERNOTINSPAWN");
             }
             ((Land) land).addPermission(pc, perm);
-            entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.PERMISSION.ISDONE", perm.getPermType().getPrint(),
-                    pc.getPrint() + ChatColor.YELLOW, land.getName()));
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.PERMISSION.ISDONE", perm.getPermType().getPrint(),
+                    pc.getPrint() + ChatStyle.YELLOW, land.getName()));
             Factoid.getThisPlugin().iLog().write("Permission set: " + perm.getPermType().toString() + ", value: " + perm.getValue());
 
         } else if (fonction.equalsIgnoreCase("unset")) {
@@ -194,7 +194,7 @@ public class CommandPermission extends CommandThreadExec {
             if (!land.removePermission(pc, pt)) {
                 throw new FactoidCommandException("Permission", entity.player, "COMMAND.PERMISSION.REMOVENOTEXIST");
             }
-            entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.PERMISSION.REMOVEISDONE", pt.toString()));
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.PERMISSION.REMOVEISDONE", pt.toString()));
             Factoid.getThisPlugin().iLog().write("Permission unset: " + pt.toString());
         }
     }

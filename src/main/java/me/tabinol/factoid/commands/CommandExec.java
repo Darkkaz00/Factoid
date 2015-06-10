@@ -30,11 +30,11 @@ import me.tabinol.factoidapi.lands.areas.ICuboidArea;
 import me.tabinol.factoidapi.lands.types.IType;
 import me.tabinol.factoid.lands.collisions.Collisions;
 import me.tabinol.factoid.playercontainer.PlayerContainerOwner;
+import me.tabinol.factoid.utilities.ChatStyle;
 import me.tabinol.factoidapi.parameters.IPermissionType;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -240,7 +240,7 @@ public abstract class CommandExec {
 
             if (addForApprove) {
                 if (Factoid.getThisPlugin().iConf().getAllowCollision() == Config.AllowCollisionType.APPROVE && allowApprove == true) {
-                    entity.sender.sendMessage(ChatColor.RED + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COLLISION.GENERAL.NEEDAPPROVE", landName));
+                    entity.sender.sendMessage(ChatStyle.RED + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COLLISION.GENERAL.NEEDAPPROVE", landName));
                     Factoid.getThisPlugin().iLog().write("land " + landName + " has collision and needs approval.");
                     Factoid.getThisPlugin().iLands().getApproveList().addApprove(new Approve(landName, type, action, removeId, newArea,
                             owner, parent, price, Calendar.getInstance()));

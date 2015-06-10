@@ -17,7 +17,7 @@
  */
 package me.tabinol.factoid.parameters;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 
 
 /**
@@ -90,9 +90,9 @@ public class ParameterType implements Comparable<ParameterType> {
     public String getPrint() {
         
         if(isRegistered) {
-            return ChatColor.YELLOW + name;
+            return ChatStyle.YELLOW + name;
         } else {
-            return ChatColor.DARK_GRAY + name;
+            return ChatStyle.DARK_GRAY + name;
         }
     }
     

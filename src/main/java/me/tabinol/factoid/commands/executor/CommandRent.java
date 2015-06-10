@@ -17,7 +17,7 @@
  */
 package me.tabinol.factoid.commands.executor;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 
@@ -81,7 +81,7 @@ public class CommandRent extends CommandExec {
 				throw new FactoidCommandException("Error in the command", entity.player, "COMMAND.ECONOMY.ERRORCREATESIGN");
 			}
         	
-            entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.ECONOMY.RECREATE"));
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.ECONOMY.RECREATE"));
             Factoid.getThisPlugin().iLog().write("Sign recreated for land " + land.getName() + " by: " + entity.playerName);
             
             return;
@@ -127,7 +127,7 @@ public class CommandRent extends CommandExec {
 			throw new FactoidCommandException("Error in the command", entity.player, "COMMAND.ECONOMY.ERRORCREATESIGN");
 		}
         ((Land) land).setForRent(rentPrice, rentRenew, rentAutoRenew, ecoSign.getLocation());
-        entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.ECONOMY.SIGNDONE"));
+        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.ECONOMY.SIGNDONE"));
         Factoid.getThisPlugin().iLog().write("The land " + land.getName() + " is set to for rent by: " + entity.playerName);
     }
 }

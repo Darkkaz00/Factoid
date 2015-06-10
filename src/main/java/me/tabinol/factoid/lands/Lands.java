@@ -34,6 +34,7 @@ import me.tabinol.factoid.exceptions.FactoidLandException;
 import me.tabinol.factoid.lands.approve.ApproveList;
 import me.tabinol.factoid.lands.areas.AreaIndex;
 import me.tabinol.factoid.lands.areas.CuboidArea;
+import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.lands.ILands;
 import me.tabinol.factoidapi.lands.areas.ICuboidArea;
@@ -55,7 +56,7 @@ import org.bukkit.plugin.PluginManager;
 /**
  * The Class Lands.
  */
-public class Lands implements ILands {
+public class Lands {
 
     /** The Constant INDEX_X1. */
     public final static int INDEX_X1 = 0;
@@ -81,8 +82,10 @@ public class Lands implements ILands {
     /** The outside area. */
     protected TreeMap<String, DummyLand> outsideArea; // Outside a Land (in specific worlds)
     
+    private final DummyLand defaultConfNoType; // Default config (Type not exist or Type null)
+    
     /** The default conf. */
-    private TreeMap<IType, DummyLand> defaultConf; // Default config of a land
+    private final TreeMap<IType, DummyLand> defaultConf; // Default config of a land
     
     /** The pm. */
     private final PluginManager pm;
@@ -114,6 +117,7 @@ public class Lands implements ILands {
 
         // Load Land default
         this.defaultConf = worldConfig.getTypeDefaultConf();
+        this.defaultConfNoType = worldConfig.getDefaultconfNoType();
 
         landList = new TreeMap<String, ILand>();
         landUUIDList = new TreeMap<UUID, ILand>();
@@ -124,7 +128,21 @@ public class Lands implements ILands {
 
     public DummyLand getDefaultConf(IType type) {
     	
-    	return defaultConf.get(type);
+    	DummyLand land;
+    	
+    	// No type? Return default config
+    	if(type == null) {
+    		return defaultConfNoType;
+    	}
+    	
+    	land = defaultConf.get(type);
+    	
+    	// Type not found? Return default config
+    	if(land == null) {
+    		return defaultConfNoType;
+    	}
+    	
+    	return land;
     }
     
     /**
@@ -164,8 +182,7 @@ public class Lands implements ILands {
      * @return the land
      * @throws FactoidLandException the factoid land exception
      */
-    public Land createLand(String landName, IPlayerContainer owner, ICuboidArea area, 
-    		me.tabinol.factoidapi.lands.ILand parent)
+    public Land createLand(String landName, IPlayerContainer owner, ICuboidArea area, ILand parent)
             throws FactoidLandException {
 
         return createLand(landName, owner, area, parent, 1, null);
@@ -185,7 +202,7 @@ public class Lands implements ILands {
      * @throws FactoidLandException the factoid land exception
      */
     public Land createLand(String landName, IPlayerContainer owner, ICuboidArea area, 
-    		me.tabinol.factoidapi.lands.ILand parent, double price, IType type)
+    		ILand parent, double price, IType type)
             throws FactoidLandException {
         
         getPriceFromPlayer(area.getWorldName(), owner, price);
@@ -208,7 +225,7 @@ public class Lands implements ILands {
      * @throws FactoidLandException the factoid land exception
      */
     public Land createLand(String landName, IPlayerContainer owner, ICuboidArea area, 
-    		me.tabinol.factoidapi.lands.ILand parent, int areaId, UUID uuid, IType type)
+    		ILand parent, int areaId, UUID uuid, IType type)
             throws FactoidLandException {
 
         String landNameLower = landName.toLowerCase();
@@ -234,7 +251,7 @@ public class Lands implements ILands {
         land = new Land(landNameLower, landUUID, owner, area, genealogy, (Land) parent, areaId, type);
 
         addLandToList(land);
-        Factoid.getThisPlugin().iLog().write("add land: " + landNameLower);
+        Factoid.getFactoidLog().write("add land: " + landNameLower);
 
         return land;
     }
@@ -293,8 +310,8 @@ public class Lands implements ILands {
         if (land.getParent() != null) {
         	((Land) land.getParent()).removeChild(land.getUUID());
         }
-        Factoid.getThisPlugin().iStorageThread().removeLand((Land) land);
-        Factoid.getThisPlugin().iLog().write("remove land: " + land);
+        Factoid.getStorageThread().removeLand((Land) land);
+        Factoid.getFactoidLog().write("remove land: " + land);
         return true;
     }
 
@@ -414,7 +431,7 @@ public class Lands implements ILands {
      * @param loc the loc
      * @return the land
      */
-    public Land getLand(Location loc) {
+    public Land getLand(Point loc) {
 
         ICuboidArea ca;
 
@@ -440,7 +457,7 @@ public class Lands implements ILands {
      * @param loc the loc
      * @return the land or outside area
      */
-    public DummyLand getLandOrOutsideArea(Location loc) {
+    public DummyLand getLandOrOutsideArea(Point loc) {
 
     	Land land;
 
@@ -457,7 +474,7 @@ public class Lands implements ILands {
      * @param loc the loc
      * @return the outside area
      */
-    public DummyLand getOutsideArea(Location loc) {
+    public DummyLand getOutsideArea(Point loc) {
 
         return getOutsideArea(loc.getWorld().getName());
     }
@@ -489,7 +506,7 @@ public class Lands implements ILands {
      * @param loc the loc
      * @return the lands
      */
-    public Collection<ILand> getLands(Location loc) {
+    public Collection<ILand> getLands(Point loc) {
 
         Collection<ICuboidArea> areas = getCuboidAreas(loc);
         HashMap<String, ILand> 
@@ -553,7 +570,7 @@ public class Lands implements ILands {
     protected boolean getPriceFromPlayer(String worldName, IPlayerContainer pc, double price) {
         
         if(pc.getContainerType() == EPlayerContainerType.PLAYER && price > 0) {
-            return Factoid.getThisPlugin().iPlayerMoney().getFromPlayer(((IPlayerContainerPlayer)pc).getOfflinePlayer(), worldName, price);
+            return Factoid.getPlayerMoney().getFromPlayer(((IPlayerContainerPlayer)pc).getOfflinePlayer(), worldName, price);
         }
     
     return true;
@@ -606,10 +623,10 @@ public class Lands implements ILands {
      * @param loc the loc
      * @return the cuboid areas
      */
-    public Collection<ICuboidArea> getCuboidAreas(Location loc) {
+    public Collection<ICuboidArea> getCuboidAreas(Point loc) {
 
         Collection<ICuboidArea> areas = new ArrayList<ICuboidArea>();
-        String worldName = loc.getWorld().getName();
+        String worldName = loc.getWorldName();
         int SearchIndex;
         int nbToFind;
         boolean ForwardSearch;
@@ -618,9 +635,9 @@ public class Lands implements ILands {
         Iterator<AreaIndex> it;
 
         // First, determinate if what is the highest number between x1, x2, z1 and z2
-        if (Math.abs(loc.getBlockX()) > Math.abs(loc.getBlockZ())) {
-            nbToFind = loc.getBlockX();
-            if (loc.getBlockX() < 0) {
+        if (Math.abs(loc.getX()) > Math.abs(loc.getZ())) {
+            nbToFind = loc.getX();
+            if (loc.getX() < 0) {
                 SearchIndex = INDEX_X1;
                 ForwardSearch = true;
             } else {
@@ -628,8 +645,8 @@ public class Lands implements ILands {
                 ForwardSearch = false;
             }
         } else {
-            nbToFind = loc.getBlockZ();
-            if (loc.getBlockZ() < 0) {
+            nbToFind = loc.getZ();
+            if (loc.getZ() < 0) {
                 SearchIndex = INDEX_Z1;
                 ForwardSearch = true;
             } else {
@@ -637,7 +654,7 @@ public class Lands implements ILands {
                 ForwardSearch = false;
             }
         }
-        Factoid.getThisPlugin().iLog().write("Search Index dir: " + SearchIndex + ", Forward Search: " + ForwardSearch);
+        Factoid.getFactoidLog().write("Search Index dir: " + SearchIndex + ", Forward Search: " + ForwardSearch);
 
         // Now check for area in location
         ais = areaList[SearchIndex].get(worldName);
@@ -654,11 +671,11 @@ public class Lands implements ILands {
         while (it.hasNext() && checkContinueSearch((ai = it.next()).getArea(), nbToFind, SearchIndex)) {
 
             if (ai.getArea().isLocationInside(loc)) {
-                Factoid.getThisPlugin().iLog().write("add this area in list for cuboid: " + ai.getArea().getLand().getName());
+                Factoid.getFactoidLog().write("add this area in list for cuboid: " + ai.getArea().getLand().getName());
                 areas.add(ai.getArea());
             }
         }
-        Factoid.getThisPlugin().iLog().write("Number of Areas found for location : " + areas.size());
+        Factoid.getFactoidLog().write("Number of Areas found for location : " + areas.size());
 
         return areas;
     }
@@ -669,30 +686,30 @@ public class Lands implements ILands {
      * @param loc the loc
      * @return the cuboid area
      */
-    public ICuboidArea getCuboidArea(Location loc) {
+    public ICuboidArea getCuboidArea(Point loc) {
 
         int actualPrio = Short.MIN_VALUE;
         int curPrio;
         int actualGen = 0;
         int curGen;
         ICuboidArea actualArea = null;
-        Location resLoc; // Resolved location
+        Point resLoc; // Resolved location
         
         // Give the position from the sky to underbedrock if the Y is greater than 255 or lower than 0
-        if(loc.getBlockY() >= loc.getWorld().getMaxHeight()) {
-        	resLoc = new Location(loc.getWorld(), loc.getX(), loc.getWorld().getMaxHeight() - 1, loc.getZ()); 
-        } else if(loc.getBlockY() < 0){
-        	resLoc = new Location(loc.getWorld(), loc.getX(), 0, loc.getZ()); 
+        if(loc.getY() >= loc.getWorld().getMaxHeight()) {
+        	resLoc = new Point(loc.getWorldName(), loc.getX(), loc.getWorld().getMaxHeight() - 1, loc.getZ()); 
+        } else if(loc.getY() < 0){
+        	resLoc = new Point(loc.getWorldName(), loc.getX(), 0, loc.getZ()); 
         } else resLoc = loc; 
         
         Collection<ICuboidArea> areas = getCuboidAreas(resLoc);
 
-        Factoid.getThisPlugin().iLog().write("Area check in" + resLoc.toString());
+        Factoid.getFactoidLog().write("Area check in" + resLoc.toString());
 
         // Compare priorities of parents (or main)
         for (ICuboidArea area : areas) {
 
-            Factoid.getThisPlugin().iLog().write("Check for: " + area.getLand().getName()
+            Factoid.getFactoidLog().write("Check for: " + area.getLand().getName()
                     + ", area: " + area.toString());
 
             curPrio = area.getLand().getPriority();
@@ -704,7 +721,7 @@ public class Lands implements ILands {
                 actualPrio = curPrio;
                 actualGen = area.getLand().getGenealogy();
 
-                Factoid.getThisPlugin().iLog().write("Found, update:  actualPrio: " + actualPrio + ", actualGen: " + actualGen);
+                Factoid.getFactoidLog().write("Found, update:  actualPrio: " + actualPrio + ", actualGen: " + actualGen);
             }
         }
 
@@ -759,7 +776,7 @@ public class Lands implements ILands {
                 areaList[t].put(area.getWorldName(), new TreeSet<AreaIndex>());
             }
         }
-        Factoid.getThisPlugin().iLog().write("Add area for " + area.getLand().getName());
+        Factoid.getFactoidLog().write("Add area for " + area.getLand().getName());
         areaList[INDEX_X1].get(area.getWorldName()).add(new AreaIndex(area.getX1(), area));
         areaList[INDEX_Z1].get(area.getWorldName()).add(new AreaIndex(area.getZ1(), area));
         areaList[INDEX_X2].get(area.getWorldName()).add(new AreaIndex(area.getX2(), area));

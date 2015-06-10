@@ -30,7 +30,7 @@ import me.tabinol.factoidapi.playercontainer.IPlayerContainerPlayer;
 /**
  * The Class Factions.
  */
-public class Factions implements IFactions {
+public class Factions {
 
     /** The faction list. */
     private final TreeMap<String, IFaction> factionList;
@@ -82,7 +82,7 @@ public class Factions implements IFactions {
 
         factionList.put(factionName, faction);
         factionUUIDList.put(uuid, faction);
-        Factoid.getThisPlugin().iLog().write("add faction: " + faction.getName());
+        Factoid.getFactoidLog().write("add faction: " + faction.getName());
 
         return faction;
     }
@@ -98,9 +98,9 @@ public class Factions implements IFactions {
         if (!factionList.containsKey(faction.getName())) {
             return false;
         }
-        Factoid.getThisPlugin().iStorageThread().removeFaction((Faction) faction);
+        Factoid.getStorageThread().removeFaction((Faction) faction);
         factionList.remove(faction.getName());
-        Factoid.getThisPlugin().iLog().write("remove faction: " + faction.getName());
+        Factoid.getFactoidLog().write("remove faction: " + faction.getName());
         return true;
     }
 

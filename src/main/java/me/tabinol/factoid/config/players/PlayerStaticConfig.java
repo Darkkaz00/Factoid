@@ -39,7 +39,7 @@ import org.bukkit.entity.Player;
 /**
  * The Class PlayerStaticConfig.
  */
-public class PlayerStaticConfig implements IPlayerStaticConfig {
+public class PlayerStaticConfig {
 
     /** The player conf list. */
     private final Map<CommandSender, PlayerConfEntry> playerConfList;

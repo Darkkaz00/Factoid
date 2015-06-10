@@ -30,7 +30,7 @@ import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 /**
  * The Class PlayerContainer.
  */
-public abstract class PlayerContainer implements IPlayerContainer, Comparable<PlayerContainer> {
+public abstract class PlayerContainer implements Comparable<PlayerContainer> {
 
     /** The name. */
     protected String name;

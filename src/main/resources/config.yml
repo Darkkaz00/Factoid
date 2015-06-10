@@ -13,8 +13,8 @@ general:                             # ----General Config----
   # or avoiding plugin conflicts. Flags (???_DAMAGE) will be ignored.
   OverrideExplosions: true
   UseEconomy: false
-  InfoItem: 352                      # Item that give Land information
-  SelectItem: 367                    # Item that give Land selection
+  InfoItem: BONE                     # Item name that give Land information
+  SelectItem: ROTTEN_FLESH           # Item name that give Land selection
 land:
   Types:
     List:                            # land types or categories
@@ -22,7 +22,8 @@ land:
       - player
     OnCreate:                        # Automatic categories on create
       AdminMod: admin                # On admin mode (or "-null-")
-      NoneAdminMod: player           # Non admin mode (normal players or "-null-")
+      NoneAdminMod: player           # Non admin mode (normal players or 
+                                     # "-null-")
   # AllowCollision:
   # true: Collisions are permitted without verification.
   # approve: A player with permission factoid.approvecollision must approve

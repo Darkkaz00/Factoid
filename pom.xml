@@ -15,13 +15,16 @@
 		<build.number></build.number>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- *** Change Language version here here *** -->
-		<langVersion>25</langVersion>
+		<langVersion>26</langVersion>
 		<!-- *** Change land .conf version here here *** -->
 		<landVersion>5</landVersion>
 		<!-- *** Change faction .conf version here here *** -->
 		<factionVersion>3</factionVersion>
 		<!-- *** Change players cache .conf version here here *** -->
 		<playersCacheVersion>1</playersCacheVersion>
+		<!-- *** For Sponge plugin version *** -->
+		<version.template.file>src/main/java/me/tabinol/factoid/FactoidSponge.java.template</version.template.file>
+		<version.file>src/main/java/me/tabinol/factoid/FactoidSponge.java</version.file>
 	</properties>
 
 	<repositories>
@@ -30,13 +33,24 @@
 			<url>https://hub.spigotmc.org/nexus/content/groups/public</url>
 		</repository>
 		<repository>
+			<id>sponge-maven-repo</id>
+			<name>Sponge maven repo</name>
+			<url>http://repo.spongepowered.org/maven</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
 			<id>Tabinol.me Nexus</id>
 			<url>http://nexus.tabinol.me/content/groups/public</url>
 		</repository>
-        <repository>
-            <id>Plugin Metrics</id>
-            <url>http://repo.mcstats.org/content/repositories/public</url>
-        </repository>
+		<repository>
+			<id>Plugin Metrics</id>
+			<url>http://repo.mcstats.org/content/repositories/public</url>
+		</repository>
 		<repository>
 			<id>vault-repo</id>
 			<url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
@@ -52,42 +66,49 @@
 	</repositories>
 
 	<dependencies>
-        
-        <dependency>
-            <groupId>me.tabinol.factoid</groupId>
-            <artifactId>FactoidAPI</artifactId>
-            <version>1.2.1-SNAPSHOT</version>
-        </dependency>
-		
+
 		<dependency>
-		<!-- Gson: Java to Json conversion -->
+			<groupId>me.tabinol.factoid</groupId>
+			<artifactId>FactoidAPI</artifactId>
+			<version>1.2.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<!-- Gson: Java to Json conversion -->
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.3</version>
 			<optional>true</optional>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
 			<version>1.8-R0.1-SNAPSHOT</version>
 			<optional>true</optional>
 		</dependency>
-		
-        <dependency>
-            <groupId>org.mcstats.bukkit</groupId>
-            <artifactId>metrics-lite</artifactId>
-            <version>R8-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
 
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.9</version>
-            <optional>true</optional>
-        </dependency>
-        
+		<dependency>
+			<groupId>org.spongepowered</groupId>
+			<artifactId>spongeapi</artifactId>
+			<version>2.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mcstats.bukkit</groupId>
+			<artifactId>metrics-lite</artifactId>
+			<version>R8-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.9</version>
+			<optional>true</optional>
+		</dependency>
+
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>Vault</artifactId>
@@ -100,7 +121,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.sk89q.worldedit</groupId>
 			<artifactId>worldedit-bukkit</artifactId>
@@ -152,7 +173,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>net.ess3</groupId>
 			<artifactId>Essentials</artifactId>
@@ -182,7 +203,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<finalName>${project.artifactId}-${project.version}${build.number}</finalName>
 		<resources>
@@ -200,6 +221,29 @@
 		</resources>
 		<plugins>
 			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>replacer</artifactId>
+				<version>1.5.3</version>
+				<executions>
+					<execution>
+						<phase>process-sources</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<file>${version.template.file}</file>
+					<outputFile>${version.file}</outputFile>
+					<replacements>
+						<replacement>
+							<token>@version@</token>
+							<value>${project.version}</value>
+						</replacement>
+					</replacements>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
@@ -212,20 +256,20 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.10.1</version>
-                <configuration>
-                    <!-- Default configuration for all reports -->
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>javadoc</goal>
-                            <goal>test-javadoc</goal>
-                        </goals>
-                        <phase>site</phase>
-                        <configuration>
-                            <!-- Specific configuration for the given reports -->
-                        </configuration>
-                    </execution>
+				<configuration>
+					<!-- Default configuration for all reports -->
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>javadoc</goal>
+							<goal>test-javadoc</goal>
+						</goals>
+						<phase>site</phase>
+						<configuration>
+							<!-- Specific configuration for the given reports -->
+						</configuration>
+					</execution>
 					<execution>
 						<id>attach-javadocs</id>
 						<goals>
@@ -253,22 +297,22 @@
 									<include>org.reflections:reflections</include>
 									<include>org.javassist:javassist</include>
 									<include>com.google.code.findbugs:annotations</include>
-                            		<include>org.mcstats.*:*</include>
+									<include>org.mcstats.*:*</include>
 								</includes>
 							</artifactSet>
-                    		<relocations>
-                	        	<relocation>
-            	                	<pattern>org.mcstats</pattern>
-        	                    	<shadedPattern>me.tabinol.factoid</shadedPattern>
-    	                    	</relocation>
-	                    	</relocations>
+							<relocations>
+								<relocation>
+									<pattern>org.mcstats</pattern>
+									<shadedPattern>me.tabinol.factoid</shadedPattern>
+								</relocation>
+							</relocations>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<distributionManagement>
 		<repository>
 			<id>Tabinol.me Nexus</id>

@@ -128,6 +128,15 @@ public class WorldConfig {
         Factoid.getThisPlugin().iLog().write("Create default conf for lands");
         return landModify(new DummyLand(GLOBAL), landDefault, "ContainerPermissions", "ContainerFlags");
     }
+    
+    /**
+     * Get the default configuration of a land without a Type.
+     * @return The land configuration (DummyLand)
+     */
+    public DummyLand getDefaultconfNoType() {
+    	
+    	return defaultConfNoType;
+    }
 
     /**
      * Gets the default conf for each type

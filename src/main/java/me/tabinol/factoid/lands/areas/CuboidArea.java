@@ -22,11 +22,9 @@ import java.util.HashSet;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.minecraft.FWorld;
 import me.tabinol.factoid.utilities.Calculate;
 import me.tabinol.factoidapi.lands.areas.ICuboidArea;
-
-import org.bukkit.Location;
-import org.bukkit.World;
 
 
 /**
@@ -203,12 +201,12 @@ public class CuboidArea implements Comparable<CuboidArea>, ICuboidArea {
      * @param loc the loc
      * @return true, if is location inside
      */
-    public boolean isLocationInside(Location loc) {
+    public boolean isLocationInside(Point loc) {
 
-        return loc.getWorld().getName().equals(worldName)
-                && Calculate.isInInterval(loc.getBlockX(), x1, x2)
-                && Calculate.isInInterval(loc.getBlockY(), y1, y2)
-                && Calculate.isInInterval(loc.getBlockZ(), z1, z2);
+        return loc.getWorldName().equals(worldName)
+                && Calculate.isInInterval(loc.getX(), x1, x2)
+                && Calculate.isInInterval(loc.getY(), y1, y2)
+                && Calculate.isInInterval(loc.getZ(), z1, z2);
     }
     
     /**
@@ -503,9 +501,9 @@ public class CuboidArea implements Comparable<CuboidArea>, ICuboidArea {
      *
      * @return the word
      */
-    public World getWord() {
+    public FWorld getWord() {
 
-        return Factoid.getThisPlugin().getServer().getWorld(worldName);
+        return Factoid.getServer().getWorld(worldName);
     }
 
     /**

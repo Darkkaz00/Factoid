@@ -5,8 +5,8 @@ DISABLE: "Factoid est désactivé."
 CONSOLE: "Hé Console! attends...quoi?"
 HELP:
   NOHELP: "Pas d'aide disponible pour cette commande."
+  LISTSTART: "-liste des commandes-"
   FACTOID:
-    LISTSTART: "-liste des commandes-"
     GENERAL:
       1: "Tapez \"/factoid help\" <commande> pour l'aide sur la commande."
       2: "-Commandes générales-"

@@ -27,7 +27,7 @@ import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoidapi.FactoidAPI;
 import me.tabinol.factoidapi.lands.types.IType;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 
 @InfoCommand(name="type", forceParameter=true)
 public class CommandType extends CommandExec {
@@ -52,7 +52,7 @@ public class CommandType extends CommandExec {
             	if (stList.length() != 0) {
             		stList.append(" ");
                 }
-                stList.append(ChatColor.WHITE).append(type.getName());
+                stList.append(ChatStyle.WHITE).append(type.getName());
             stList.append(Config.NEWLINE);
             }
             new ChatPage("COMMAND.TYPES.LISTSTART", stList.toString(), entity.player, null).getPage(1);
@@ -60,7 +60,7 @@ public class CommandType extends CommandExec {
         } else if(curArg.equals("remove")) {
         	
         	land.setType(null);
-            entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.TYPES.REMOVEISDONE", land.getName()));
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.TYPES.REMOVEISDONE", land.getName()));
             Factoid.getThisPlugin().iLog().write("Land type removed: " + land.getName());
         
         } else { // Type change 
@@ -72,7 +72,7 @@ public class CommandType extends CommandExec {
         	}
         	
         	land.setType(type);
-            entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.TYPES.ISDONE", type.getName(), land.getName()));
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.TYPES.ISDONE", type.getName(), land.getName()));
             Factoid.getThisPlugin().iLog().write("Land type: " + type.getName() + " for land: " + land.getName());
         }
     }

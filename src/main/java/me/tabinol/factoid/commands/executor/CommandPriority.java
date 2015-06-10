@@ -25,7 +25,7 @@ import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.utilities.Calculate;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 
 
 /**
@@ -69,7 +69,7 @@ public class CommandPriority extends CommandExec {
         }
         land.setPriority(newPrio);
 
-        entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage(
+        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage(
                 "COMMAND.PRIORITY.DONE", land.getName(), land.getPriority() + ""));
         Factoid.getThisPlugin().iLog().write("Priority for land " + land.getName() + " changed for " + land.getPriority());
     }

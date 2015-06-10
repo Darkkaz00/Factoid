@@ -32,7 +32,7 @@ import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainerPlayer;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -155,7 +155,7 @@ public class LandListener extends CommonListener implements Listener {
                 // Message quit
                 value = lastLand.getFlagNoInherit(FlagList.MESSAGE_QUIT.getFlagType()).getValueString();
                 if (!value.isEmpty()) {
-                    player.sendMessage(ChatColor.GRAY + "[Factoid] (" + ChatColor.GREEN + lastLand.getName() + ChatColor.GRAY + "): " + ChatColor.WHITE + value);
+                    player.sendMessage(ChatStyle.GRAY + "[Factoid] (" + ChatStyle.GREEN + lastLand.getName() + ChatStyle.GRAY + "): " + ChatStyle.WHITE + value);
                 }
             }
 
@@ -183,7 +183,7 @@ public class LandListener extends CommonListener implements Listener {
                         tpSpawn(player, land, message);
                         return;
                     } else {
-                        player.sendMessage(ChatColor.GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage(message, land.getName()));
+                        player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage(message, land.getName()));
                         event.setCancelled(true);
                         return;
                     }
@@ -201,7 +201,7 @@ public class LandListener extends CommonListener implements Listener {
                 // Message join
                 value = land.getFlagNoInherit(FlagList.MESSAGE_JOIN.getFlagType()).getValueString();
                 if (!value.isEmpty()) {
-                    player.sendMessage(ChatColor.GRAY + "[Factoid] (" + ChatColor.GREEN + land.getName() + ChatColor.GRAY + "): " + ChatColor.WHITE + value);
+                    player.sendMessage(ChatStyle.GRAY + "[Factoid] (" + ChatStyle.GREEN + land.getName() + ChatStyle.GRAY + "): " + ChatStyle.WHITE + value);
                 }
             }
 
@@ -321,8 +321,8 @@ public class LandListener extends CommonListener implements Listener {
             if (player != null && player != playerIn
                     // Only adminmod can see vanish
                     && (!playerConf.isVanished(playerIn) || playerConf.get(player).isAdminMod())) {
-                player.sendMessage(ChatColor.GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage(
-                        message, playerIn.getDisplayName(), land.getName() + ChatColor.GRAY));
+                player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage(
+                        message, playerIn.getDisplayName(), land.getName() + ChatStyle.GRAY));
             }
         }
     }
@@ -337,6 +337,6 @@ public class LandListener extends CommonListener implements Listener {
     private void tpSpawn(Player player, ILand land, String message) {
 
         player.teleport(player.getWorld().getSpawnLocation());
-        player.sendMessage(ChatColor.GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage(message, land.getName()));
+        player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage(message, land.getName()));
     }
 }

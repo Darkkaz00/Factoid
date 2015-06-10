@@ -1,5 +1,5 @@
 name: Factoid
-main: me.tabinol.factoid.Factoid
+main: me.tabinol.factoid.FactoidBukkit
 version: ${project.version}
 description: Factoid
 author: [Kaz00,Tabinol]

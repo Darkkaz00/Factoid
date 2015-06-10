@@ -38,7 +38,7 @@ import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 import me.tabinol.factoid.selection.PlayerSelection.SelectionType;
 import me.tabinol.factoid.selection.region.AreaSelection;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 
 
 /**
@@ -143,7 +143,7 @@ public class CommandCreate extends CommandExec {
             Logger.getLogger(CommandCreate.class.getName()).log(Level.SEVERE, "On land create", ex);
         }
 
-        entity.player.sendMessage(ChatColor.GREEN + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CREATE.DONE"));
+        entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CREATE.DONE"));
         Factoid.getThisPlugin().iLog().write(entity.playerName + " have create a land named " + land.getName() + " at position " + land.getAreas().toString());
         
         // Cancel and select the land

@@ -34,7 +34,7 @@ import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.parameters.IFlagType;
 import me.tabinol.factoidapi.parameters.ILandFlag;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 
 
 /**
@@ -69,9 +69,9 @@ public class CommandFlag extends CommandExec {
         /*
         if (entity.argList.length() < 2) {
 
-            entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.FLAGS.JOINMODE"));
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.FLAGS.JOINMODE"));
             Factoid.getThisPlugin().iLog().write("PlayerSetFlagUI for " + entity.playerName);
-            entity.player.sendMessage(ChatColor.DARK_GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.FLAGS.HINT"));
+            entity.player.sendMessage(ChatStyle.DARK_GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.FLAGS.HINT"));
             CuboidArea area = Factoid.getThisPlugin().iLands().getCuboidArea(entity.player.getLocation());
             LandSetFlag setting = new LandSetFlag(entity.player, area);
             entity.playerConf.setSetFlagUI(setting);
@@ -91,9 +91,9 @@ public class CommandFlag extends CommandExec {
             }
             
             ((Land)land).addFlag(landFlag);
-            entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + 
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + 
             Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.FLAGS.ISDONE", landFlag.getFlagType().toString(), 
-                    landFlag.getValue().getValuePrint() + ChatColor.YELLOW));
+                    landFlag.getValue().getValuePrint() + ChatStyle.YELLOW));
             Factoid.getThisPlugin().iLog().write("Flag set: " + landFlag.getFlagType().toString() + ", value: " + 
                     landFlag.getValue().getValue().toString());
 
@@ -103,7 +103,7 @@ public class CommandFlag extends CommandExec {
             if (!land.removeFlag(flagType)) {
                 throw new FactoidCommandException("Flags", entity.player, "COMMAND.FLAGS.REMOVENOTEXIST");
             }
-            entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.FLAGS.REMOVEISDONE", flagType.toString()));
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.FLAGS.REMOVEISDONE", flagType.toString()));
             Factoid.getThisPlugin().iLog().write("Flag unset: " + flagType.toString());
         
         } else if (curArg.equalsIgnoreCase("list")) {
@@ -116,7 +116,7 @@ public class CommandFlag extends CommandExec {
         	
         	// For default Type
         	if(land.getType() != null) {
-            	stList.append(ChatColor.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("GENERAL.FROMDEFAULTTYPE",
+            	stList.append(ChatStyle.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("GENERAL.FROMDEFAULTTYPE",
         				land.getType().getName())).append(Config.NEWLINE);
             	importDisplayFlagsFrom(((Lands) FactoidAPI.iLands()).getDefaultConf(land.getType()), false);
         	}
@@ -124,13 +124,13 @@ public class CommandFlag extends CommandExec {
         	// For parent (if exist)
         	ILand parLand = land;
         	while((parLand = parLand.getParent()) != null) {
-        		stList.append(ChatColor.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("GENERAL.FROMPARENT",
-        				ChatColor.GREEN + parLand.getName() + ChatColor.DARK_GRAY)).append(Config.NEWLINE);
+        		stList.append(ChatStyle.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("GENERAL.FROMPARENT",
+        				ChatStyle.GREEN + parLand.getName() + ChatStyle.DARK_GRAY)).append(Config.NEWLINE);
         		importDisplayFlagsFrom(parLand, true);
         	}
         	
         	// For world
-        	stList.append(ChatColor.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("GENERAL.FROMWORLD",
+        	stList.append(ChatStyle.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("GENERAL.FROMWORLD",
     				land.getWorldName())).append(Config.NEWLINE);
         	importDisplayFlagsFrom(((Lands) FactoidAPI.iLands()).getOutsideArea(land.getWorldName()), true);
                 

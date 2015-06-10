@@ -22,13 +22,13 @@ import java.util.ArrayList;
 import me.tabinol.factoidapi.utilities.StringChanges;
 import me.tabinol.factoidapi.parameters.IFlagValue;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 
 /**
  * The Class FlagValue.
  * Represent a flag value : Boolean, Double, String and String[]
  */
-public class FlagValue implements IFlagValue {
+public class FlagValue {
 	
 	/** The value. */
 	private Object value;
@@ -130,9 +130,9 @@ public class FlagValue implements IFlagValue {
 
         if(value instanceof Boolean) {
             if((Boolean) value) {
-                return "" + ChatColor.GREEN + true;
+                return "" + ChatStyle.GREEN + true;
             } else {
-                return "" + ChatColor.RED + false;
+                return "" + ChatStyle.RED + false;
             }
         }
         

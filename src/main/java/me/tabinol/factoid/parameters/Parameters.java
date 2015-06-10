@@ -34,7 +34,7 @@ import org.bukkit.Material;
  *
  * @author Tabinol
  */
-public class Parameters implements IParameters {
+public class Parameters {
 
     /** The permissions. */
     private final TreeMap<String, PermissionType> permissions;

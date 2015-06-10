@@ -25,7 +25,7 @@ import me.tabinol.factoidapi.parameters.ILandFlag;
 /**
  * The Class LandFlag.
  */
-public class LandFlag implements ILandFlag {
+public class LandFlag {
     
     /** The flag type. */
     private FlagType flagType;

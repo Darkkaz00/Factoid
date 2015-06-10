@@ -79,24 +79,24 @@ public class Config {
     public boolean useEconomy() { return useEconomy; }
     
     /** The info item. */
-    private int infoItem;
+    private String infoItem;
     
     /**
      * Gets the info item.
      *
      * @return the info item
      */
-    public int getInfoItem() { return infoItem; }
+    public String getInfoItem() { return infoItem; }
     
     /** The select item. */
-    private int selectItem;
+    private String selectItem;
     
     /**
      * Gets the select item.
      *
      * @return the select item
      */
-    public int getSelectItem() { return selectItem; }
+    public String getSelectItem() { return selectItem; }
     
     /**
      * The Enum AllowCollisionType.
@@ -339,8 +339,8 @@ public class Config {
         config.addDefault("general.worlds", new String[] {"world", "world_nether", "world_the_end"});
         lang = config.getString("general.lang", "english");
         useEconomy = config.getBoolean("general.UseEconomy", false);
-        infoItem = config.getInt("general.InfoItem", 352);
-        selectItem = config.getInt("general.SelectItem", 367);
+        infoItem = config.getString("general.InfoItem", "BONE");
+        selectItem = config.getString("general.SelectItem", "ROTTEN_FLESH");
         // Remove error if the parameter is not here (AllowCollision)
         try {
             allowCollision = AllowCollisionType.valueOf(config.getString("land.AllowCollision", "approve").toUpperCase());

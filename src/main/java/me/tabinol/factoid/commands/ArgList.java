@@ -20,6 +20,7 @@ package me.tabinol.factoid.commands;
 // Work with command arguments
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoidapi.FactoidAPI;
 import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoid.parameters.FlagType;
 import me.tabinol.factoid.parameters.FlagValue;
@@ -27,6 +28,9 @@ import me.tabinol.factoid.parameters.LandFlag;
 import me.tabinol.factoid.parameters.Permission;
 import me.tabinol.factoid.parameters.PermissionType;
 import me.tabinol.factoid.playercontainer.PlayerContainer;
+import me.tabinol.factoidapi.parameters.IFlagType;
+import me.tabinol.factoidapi.parameters.IFlagValue;
+import me.tabinol.factoidapi.parameters.IPermissionType;
 import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
 
 import org.bukkit.command.CommandSender;
@@ -155,21 +159,21 @@ public class ArgList {
      * @return the flag type from arg
      * @throws FactoidCommandException the factoid command exception
      */
-    public FlagType getFlagTypeFromArg(boolean isAdminmod, boolean isOwner) throws FactoidCommandException {
+    public IFlagType getFlagTypeFromArg(boolean isAdminmod, boolean isOwner) throws FactoidCommandException {
 
         String curArg = getNext();
-        FlagType flagType;
+        IFlagType flagType;
 
         if (curArg == null) {
             throw new FactoidCommandException("Flag error", player, "COMMAND.FLAGS.FLAGNULL");
         }
 
-        flagType = Factoid.getThisPlugin().iParameters().getFlagType(curArg.toUpperCase());
+        flagType = FactoidAPI.iParameters().getFlagType(curArg.toUpperCase());
         if (flagType == null) {
             throw new FactoidCommandException("Flag error", player, "COMMAND.FLAGS.FLAGNULL");
         }
 
-        if (!isAdminmod && !(isOwner && Factoid.getThisPlugin().iConf().getOwnerConfigFlag().contains(flagType))) {
+        if (!isAdminmod && !(isOwner && Factoid.getConf().getOwnerConfigFlag().contains(flagType))) {
             throw new FactoidCommandException("Flag error", player, "GENERAL.MISSINGPERMISSION");
         }
 
@@ -186,16 +190,16 @@ public class ArgList {
      */
     public LandFlag getFlagFromArg(boolean isAdminmob, boolean isOwner) throws FactoidCommandException {
 
-        FlagType flagType = getFlagTypeFromArg(isAdminmob, isOwner);
+        IFlagType flagType = getFlagTypeFromArg(isAdminmob, isOwner);
 
         if (isLast()) {
             throw new FactoidCommandException("Flag error", player, "GENERAL.MISSINGINFO");
         }
         
-        FlagValue flagValue = FlagValue.getFromString(getNextToEnd(), flagType);
+        IFlagValue flagValue = FlagValue.getFromString(getNextToEnd(), (FlagType) flagType);
 
         if(flagValue != null) {
-        	return new LandFlag(flagType, flagValue, true);
+        	return new LandFlag((FlagType) flagType, flagValue, true);
         } else {
         	return null;
         }
@@ -265,21 +269,21 @@ public class ArgList {
      * @return the permission type from arg
      * @throws FactoidCommandException the factoid command exception
      */
-    public PermissionType getPermissionTypeFromArg(boolean isAdminmod, boolean isOwner) throws FactoidCommandException {
+    public IPermissionType getPermissionTypeFromArg(boolean isAdminmod, boolean isOwner) throws FactoidCommandException {
 
         String curArg = getNext();
-        PermissionType pt;
+        IPermissionType pt;
 
         if (curArg == null) {
             throw new FactoidCommandException("Permission Error", player, "COMMAND.PERMISSIONTYPE.TYPENULL");
         }
 
-        pt = Factoid.getThisPlugin().iParameters().getPermissionType(curArg.toUpperCase());
+        pt = FactoidAPI.iParameters().getPermissionType(curArg.toUpperCase());
         if (pt == null) {
             throw new FactoidCommandException("Permission Error", player, "COMMAND.PERMISSIONTYPE.INVALID");
         }
 
-        if (!isAdminmod && !(isOwner && Factoid.getThisPlugin().iConf().getOwnerConfigPerm().contains(pt))) {
+        if (!isAdminmod && !(isOwner && Factoid.getConf().getOwnerConfigPerm().contains(pt))) {
             throw new FactoidCommandException("Permission Error", player, "GENERAL.MISSINGPERMISSION");
         }
 
@@ -296,13 +300,13 @@ public class ArgList {
      */
     public Permission getPermissionFromArg(boolean isAdminmod, boolean isOwner) throws FactoidCommandException {
 
-        PermissionType pt = getPermissionTypeFromArg(isAdminmod, isOwner);
+        IPermissionType pt = getPermissionTypeFromArg(isAdminmod, isOwner);
         String curArg = getNext();
 
         if (curArg == null) {
             throw new FactoidCommandException("Permission Error", player, "COMMAND.PERMISSIONVALUE.VALUENULL");
         }
 
-        return new Permission(pt, Boolean.parseBoolean(curArg), true);
+        return new Permission((PermissionType) pt, Boolean.parseBoolean(curArg), true);
     }
 }

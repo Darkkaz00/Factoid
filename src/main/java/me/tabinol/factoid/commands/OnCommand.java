@@ -38,7 +38,7 @@ import org.reflections.Reflections;
 /**
  * The Class OnCommand.
  */
-public class OnCommand extends Thread implements CommandExecutor {
+public class OnCommand {
 
 	private final Map<MainCommand, Map<String, Class<?>>> commands = new EnumMap<MainCommand, Map<String, Class<?>>>(MainCommand.class);
 	

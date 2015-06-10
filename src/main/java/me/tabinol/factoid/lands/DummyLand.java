@@ -44,7 +44,7 @@ import org.bukkit.entity.Player;
 /**
  * The Class DummyLand.
  */
-public class DummyLand implements IDummyLand {
+public class DummyLand {
 
     /** The permissions. */
     protected TreeMap<IPlayerContainer, TreeMap<IPermissionType, IPermission>> permissions; // String for playerName

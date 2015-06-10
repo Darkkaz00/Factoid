@@ -25,7 +25,7 @@ import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.playerscache.PlayerCacheEntry;
 import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 
 
 /**
@@ -70,7 +70,7 @@ public class CommandOwner extends CommandThreadExec {
     	convertPcIfNeeded(playerCacheEntry);
 
         land.setOwner(pc);
-        entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.OWNER.ISDONE", pc.getPrint(), land.getName()));
+        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.OWNER.ISDONE", pc.getPrint(), land.getName()));
         Factoid.getThisPlugin().iLog().write("The land " + land.getName() + "is set to owner: " + pc.getPrint());
 
         // Cancel the selection

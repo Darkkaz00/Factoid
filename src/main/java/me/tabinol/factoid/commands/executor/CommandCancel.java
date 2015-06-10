@@ -25,7 +25,7 @@ import me.tabinol.factoid.config.players.PlayerConfEntry;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.selection.PlayerSelection.SelectionType;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 import org.bukkit.entity.Player;
 
 
@@ -82,7 +82,7 @@ public class CommandCancel extends CommandExec {
 
         if (playerConf.getConfirm() != null) {
             playerConf.setConfirm(null);
-            player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CANCEL.ACTION"));
+            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CANCEL.ACTION"));
             Factoid.getThisPlugin().iLog().write(player.getName() + " cancel for action");
             
             if(!fromAutoCancel) {
@@ -93,7 +93,7 @@ public class CommandCancel extends CommandExec {
         if (playerConf.getSelection().getSelection(SelectionType.AREA) != null) {
 
             playerConf.getSelection().removeSelection(SelectionType.AREA);
-            player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.CANCEL"));
+            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.CANCEL"));
             Factoid.getThisPlugin().iLog().write(player.getName() + ": Select cancel");
 
             if(!fromAutoCancel) {
@@ -105,7 +105,7 @@ public class CommandCancel extends CommandExec {
         if (playerConf.getSetFlagUI() != null) {
 
             playerConf.setSetFlagUI(null);
-            player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CANCEL.FLAGS"));
+            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CANCEL.FLAGS"));
 
             if(!fromAutoCancel) {
                 return;
@@ -116,7 +116,7 @@ public class CommandCancel extends CommandExec {
         if (playerConf.getSelection().getSelection(SelectionType.LAND) != null) {
 
             playerConf.getSelection().removeSelection(SelectionType.LAND);
-            player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CANCEL.SELECT"));
+            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CANCEL.SELECT"));
 
             // Cancel selection (it is the last think selected)
             playerConf.setAutoCancelSelect(false);

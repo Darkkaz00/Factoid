@@ -24,7 +24,7 @@ import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.parameters.PermissionList;
 
-import org.bukkit.ChatColor;
+import org.bukkit.ChatStyle;
 
 
 /**
@@ -57,9 +57,9 @@ public class CommandNotify extends CommandExec {
         
         if (land.isPlayerNotify(entity.playerConf.getPlayerContainer())) {
             land.removePlayerNotify(entity.playerConf.getPlayerContainer());
-            entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.NOTIFY.QUIT", land.getName()));
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.NOTIFY.QUIT", land.getName()));
         } else {
-            entity.player.sendMessage(ChatColor.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.NOTIFY.JOIN", land.getName()));
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.NOTIFY.JOIN", land.getName()));
             land.addPlayerNotify(entity.playerConf.getPlayerContainer());
         }
     }

@@ -29,8 +29,7 @@ import org.bukkit.entity.Player;
 /**
  * The Class PlayerContainerFactionTerritory.
  */
-public class PlayerContainerFactionTerritory extends PlayerContainer 
-	implements IPlayerContainerFactionTerritory {
+public class PlayerContainerFactionTerritory extends PlayerContainer {
     
     /** The land. */
     private ILand land;

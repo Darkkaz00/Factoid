@@ -24,6 +24,8 @@ import me.tabinol.factoid.Factoid;
 import me.tabinol.factoidapi.config.players.IPlayerConfEntry;
 import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.lands.areas.ICuboidArea;
+import me.tabinol.factoid.config.players.PlayerConfEntry;
+import me.tabinol.factoid.minecraft.FSender;
 import me.tabinol.factoid.parameters.FlagList;
 import me.tabinol.factoidapi.parameters.IFlagType;
 import me.tabinol.factoid.selection.region.AreaSelection;
@@ -49,7 +51,7 @@ public class PlayerSelection {
     }
 
     /** The player conf entry. */
-    private final IPlayerConfEntry playerConfEntry;
+    private final FSender playerConfEntry;
     
     /** The selection list. */
     private final EnumMap<SelectionType, RegionSelection> selectionList; // SelectionList for the player
@@ -62,7 +64,7 @@ public class PlayerSelection {
      *
      * @param playerConfEntry the player conf entry
      */
-    public PlayerSelection(IPlayerConfEntry playerConfEntry) {
+    public PlayerSelection(FSender playerConfEntry) {
 
         this.playerConfEntry = playerConfEntry;
         selectionList = new EnumMap<SelectionType, RegionSelection>(SelectionType.class);
