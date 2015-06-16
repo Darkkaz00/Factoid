@@ -77,8 +77,8 @@ public class CommandArea extends CommandExec {
             // Add Area
             ((Land) land).addArea(area, price);
 
-            entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CREATE.AREA.ISDONE", land.getName()));
-            Factoid.getThisPlugin().iLog().write(entity.playerName + " have create an area named " + land.getName() + " at position " + land.getAreas().toString());
+            entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CREATE.AREA.ISDONE", land.getName()));
+            Factoid.getLog().write(entity.playerName + " have create an area named " + land.getName() + " at position " + land.getAreas().toString());
             new CommandCancel(entity.playerConf, false).commandExecute();
             entity.playerConf.getSelection().refreshLand();
 
@@ -133,7 +133,7 @@ public class CommandArea extends CommandExec {
 
                 entity.playerConf.setConfirm(new ConfirmEntry(
                         ConfirmType.REMOVE_AREA, land, areaNb));
-                entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CONFIRM"));
+                entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CONFIRM"));
 
             } else {
 
@@ -152,8 +152,8 @@ public class CommandArea extends CommandExec {
                 // Replace Area
                 ((Land) land).replaceArea(areaNb, area, price);
 
-                entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CREATE.AREA.ISDONE", land.getName()));
-                Factoid.getThisPlugin().iLog().write(entity.playerName + " have create an area named " + land.getName() + " at position " + land.getAreas().toString());
+                entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CREATE.AREA.ISDONE", land.getName()));
+                Factoid.getLog().write(entity.playerName + " have create an area named " + land.getName() + " at position " + land.getAreas().toString());
                 new CommandCancel(entity.playerConf, false).commandExecute();
                 entity.playerConf.getSelection().refreshLand();
             }

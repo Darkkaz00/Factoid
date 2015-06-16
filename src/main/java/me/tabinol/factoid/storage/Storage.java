@@ -62,12 +62,12 @@ public abstract class Storage implements StorageInt {
      */
     private void saveAll() {
 
-        for (ILand land : Factoid.getThisPlugin().iLands().getLands()) {
+        for (ILand land : Factoid.getLands().getLands()) {
 
             land.forceSave();
         }
 
-        for (IFaction faction : Factoid.getThisPlugin().iFactions().getFactions()) {
+        for (IFaction faction : Factoid.getFactions().getFactions()) {
 
             faction.forceSave();
         }

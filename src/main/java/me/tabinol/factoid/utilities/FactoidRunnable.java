@@ -18,9 +18,7 @@
 package me.tabinol.factoid.utilities;
 
 import me.tabinol.factoid.Factoid;
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
+import me.tabinol.factoid.minecraft.Task;
 
 
 /**
@@ -28,10 +26,10 @@ import org.bukkit.scheduler.BukkitTask;
  *
  * @author Tabinol
  */
-public abstract class FactoidRunnable extends BukkitRunnable {
+public abstract class FactoidRunnable implements Runnable {
 
     /** The task id. */
-    private BukkitTask taskId = null;
+    private Task taskId = null;
 
     /**
      * Instantiates a new factoid runnable.
@@ -51,13 +49,7 @@ public abstract class FactoidRunnable extends BukkitRunnable {
     public void runLater(Long tick, boolean multiple) {
 
         stopNextRun();
-
-        if (multiple) {
-            taskId = Bukkit.getServer().getScheduler().runTaskLater(Factoid.getThisPlugin(), (Runnable) this, tick);
-              
-        } else {
-            taskId = Bukkit.getServer().getScheduler().runTaskLater(Factoid.getThisPlugin(), (Runnable) this, tick);
-        }
+        taskId = Factoid.getServer().createTask(this, tick, multiple);
     }
 
     /**
@@ -70,9 +62,9 @@ public abstract class FactoidRunnable extends BukkitRunnable {
         return taskId != null;
     }
 
-    // *** IF IT IS NOT MULTIPLE RUN, YOU NEED TO SET DONE IN RUN() METHOD ***
     /**
      * Sets the one time done.
+     * *** IF IT IS NOT MULTIPLE RUN, YOU NEED TO SET DONE IN RUN() METHOD ***
      */
     public void setOneTimeDone() {
 

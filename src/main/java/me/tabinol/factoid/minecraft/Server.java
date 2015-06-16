@@ -17,10 +17,13 @@
  */ 
 package me.tabinol.factoid.minecraft;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+
+import me.tabinol.factoid.utilities.FactoidRunnable;
 
 /**
  * Represent Minecraft Server
@@ -103,4 +106,11 @@ public abstract class Server {
 		
 		return playerNList.values();
 	}
+	
+	// Task
+	public abstract Task createTask(FactoidRunnable runnable, Long tick, boolean multiple);
+	
+	public abstract File getDataFolder();
+	
+	public abstract String getVersion();
 }

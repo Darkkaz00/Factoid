@@ -239,14 +239,14 @@ public abstract class CommandExec {
             entity.sender.sendMessage(coll.getPrints());
 
             if (addForApprove) {
-                if (Factoid.getThisPlugin().iConf().getAllowCollision() == Config.AllowCollisionType.APPROVE && allowApprove == true) {
-                    entity.sender.sendMessage(ChatStyle.RED + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COLLISION.GENERAL.NEEDAPPROVE", landName));
-                    Factoid.getThisPlugin().iLog().write("land " + landName + " has collision and needs approval.");
-                    Factoid.getThisPlugin().iLands().getApproveList().addApprove(new Approve(landName, type, action, removeId, newArea,
+                if (Factoid.getConf().getAllowCollision() == Config.AllowCollisionType.APPROVE && allowApprove == true) {
+                    entity.sender.sendMessage(ChatStyle.RED + "[Factoid] " + Factoid.getLanguage().getMessage("COLLISION.GENERAL.NEEDAPPROVE", landName));
+                    Factoid.getLog().write("land " + landName + " has collision and needs approval.");
+                    Factoid.getLands().getApproveList().addApprove(new Approve(landName, type, action, removeId, newArea,
                             owner, parent, price, Calendar.getInstance()));
                     new CommandCancel(entity.playerConf, true).commandExecute();
                     return true;
-                } else if (Factoid.getThisPlugin().iConf().getAllowCollision() == Config.AllowCollisionType.FALSE || allowApprove == false) {
+                } else if (Factoid.getConf().getAllowCollision() == Config.AllowCollisionType.FALSE || allowApprove == false) {
                     throw new FactoidCommandException("Land collision", entity.sender, "COLLISION.GENERAL.CANNOTDONE");
                 }
             }
@@ -261,7 +261,7 @@ public abstract class CommandExec {
     protected void getLandFromCommandIfNoLandSelected() {
 
         if (land == null && !entity.argList.isLast()) {
-            land = Factoid.getThisPlugin().iLands().getLand(entity.argList.getNext());
+            land = Factoid.getLands().getLand(entity.argList.getNext());
         }
     }
     

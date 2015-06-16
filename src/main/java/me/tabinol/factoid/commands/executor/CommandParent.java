@@ -68,11 +68,11 @@ public class CommandParent extends CommandExec {
         // Set parent
         land.setParent(parent);
         if(parent == null) {
-        	entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.PARENT.REMOVEDONE"));
-        	Factoid.getThisPlugin().iLog().write(entity.playerName + " has set land " + land.getName() + " to no parent ");
+        	entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.PARENT.REMOVEDONE"));
+        	Factoid.getLog().write(entity.playerName + " has set land " + land.getName() + " to no parent ");
         } else {
-        	entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.PARENT.DONE", parent.getName()));
-        	Factoid.getThisPlugin().iLog().write(entity.playerName + " has set land " + land.getName() + " to parent " + parent.getName());
+        	entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.PARENT.DONE", parent.getName()));
+        	Factoid.getLog().write(entity.playerName + " has set land " + land.getName() + " to parent " + parent.getName());
         }
     }
 }

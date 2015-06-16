@@ -121,7 +121,7 @@ public class PlayerContainerPlayer extends PlayerContainer {
     	}
     	
     	// Pass 2 get from Factoid cache
-    	playerName = Factoid.getThisPlugin().iPlayersCache().getNameFromUUID(minecraftUUID);
+    	playerName = Factoid.getPlayersCache().getNameFromUUID(minecraftUUID);
     	if(playerName != null) {
     		return playerName;
     	}

@@ -18,7 +18,7 @@
 package me.tabinol.factoid.parameters;
 
 import me.tabinol.factoid.Factoid;
-import me.tabinol.factoidapi.utilities.StringChanges;
+import me.tabinol.factoid.utilities.StringChanges;
 import me.tabinol.factoidapi.parameters.ILandFlag;
 
 
@@ -54,7 +54,7 @@ public class LandFlag {
         this.heritable = heritable;
         
         if(!flagType.isRegistered()) {
-        	Factoid.getThisPlugin().iParameters().unRegisteredFlags.add(this);
+        	Factoid.getParameters().unRegisteredFlags.add(this);
         }
     }
 
@@ -156,7 +156,7 @@ public class LandFlag {
     public static LandFlag getFromString(String str) {
     	
     	String[] multiStr = StringChanges.splitKeepQuote(str, ":");
-    	FlagType ft = Factoid.getThisPlugin().iParameters().getFlagTypeNoValid(multiStr[0]);
+    	FlagType ft = Factoid.getParameters().getFlagTypeNoValid(multiStr[0]);
     	Object value = FlagValue.getFromString(multiStr[1], ft);
     	
     	return new LandFlag(ft, value, Boolean.parseBoolean(multiStr[2]));

@@ -81,15 +81,15 @@ public class CommandKick extends CommandExec {
 
         // Player not in land?
         if (playerKick == null || !land.isPlayerinLandNoVanish(playerKick, player)
-                || Factoid.getThisPlugin().iPlayerConf().get(playerKick).isAdminMod()
+                || Factoid.getPlayerConf().get(playerKick).isAdminMod()
                 || playerKick.hasPermission("factoid.bypassban")) {
             throw new FactoidCommandException("Kicked", player, "COMMAND.KICK.NOTINLAND");
         }
         
         //Kick the player
         playerKick.teleport(playerKick.getLocation().getWorld().getSpawnLocation());
-        player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.KICK.DONE", playerKickName, land.getName()));
-        playerKick.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.KICK.KICKED", land.getName()));
-        Factoid.getThisPlugin().iLog().write("Player " + playerKick + " kicked from " + land.getName() + ".");
+        player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.KICK.DONE", playerKickName, land.getName()));
+        playerKick.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.KICK.KICKED", land.getName()));
+        Factoid.getLog().write("Player " + playerKick + " kicked from " + land.getName() + ".");
     }
 }

@@ -60,8 +60,8 @@ public class CommandType extends CommandExec {
         } else if(curArg.equals("remove")) {
         	
         	land.setType(null);
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.TYPES.REMOVEISDONE", land.getName()));
-            Factoid.getThisPlugin().iLog().write("Land type removed: " + land.getName());
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.TYPES.REMOVEISDONE", land.getName()));
+            Factoid.getLog().write("Land type removed: " + land.getName());
         
         } else { // Type change 
         	
@@ -72,8 +72,8 @@ public class CommandType extends CommandExec {
         	}
         	
         	land.setType(type);
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.TYPES.ISDONE", type.getName(), land.getName()));
-            Factoid.getThisPlugin().iLog().write("Land type: " + type.getName() + " for land: " + land.getName());
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.TYPES.ISDONE", type.getName(), land.getName()));
+            Factoid.getLog().write("Land type: " + type.getName() + " for land: " + land.getName());
         }
     }
 }

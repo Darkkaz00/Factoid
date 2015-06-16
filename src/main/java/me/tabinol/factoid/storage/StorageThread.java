@@ -143,7 +143,7 @@ public class StorageThread extends Thread {
     		// wait!
     		try {
     			commandRequest.await();
-    			Factoid.getThisPlugin().iLog().write("Storage Thread wake up!");
+    			Factoid.getLog().write("Storage Thread wake up!");
    			} catch (InterruptedException e) {
    				// TODO Auto-generated catch block
    				e.printStackTrace();
@@ -239,7 +239,7 @@ public class StorageThread extends Thread {
 		
 		lock.lock();
 		commandRequest.signal();
-		Factoid.getThisPlugin().iLog().write("Storage request (Thread wake up...)");
+		Factoid.getLog().write("Storage request (Thread wake up...)");
 		lock.unlock();
 	}
 }

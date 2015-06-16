@@ -21,8 +21,8 @@ import java.util.UUID;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.factions.Faction;
+import me.tabinol.factoid.utilities.StringChanges;
 import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.utilities.StringChanges;
 import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
 import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 
@@ -66,7 +66,7 @@ public abstract class PlayerContainer implements Comparable<PlayerContainer> {
     public static PlayerContainer create(ILand land, EPlayerContainerType pct, String name) {
 
         if (pct == EPlayerContainerType.FACTION) {
-            Faction faction = Factoid.getThisPlugin().iFactions().getFaction(name);
+            Faction faction = Factoid.getFactions().getFaction(name);
             if (faction != null) {
                 return new PlayerContainerFaction(faction);
             } else {

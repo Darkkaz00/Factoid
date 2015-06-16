@@ -65,10 +65,10 @@ public class CommandSelectWorldedit {
      */
     protected void MakeSelect() throws FactoidCommandException {
         
-        if (Factoid.getThisPlugin().iDependPlugin().getWorldEdit() == null) {
+        if (Factoid.getDependPlugin().getWorldEdit() == null) {
             throw new FactoidCommandException("CommandSelectWorldEdit", player, "COMMAND.SELECT.WORLDEDIT.NOTLOAD");
         }
-        LocalSession session = ((WorldEditPlugin) Factoid.getThisPlugin().iDependPlugin().getWorldEdit()).getSession(player);
+        LocalSession session = ((WorldEditPlugin) Factoid.getDependPlugin().getWorldEdit()).getSession(player);
         
         try {
             Region sel;
@@ -77,8 +77,8 @@ public class CommandSelectWorldedit {
                 throw new FactoidCommandException("CommandSelectWorldEdit", player, "COMMAND.SELECT.WORLDEDIT.NOSELECTIONNED");
             }
 
-            player.sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.DARK_GRAY + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.WORLDEDIT.SELECTIONNED"));
-            Factoid.getThisPlugin().iLog().write(Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.WORLDEDIT.SELECTIONNED"));
+            player.sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.DARK_GRAY + Factoid.getLanguage().getMessage("COMMAND.SELECT.WORLDEDIT.SELECTIONNED"));
+            Factoid.getLog().write(Factoid.getLanguage().getMessage("COMMAND.SELECT.WORLDEDIT.SELECTIONNED"));
             
             AreaSelection select = new AreaSelection(player, new CuboidArea(player.getWorld().getName(), 
                     sel.getMinimumPoint().getBlockX(), sel.getMinimumPoint().getBlockY(),

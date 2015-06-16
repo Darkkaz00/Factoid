@@ -40,13 +40,13 @@ import me.tabinol.factoid.parameters.PermissionList;
 import me.tabinol.factoid.selection.region.PlayerMoveListen;
 import me.tabinol.factoid.selection.region.RegionSelection;
 import me.tabinol.factoid.utilities.ChatStyle;
+import me.tabinol.factoid.utilities.StringChanges;
 import me.tabinol.factoidapi.FactoidAPI;
 import me.tabinol.factoidapi.config.players.IPlayerConfEntry;
 import me.tabinol.factoidapi.event.PlayerLandChangeEvent;
 import me.tabinol.factoidapi.lands.IDummyLand;
 import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.parameters.IParameters.SpecialPermPrefix;
-import me.tabinol.factoidapi.utilities.StringChanges;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -202,7 +202,7 @@ public class PlayerListener extends CommonListener {
 				&& itemInHand == conf.getInfoItem()) {
 			try {
 				new CommandInfo(player, 
-						(CuboidArea) Factoid.getThisPlugin().iLands().getCuboidArea(loc))
+						(CuboidArea) Factoid.getLands().getCuboidArea(loc))
 						.commandExecute();
 			} catch (FactoidCommandException ex) {
 				Logger.getLogger(PlayerListener.class.getName()).log(

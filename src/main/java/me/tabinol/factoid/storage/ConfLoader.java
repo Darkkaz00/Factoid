@@ -147,7 +147,7 @@ public class ConfLoader {
         if (lrt.equals("") || lrt.equals("}")) {
             return null;
         }
-        Factoid.getThisPlugin().iLog().write("Readline: " + lrt);
+        Factoid.getFactoidLog().write("Readline: " + lrt);
         return lrt;
     }
 

@@ -15,16 +15,21 @@
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */ 
+
 package me.tabinol.factoid.minecraft.bukkit;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import me.tabinol.factoid.minecraft.Server;
+import me.tabinol.factoid.minecraft.Task;
+import me.tabinol.factoid.utilities.FactoidRunnable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 public class ServerBukkit extends Server {
 	
@@ -72,5 +77,33 @@ public class ServerBukkit extends Server {
 	@Override
     public void error(String msg) {
 	    logger.severe(msg);
+    }
+
+	@Override
+    public Task createTask(FactoidRunnable runnable, Long tick, boolean multiple) {
+
+		BukkitTask task;
+		
+		runnable.stopNextRun();
+
+        if (multiple) {
+            task = Bukkit.getServer().getScheduler().runTaskTimer(plugin, (Runnable) runnable, tick, tick);
+        } else {
+            task = Bukkit.getServer().getScheduler().runTaskLater(plugin, (Runnable) runnable, tick);
+        }
+    
+	return new TaskBukkit(task);
+	}
+
+	@Override
+    public File getDataFolder() {
+	    
+		return plugin.getDataFolder();
+    }
+
+	@Override
+    public String getVersion() {
+
+		return plugin.getDescription().getVersion();
     }
 }

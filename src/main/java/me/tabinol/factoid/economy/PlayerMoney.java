@@ -38,7 +38,7 @@ public class PlayerMoney {
      */
     public PlayerMoney() {
 
-        economy = Factoid.getThisPlugin().iDependPlugin().getEconomy();
+        economy = Factoid.getDependPlugin().getEconomy();
     }
     
     /**

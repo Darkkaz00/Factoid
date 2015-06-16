@@ -57,7 +57,7 @@ public class CommandOwner extends CommandThreadExec {
         pc = entity.argList.getPlayerContainerFromArg(land,
                 new EPlayerContainerType[]{EPlayerContainerType.EVERYBODY,
                     EPlayerContainerType.OWNER, EPlayerContainerType.VISITOR});
-        Factoid.getThisPlugin().iPlayersCache().getUUIDWithNames(this, pc);
+        Factoid.getPlayersCache().getUUIDWithNames(this, pc);
     }
 
     /* (non-Javadoc)
@@ -70,8 +70,8 @@ public class CommandOwner extends CommandThreadExec {
     	convertPcIfNeeded(playerCacheEntry);
 
         land.setOwner(pc);
-        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.OWNER.ISDONE", pc.getPrint(), land.getName()));
-        Factoid.getThisPlugin().iLog().write("The land " + land.getName() + "is set to owner: " + pc.getPrint());
+        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.OWNER.ISDONE", pc.getPrint(), land.getName()));
+        Factoid.getLog().write("The land " + land.getName() + "is set to owner: " + pc.getPrint());
 
         // Cancel the selection
         new CommandCancel(entity.playerConf, true).commandExecute();

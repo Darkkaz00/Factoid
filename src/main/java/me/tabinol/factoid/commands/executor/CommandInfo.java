@@ -61,7 +61,7 @@ public class CommandInfo extends CommandExec {
         super(entity);
         player = entity.player;
         Location playerloc = entity.player.getLocation();
-        area = Factoid.getThisPlugin().iLands().getCuboidArea(playerloc);
+        area = Factoid.getLands().getCuboidArea(playerloc);
         argList = entity.argList;
     }
 
@@ -91,7 +91,7 @@ public class CommandInfo extends CommandExec {
 
         // Get the land name from arg
         if (argList != null && !argList.isLast()) {
-            land = Factoid.getThisPlugin().iLands().getLand(argList.getNext());
+            land = Factoid.getLands().getLand(argList.getNext());
 
             if (land == null) {
                 throw new FactoidCommandException("CommandInfo", player, "COMMAND.INFO.NOTEXIST");
@@ -110,35 +110,35 @@ public class CommandInfo extends CommandExec {
         if (land != null) {
             // Create list
             StringBuilder stList = new StringBuilder();
-            stList.append(ChatStyle.YELLOW + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.INFO.LAND.NAME",
+            stList.append(ChatStyle.YELLOW + Factoid.getLanguage().getMessage("COMMAND.INFO.LAND.NAME",
                     ChatStyle.GREEN + land.getName() + ChatStyle.YELLOW, ChatStyle.GREEN + land.getUUID().toString() + ChatStyle.YELLOW));
             stList.append(NEWLINE);
-            stList.append(ChatStyle.YELLOW + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.INFO.LAND.PRIORITY", land.getPriority() + ""));
+            stList.append(ChatStyle.YELLOW + Factoid.getLanguage().getMessage("COMMAND.INFO.LAND.PRIORITY", land.getPriority() + ""));
             if(land.isForSale()) {
-            	stList.append(ChatStyle.RED + " " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.INFO.LAND.FORSALE"));
+            	stList.append(ChatStyle.RED + " " + Factoid.getLanguage().getMessage("COMMAND.INFO.LAND.FORSALE"));
             }
             if(land.isForRent() && !land.isRented()) {
-            	stList.append(ChatStyle.RED + " " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.INFO.LAND.FORRENT"));
+            	stList.append(ChatStyle.RED + " " + Factoid.getLanguage().getMessage("COMMAND.INFO.LAND.FORRENT"));
             }
             stList.append(NEWLINE);
-            stList.append(ChatStyle.YELLOW + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.INFO.LAND.TYPE", 
+            stList.append(ChatStyle.YELLOW + Factoid.getLanguage().getMessage("COMMAND.INFO.LAND.TYPE", 
             		land.getType() != null ? land.getType().getName() : "-null-"));
             if(land.getParent() != null) {
-              	stList.append(ChatStyle.YELLOW + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.INFO.LAND.PARENT", land.getParent().getName()));
+              	stList.append(ChatStyle.YELLOW + Factoid.getLanguage().getMessage("COMMAND.INFO.LAND.PARENT", land.getParent().getName()));
             }
             stList.append(NEWLINE);
-            stList.append(ChatStyle.YELLOW + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.INFO.LAND.OWNER", land.getOwner().getPrint()));
+            stList.append(ChatStyle.YELLOW + Factoid.getLanguage().getMessage("COMMAND.INFO.LAND.OWNER", land.getOwner().getPrint()));
             if(land.isRented()) {
-            	stList.append(ChatStyle.YELLOW + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.INFO.LAND.TENANT", land.getTenant().getPrint()));
+            	stList.append(ChatStyle.YELLOW + Factoid.getLanguage().getMessage("COMMAND.INFO.LAND.TENANT", land.getTenant().getPrint()));
             }
             stList.append(NEWLINE);
-            stList.append(ChatStyle.YELLOW + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.INFO.LAND.MAINPERMISSION",
+            stList.append(ChatStyle.YELLOW + Factoid.getLanguage().getMessage("COMMAND.INFO.LAND.MAINPERMISSION",
                     getPermissionInColForPl(land, PermissionList.BUILD.getPermissionType()) + " "
                     + getPermissionInColForPl(land, PermissionList.USE.getPermissionType()) + " "
                     + getPermissionInColForPl(land, PermissionList.OPEN.getPermissionType())));
             stList.append(NEWLINE);
             if (area != null) {
-                stList.append(ChatStyle.YELLOW + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.INFO.LAND.ACTIVEAREA",
+                stList.append(ChatStyle.YELLOW + Factoid.getLanguage().getMessage("COMMAND.INFO.LAND.ACTIVEAREA",
                         "ID: " + area.getKey() + ", " + area.getPrint()));
                 stList.append(NEWLINE);
             }
@@ -146,7 +146,7 @@ public class CommandInfo extends CommandExec {
             new ChatPage("COMMAND.INFO.LAND.LISTSTART", stList.toString(), player, land.getName()).getPage(1);
 
         } else {
-            player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.INFO.NOLAND"));
+            player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.INFO.NOLAND"));
         }
     }
 

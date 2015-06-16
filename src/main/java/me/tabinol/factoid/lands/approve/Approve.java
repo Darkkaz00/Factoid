@@ -186,25 +186,25 @@ public class Approve {
     public void createAction() {
         
         if(action == LandAction.AREA_ADD) {
-            Factoid.getThisPlugin().iLands().getLand(landName).addArea(newArea, price);
+            Factoid.getLands().getLand(landName).addArea(newArea, price);
         } else if(action == LandAction.AREA_REMOVE) {
-            Factoid.getThisPlugin().iLands().getLand(landName).removeArea(removedAreaId);
+            Factoid.getLands().getLand(landName).removeArea(removedAreaId);
         } else if(action == LandAction.AREA_MODIFY) {
-            Factoid.getThisPlugin().iLands().getLand(landName).replaceArea(removedAreaId, newArea, price);
+            Factoid.getLands().getLand(landName).replaceArea(removedAreaId, newArea, price);
         } else if(action == LandAction.LAND_ADD) {
             try {
-                Factoid.getThisPlugin().iLands().createLand(landName, owner, newArea, parent, price, type);
+                Factoid.getLands().createLand(landName, owner, newArea, parent, price, type);
             } catch (FactoidLandException ex) {
                 Logger.getLogger(Approve.class.getName()).log(Level.SEVERE, "On land create", ex);
             }
         } else if(action == LandAction.LAND_REMOVE) {
             try {
-                Factoid.getThisPlugin().iLands().removeLand(landName);
+                Factoid.getLands().removeLand(landName);
             } catch (FactoidLandException ex) {
                 Logger.getLogger(Approve.class.getName()).log(Level.SEVERE, "On land remove", ex);
             }
         } else if(action == LandAction.LAND_PARENT) {
-        	Factoid.getThisPlugin().iLands().getLand(landName).setParent(parent);
+        	Factoid.getLands().getLand(landName).setParent(parent);
         }
     }
 }

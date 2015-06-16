@@ -72,13 +72,13 @@ public class CommandRename extends CommandExec {
         String oldName = land.getName();
 
         try {
-            Factoid.getThisPlugin().iLands().renameLand(oldName, curArg);
+            Factoid.getLands().renameLand(oldName, curArg);
         } catch (FactoidLandException ex) {
             Logger.getLogger(CommandRename.class.getName()).log(Level.SEVERE, "On land rename", ex);
             throw new FactoidCommandException("On land rename", entity.player, "GENERAL.ERROR");
         }
-        entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.RENAME.ISDONE", oldName, curArg));
-        Factoid.getThisPlugin().iLog().write(entity.playerName + " has renamed " + oldName + " to " + curArg);
+        entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.RENAME.ISDONE", oldName, curArg));
+        Factoid.getLog().write(entity.playerName + " has renamed " + oldName + " to " + curArg);
 
         // Cancel the selection
         new CommandCancel(entity.playerConf, true).commandExecute();

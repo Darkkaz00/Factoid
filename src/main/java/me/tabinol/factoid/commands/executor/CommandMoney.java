@@ -46,7 +46,7 @@ public class CommandMoney extends CommandExec {
     public CommandMoney(CommandEntities entity) throws FactoidCommandException {
 
         super(entity);
-        playerMoney = Factoid.getThisPlugin().iPlayerMoney();
+        playerMoney = Factoid.getPlayerMoney();
     }
 
     /* (non-Javadoc)
@@ -82,7 +82,7 @@ public class CommandMoney extends CommandExec {
     private void balance() throws FactoidCommandException {
 
         checkPermission(true, false, PermissionList.MONEY_BALANCE.getPermissionType(), null);
-        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.ECONOMY.LANDBALANCE",
+        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.LANDBALANCE",
                 land.getName(), playerMoney.toFormat(land.getMoney())));
     }
 
@@ -105,7 +105,7 @@ public class CommandMoney extends CommandExec {
         // Land Deposit
         playerMoney.getFromPlayer(entity.player.getPlayer(), land.getWorldName(), amount);
         land.addMoney(amount);
-        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.ECONOMY.LANDDEPOSIT",
+        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.LANDDEPOSIT",
                 playerMoney.toFormat(land.getMoney()), land.getName()));
     }
 
@@ -128,7 +128,7 @@ public class CommandMoney extends CommandExec {
         // Land Deposit
         land.substractMoney(amount);
         playerMoney.giveToPlayer(entity.player.getPlayer(), land.getWorldName(), amount);
-        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.ECONOMY.LANDWITHDRAW",
+        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.LANDWITHDRAW",
                 playerMoney.toFormat(land.getMoney()), land.getName()));
     }
 

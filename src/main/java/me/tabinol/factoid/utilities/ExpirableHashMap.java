@@ -18,9 +18,8 @@
 package me.tabinol.factoid.utilities;
 
 import java.util.HashMap;
-import me.tabinol.factoid.Factoid;
 
-import org.bukkit.scheduler.BukkitRunnable;
+import me.tabinol.factoid.Factoid;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -51,7 +50,7 @@ public class ExpirableHashMap<K, V> extends HashMap<K, V> {
 	/**
 	 * The Class BestBefored.
 	 */
-	private class BestBefored extends BukkitRunnable {
+	private class BestBefored extends FactoidRunnable {
 
 		/** The key. */
 		K key;
@@ -72,6 +71,7 @@ public class ExpirableHashMap<K, V> extends HashMap<K, V> {
 		@Override
 		public void run() {
 			remove(key);
+			this.setOneTimeDone();
 		}
 	}
 	
@@ -81,7 +81,7 @@ public class ExpirableHashMap<K, V> extends HashMap<K, V> {
 	@Override
 	public V put(K key, V value) {
 		
-		new BestBefored(key).runTaskLater(Factoid.getThisPlugin(), delay);
+		Factoid.getServer().createTask(new BestBefored(key), delay, false);
 		return super.put(key, value);
 	}
 }

@@ -51,8 +51,8 @@ public class CommandReload extends CommandExec {
 
         checkPermission(false, false, null, "factoid.reload");
 
-        entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.RELOAD.START"));
+        entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.RELOAD.START"));
         Factoid.getThisPlugin().reload();
-        entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.RELOAD.COMPLETE"));
+        entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.RELOAD.COMPLETE"));
     }
 }

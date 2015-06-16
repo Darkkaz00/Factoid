@@ -82,7 +82,7 @@ public class PlayerContainerFaction extends PlayerContainer {
     @Override
     public boolean hasAccess(Player player) {
 
-        return faction.isPlayerInList(Factoid.getThisPlugin().iPlayerConf().get(player).getPlayerContainer());
+        return faction.isPlayerInList(Factoid.getPlayerConf().get(player).getPlayerContainer());
     }
 
     @Override

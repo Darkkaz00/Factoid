@@ -23,19 +23,13 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.minecraft.FWorld;
+import me.tabinol.factoid.parameters.FlagType;
+import me.tabinol.factoid.parameters.LandFlag;
+import me.tabinol.factoid.parameters.Permission;
 import me.tabinol.factoid.parameters.PermissionList;
+import me.tabinol.factoid.parameters.PermissionType;
 import me.tabinol.factoid.playercontainer.PlayerContainer;
-import me.tabinol.factoidapi.FactoidAPI;
-import me.tabinol.factoidapi.event.LandModifyEvent;
-import me.tabinol.factoidapi.event.LandModifyEvent.LandModifyReason;
-import me.tabinol.factoidapi.event.PlayerContainerAddNoEnterEvent;
-import me.tabinol.factoidapi.lands.IDummyLand;
-import me.tabinol.factoidapi.parameters.IFlagType;
-import me.tabinol.factoidapi.parameters.IFlagValue;
-import me.tabinol.factoidapi.parameters.ILandFlag;
-import me.tabinol.factoidapi.parameters.IPermission;
-import me.tabinol.factoidapi.parameters.IPermissionType;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -47,10 +41,10 @@ import org.bukkit.entity.Player;
 public class DummyLand {
 
     /** The permissions. */
-    protected TreeMap<IPlayerContainer, TreeMap<IPermissionType, IPermission>> permissions; // String for playerName
+    protected TreeMap<PlayerContainer, TreeMap<PermissionType, Permission>> permissions; // String for playerName
     
     /** The flags. */
-    protected TreeMap<IFlagType, ILandFlag> flags;
+    protected TreeMap<FlagType, LandFlag> flags;
     
     /** The world name. */
     protected String worldName;
@@ -62,8 +56,8 @@ public class DummyLand {
      */
     public DummyLand(String worldName) {
 
-        permissions = new TreeMap<IPlayerContainer, TreeMap<IPermissionType, IPermission>>();
-        flags = new TreeMap<IFlagType, ILandFlag>();
+        permissions = new TreeMap<PlayerContainer, TreeMap<PermissionType, Permission>>();
+        flags = new TreeMap<FlagType, LandFlag>();
         this.worldName = worldName;
     }
 
@@ -82,25 +76,25 @@ public class DummyLand {
      *
      * @return the world
      */
-    public World getWorld() {
+    public FWorld getWorld() {
 
-        return Factoid.getThisPlugin().getServer().getWorld(worldName);
+        return Factoid.getServer().getWorld(worldName);
     }
 
-    public void copyPermsFlagsTo(IDummyLand desLand) {
+    public void copyPermsFlagsTo(DummyLand desLand) {
     	
     	// copy permissions
-    	for(Map.Entry<IPlayerContainer, TreeMap<IPermissionType, IPermission>> pcEntry : permissions.entrySet()) {
+    	for(Map.Entry<PlayerContainer, TreeMap<PermissionType, Permission>> pcEntry : permissions.entrySet()) {
     		
-    		TreeMap<IPermissionType, IPermission> perms = new TreeMap<IPermissionType, IPermission>(); 
-    		for(Map.Entry<IPermissionType, IPermission> permEntry : pcEntry.getValue().entrySet()) {
+    		TreeMap<PermissionType, Permission> perms = new TreeMap<PermissionType, Permission>(); 
+    		for(Map.Entry<PermissionType, Permission> permEntry : pcEntry.getValue().entrySet()) {
     			perms.put(permEntry.getKey(), permEntry.getValue().copyOf());
     		}
     		((DummyLand) desLand).permissions.put(pcEntry.getKey(), perms);
     	}
 
     	// copy flags
-    	for(Map.Entry<IFlagType, ILandFlag> flagEntry : flags.entrySet()) {
+    	for(Map.Entry<FlagType, LandFlag> flagEntry : flags.entrySet()) {
     		
     		((DummyLand) desLand).flags.put(flagEntry.getKey(), flagEntry.getValue().copyOf());
     	}
@@ -112,17 +106,16 @@ public class DummyLand {
      * @param pc the pc
      * @param perm the perm
      */
-	@SuppressWarnings("deprecation")
-	public void addPermission(IPlayerContainer pc, IPermission perm) {
+	public void addPermission(PlayerContainer pc, Permission perm) {
 
-        TreeMap<IPermissionType, IPermission> permPlayer;
+        TreeMap<PermissionType, Permission> permPlayer;
 
         if (this instanceof Land) {
             ((PlayerContainer)pc).setLand((Land) this);
         }
         
         if (!permissions.containsKey(pc)) {
-            permPlayer = new TreeMap<IPermissionType, IPermission>();
+            permPlayer = new TreeMap<PermissionType, Permission>();
             permissions.put(pc, permPlayer);
         } else {
             permPlayer = permissions.get(pc);
@@ -157,11 +150,11 @@ public class DummyLand {
      * @param permType the perm type
      * @return true, if successful
      */
-    public boolean removePermission(IPlayerContainer pc, 
-    		me.tabinol.factoidapi.parameters.IPermissionType permType) {
+    public boolean removePermission(PlayerContainer pc, 
+    		PermissionType permType) {
 
-        TreeMap<IPermissionType, IPermission> permPlayer;
-        IPermission perm;
+        TreeMap<PermissionType, Permission> permPlayer;
+        Permission perm;
 
         if (!permissions.containsKey(pc)) {
             return false;
@@ -193,7 +186,7 @@ public class DummyLand {
      *
      * @return the sets the pc have permission
      */
-    public final Set<IPlayerContainer> getSetPCHavePermission() {
+    public final Set<PlayerContainer> getSetPCHavePermission() {
 
         return permissions.keySet();
     }
@@ -204,7 +197,7 @@ public class DummyLand {
      * @param pc the pc
      * @return the permissions for pc
      */
-    public final Collection<IPermission> getPermissionsForPC(IPlayerContainer pc) {
+    public final Collection<Permission> getPermissionsForPC(PlayerContainer pc) {
 
         return permissions.get(pc).values();
     }
@@ -216,8 +209,7 @@ public class DummyLand {
      * @param pt the pt
      * @return the boolean
      */
-    public boolean checkPermissionAndInherit(Player player, 
-    		me.tabinol.factoidapi.parameters.IPermissionType pt) {
+    public boolean checkPermissionAndInherit(Player player, PermissionType pt) {
 
         return checkPermissionAndInherit(player, pt, false);
     }
@@ -229,8 +221,7 @@ public class DummyLand {
      * @param pt the pt
      * @return the boolean
      */
-    public boolean checkPermissionNoInherit(Player player, 
-    		me.tabinol.factoidapi.parameters.IPermissionType pt) {
+    public boolean checkPermissionNoInherit(Player player, PermissionType pt) {
 
         Boolean value = getPermission(player, pt, false);
         
@@ -249,13 +240,12 @@ public class DummyLand {
      * @param onlyInherit the only inherit
      * @return the boolean
      */
-    protected Boolean checkPermissionAndInherit(Player player, 
-    		me.tabinol.factoidapi.parameters.IPermissionType pt, boolean onlyInherit) {
+    protected Boolean checkPermissionAndInherit(Player player, PermissionType pt, boolean onlyInherit) {
 
         if (this instanceof Land) {
             return ((Land) this).checkLandPermissionAndInherit(player, pt, onlyInherit);
         }
-        return Factoid.getThisPlugin().iLands().getPermissionInWorld(worldName, player, pt, onlyInherit);
+        return Factoid.getLands().getPermissionInWorld(worldName, player, pt, onlyInherit);
     }
 
     /**
@@ -266,8 +256,7 @@ public class DummyLand {
      * @param onlyInherit the only inherit
      * @return the permission
      */
-    protected Boolean getPermission(Player player, 
-    		me.tabinol.factoidapi.parameters.IPermissionType pt, boolean onlyInherit) {
+    protected Boolean getPermission(Player player, PermissionType pt, boolean onlyInherit) {
     	
     	return getPermission(player, pt, onlyInherit, null);
     }
@@ -276,7 +265,7 @@ public class DummyLand {
     private Boolean getPermission(Player player, 
     		me.tabinol.factoidapi.parameters.IPermissionType pt, boolean onlyInherit, Land land) {
 
-        for (Map.Entry<IPlayerContainer, TreeMap<IPermissionType, IPermission>> permissionEntry : permissions.entrySet()) {
+        for (Map.Entry<PlayerContainer, TreeMap<PermissionType, Permission>> permissionEntry : permissions.entrySet()) {
             boolean value;
         	if(land != null) {
             	value = permissionEntry.getKey().hasAccess(player, land);
@@ -284,9 +273,9 @@ public class DummyLand {
             	value = permissionEntry.getKey().hasAccess(player);
             }
         	if (value) {
-                IPermission perm = permissionEntry.getValue().get(pt);
+                Permission perm = permissionEntry.getValue().get(pt);
                 if (perm != null) {
-                    Factoid.getThisPlugin().iLog().write("Container: " + permissionEntry.getKey().toString() + ", PermissionType: " + perm.getPermType() + ", Value: " + perm.getValue() + ", Heritable: " + perm.isHeritable());
+                    Factoid.getFactoidLog().write("Container: " + permissionEntry.getKey().toString() + ", PermissionType: " + perm.getPermType() + ", Value: " + perm.getValue() + ", Heritable: " + perm.isHeritable());
                     if ((onlyInherit && perm.isHeritable()) || !onlyInherit) {
                         return perm.getValue();
                     }
@@ -297,7 +286,7 @@ public class DummyLand {
         // Check in default permissions
         if(!onlyInherit && this instanceof Land) {
 
-            return ((Lands) FactoidAPI.iLands()).getDefaultConf(((Land) this).getType()).getPermission(
+            return Factoid.getLands()).getDefaultConf(((Land) this).getType()).getPermission(
             		player, pt, onlyInherit, (Land) this);
         }
         
@@ -309,7 +298,7 @@ public class DummyLand {
      *
      * @param flag the flag
      */
-    public void addFlag(ILandFlag flag) {
+    public void addFlag(LandFlag flag) {
 
         flags.put(flag.getFlagType(), flag);
         doSave();
@@ -327,9 +316,9 @@ public class DummyLand {
      * @param flagType the flag type
      * @return true, if successful
      */
-    public boolean removeFlag(IFlagType flagType) {
+    public boolean removeFlag(FlagType flagType) {
 
-        ILandFlag flag = flags.remove(flagType);
+        LandFlag flag = flags.remove(flagType);
     	
     	if (flag == null) {
             return false;
@@ -350,12 +339,12 @@ public class DummyLand {
      *
      * @return the flags value or default
      */
-    public Collection<ILandFlag> getFlags() {
+    public Collection<LandFlag> getFlags() {
 
         return flags.values();
     }
 
-    public IFlagValue getFlagAndInherit(IFlagType ft) {
+    public FlagValue getFlagAndInherit(FlagType ft) {
 
         return getFlagAndInherit(ft, false);
     }
@@ -366,9 +355,9 @@ public class DummyLand {
      * @param ft the ft
      * @return the flag value or default
      */
-    public IFlagValue getFlagNoInherit(IFlagType ft) {
+    public FlagValue getFlagNoInherit(FlagType ft) {
 
-        IFlagValue value = getFlag(ft, false);
+        FlagValue value = getFlag(ft, false);
         
         if(value != null) {
         	return value;
@@ -384,13 +373,13 @@ public class DummyLand {
      * @param onlyInherit the only inherit
      * @return the flag and inherit
      */
-    protected IFlagValue getFlagAndInherit(IFlagType ft, 
+    protected FlagValue getFlagAndInherit(FlagType ft, 
     		boolean onlyInherit) {
 
         if (this instanceof Land) {
             return ((Land) this).getLandFlagAndInherit(ft, onlyInherit);
         }
-        return Factoid.getThisPlugin().iLands().getFlagInWorld(worldName, ft, onlyInherit);
+        return Factoid.getLands().getFlagInWorld(worldName, ft, onlyInherit);
     }
 
     /**
@@ -400,11 +389,11 @@ public class DummyLand {
      * @param onlyInherit the only inherit
      * @return the flag value
      */
-    protected IFlagValue getFlag(IFlagType ft, boolean onlyInherit) {
+    protected FlagValue getFlag(FlagType ft, boolean onlyInherit) {
 
-    	ILandFlag flag = flags.get(ft);
+    	LandFlag flag = flags.get(ft);
         if (flag != null) {
-            Factoid.getThisPlugin().iLog().write("Flag: " + flag.toString());
+            Factoid.getFactoidLog().write("Flag: " + flag.toString());
 
             if ((onlyInherit && flag.isHeritable()) || !onlyInherit) {
                 return flag.getValue();
@@ -414,7 +403,7 @@ public class DummyLand {
         // Check in default flags
         if(!onlyInherit && this instanceof Land) {
 
-        	return ((Lands) FactoidAPI.iLands()).getDefaultConf(((Land) this).getType()).getFlag(ft, onlyInherit);
+        	return ((Lands) Factoid.getLands()).getDefaultConf(((Land) this).getType()).getFlag(ft, onlyInherit);
         }
 
         return null;

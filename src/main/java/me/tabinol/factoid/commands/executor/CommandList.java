@@ -96,7 +96,7 @@ public class CommandList extends CommandThreadExec {
             }
         }
         
-        Factoid.getThisPlugin().iPlayersCache().getUUIDWithNames(this, pc);
+        Factoid.getPlayersCache().getUUIDWithNames(this, pc);
     }
 
     /* (non-Javadoc)
@@ -112,9 +112,9 @@ public class CommandList extends CommandThreadExec {
         Collection<ILand> lands;
 
         if (entity.playerConf.isAdminMod()) {
-            lands = Factoid.getThisPlugin().iLands().getLands();
+            lands = Factoid.getLands().getLands();
         } else {
-            lands = Factoid.getThisPlugin().iLands().getLands(entity.playerConf.getPlayerContainer());
+            lands = Factoid.getLands().getLands(entity.playerConf.getPlayerContainer());
         }
 
         // Get the list of the land

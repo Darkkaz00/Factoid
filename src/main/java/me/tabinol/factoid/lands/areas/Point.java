@@ -83,6 +83,13 @@ public class Point implements Comparable<Point> {
 
         return 0;
     }
+	
+	@Override
+	public String toString() {
+		
+    	return getWorldName() + ";" + getX() + ";" + getY() + ";" + getZ() 
+    			+ ";" + getYaw() + ";" + getPitch();
+	}
 
 	/**************************************************************************
 	 * Gets
@@ -146,4 +153,38 @@ public class Point implements Comparable<Point> {
 
 	    return Math.sqrt(dx * dx + dy * dy + dz * dz);
 	}
+
+	/**************************************************************************
+	 * Static conversion
+	 *************************************************************************/
+	
+	public static Point fromString(String locStr) {
+		
+    	String[] strs = locStr.split("\\;");
+    	
+    	// Wrong parameter
+    	if(strs.length != 6) {
+    		return null;
+    	}
+    	
+    	FWorld world = Factoid.getServer().getWorld(strs[0]);
+    	
+    	if(world == null) {
+    		return null;
+    	}
+    	
+    	// Get the location
+    	Point location;
+    	
+    	try {
+    		location = new Point(world.getName(), Double.parseDouble(strs[1]), Double.parseDouble(strs[2]),
+    				Double.parseDouble(strs[3]), Float.parseFloat(strs[4]), Float.parseFloat(strs[5]));
+    	} catch(NumberFormatException ex) {
+    		
+    		// if location is wrong, set null
+    		location = null;
+    	}
+    	
+    	return location;
+    }
 }

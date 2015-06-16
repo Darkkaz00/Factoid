@@ -69,8 +69,8 @@ public class CommandPriority extends CommandExec {
         }
         land.setPriority(newPrio);
 
-        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage(
+        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage(
                 "COMMAND.PRIORITY.DONE", land.getName(), land.getPriority() + ""));
-        Factoid.getThisPlugin().iLog().write("Priority for land " + land.getName() + " changed for " + land.getPriority());
+        Factoid.getLog().write("Priority for land " + land.getName() + " changed for " + land.getPriority());
     }
 }

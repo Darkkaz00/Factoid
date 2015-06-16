@@ -36,7 +36,7 @@ public class ChatEssentials implements Chat {
      */
     public ChatEssentials() {
         
-        essentials = (Essentials)Factoid.getThisPlugin().iDependPlugin().getEssentials();
+        essentials = (Essentials)Factoid.getDependPlugin().getEssentials();
     }
 
     /* (non-Javadoc)

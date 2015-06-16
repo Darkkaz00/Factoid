@@ -20,12 +20,11 @@ package me.tabinol.factoid.minecraft.sponge;
 
 import java.util.UUID;
 
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.world.Location;
-
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.minecraft.FPlayer;
+
+import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.world.Location;
 
 public class FPlayerSponge extends FSenderSponge implements FPlayer {
 	

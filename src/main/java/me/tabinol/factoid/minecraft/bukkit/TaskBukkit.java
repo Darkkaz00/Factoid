@@ -14,29 +14,29 @@
 
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-package me.tabinol.factoid.config.vanish;
+ */ 
 
-import me.tabinol.factoid.BKVersion;
-import me.tabinol.factoid.Factoid;
+package me.tabinol.factoid.minecraft.bukkit;
 
-import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
+import me.tabinol.factoid.minecraft.Task;
 
-/**
- * Only return false if there is no Vanish plugin.
- *
- * @author michel
- */
-public class DummyVanish implements Vanish {
+public class TaskBukkit implements Task {
+	
+	private BukkitTask taskId = null;
+	
+	public TaskBukkit(BukkitTask taskId) {
+		
+		this.taskId = taskId;
+	}
 
-    /* (non-Javadoc)
-     * @see me.tabinol.factoid.config.vanish.Vanish#isVanished(org.bukkit.entity.Player)
-     */
-    @Override
-    public boolean isVanished(Player player) {
-        
-        return Factoid.getConf().isSpectatorIsVanish() 
-        		&& BKVersion.isSpectatorMode(player);
-    }
+	@Override
+	public void cancel() {
+		
+        if (taskId != null) {
+
+            taskId.cancel();
+        }
+	}
 }

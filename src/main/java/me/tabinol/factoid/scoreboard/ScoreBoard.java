@@ -62,7 +62,7 @@ public class ScoreBoard extends Thread{
         ScoreboardList.put(player,scoreboard);
         scoreboard.registerNewObjective("land", "dummy");
         scoreboard.getObjective("land").setDisplaySlot(DisplaySlot.SIDEBAR);
-        scoreboard.getObjective("land").setDisplayName(Factoid.getThisPlugin().iLanguage().getMessage("SCOREBOARD.LANDINFO"));
+        scoreboard.getObjective("land").setDisplayName(Factoid.getLanguage().getMessage("SCOREBOARD.LANDINFO"));
         for(Player p : playerlist){
             scoreboard.getObjective("land").getScore(p).setScore(0);
         }

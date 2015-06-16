@@ -115,7 +115,7 @@ public class OnCommand {
             
             // Remove page from memory if needed
             if(cv != commands.get(MainCommand.FACTOID).get("page")) {
-                Factoid.getThisPlugin().iPlayerConf().get(sender).setChatPage(null);
+                Factoid.getPlayerConf().get(sender).setChatPage(null);
             }
 
             // Do the command

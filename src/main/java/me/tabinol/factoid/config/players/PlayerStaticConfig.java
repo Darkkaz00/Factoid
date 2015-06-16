@@ -58,11 +58,11 @@ public class PlayerStaticConfig {
         playerConfList = new HashMap<CommandSender, PlayerConfEntry>();
 
         // Check for VanishNoPacket plugin
-        if (Factoid.getThisPlugin().iDependPlugin().getVanishNoPacket() != null) {
+        if (Factoid.getDependPlugin().getVanishNoPacket() != null) {
             vanish = new VanishNoPacket();
 
             // Check for Essentials plugin
-        } else if (Factoid.getThisPlugin().iDependPlugin().getEssentials() != null) {
+        } else if (Factoid.getDependPlugin().getEssentials() != null) {
             vanish = new VanishEssentials();
 
             // Dummy Vanish if no plugins
@@ -71,7 +71,7 @@ public class PlayerStaticConfig {
         }
         
         // Check for Chat plugin
-        if (Factoid.getThisPlugin().iDependPlugin().getEssentials() != null) {
+        if (Factoid.getDependPlugin().getEssentials() != null) {
         	chat = new ChatEssentials();
         } else {
         	chat = new ChatFactoid();

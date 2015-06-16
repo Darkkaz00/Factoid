@@ -47,7 +47,7 @@ public class ApproveNotif extends FactoidRunnable {
      */
     public void runApproveNotifLater() {
 
-        long notifyTime = Factoid.getThisPlugin().iConf().getApproveNotifyTime();
+        long notifyTime = Factoid.getConf().getApproveNotifyTime();
 
         // Start only if notification is activated in configuration
         if (notifyTime != 0) {
@@ -64,7 +64,7 @@ public class ApproveNotif extends FactoidRunnable {
 
         int lstCount;
 
-        if ((lstCount = Factoid.getThisPlugin().iLands().getApproveList().getApproveList().size()) != 0) {
+        if ((lstCount = Factoid.getLands().getApproveList().getApproveList().size()) != 0) {
 
             // If there is some notification to done
             notifyListApprove(lstCount);
@@ -79,7 +79,7 @@ public class ApproveNotif extends FactoidRunnable {
      */
     public void notifyForApprove(String landName, String playerName) {
 
-        notifyPlayer(Factoid.getThisPlugin().iLanguage().getMessage("COLLISION.SHOW.NOTIFYLAND", landName, playerName + ChatStyle.GREEN));
+        notifyPlayer(Factoid.getLanguage().getMessage("COLLISION.SHOW.NOTIFYLAND", landName, playerName + ChatStyle.GREEN));
     }
 
     /**
@@ -89,7 +89,7 @@ public class ApproveNotif extends FactoidRunnable {
      */
     private void notifyListApprove(int lstCount) {
 
-        notifyPlayer(Factoid.getThisPlugin().iLanguage().getMessage("COLLISION.SHOW.NOTIFY", lstCount + ""));
+        notifyPlayer(Factoid.getLanguage().getMessage("COLLISION.SHOW.NOTIFY", lstCount + ""));
     }
 
     // Notify with a message

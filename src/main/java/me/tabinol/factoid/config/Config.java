@@ -365,12 +365,12 @@ public class Config {
         config.addDefault("land.OwnerCanSet.Flags", new String[] {"MESSAGE_JOIN", "MESSAGE_QUIT"});
         ownerConfigFlag = new TreeSet<FlagType>();
         for (String value : config.getStringList("land.OwnerCanSet.Flags")) {
-            ownerConfigFlag.add(Factoid.getThisPlugin().iParameters().getFlagTypeNoValid(value.toUpperCase()));
+            ownerConfigFlag.add(Factoid.getParameters().getFlagTypeNoValid(value.toUpperCase()));
         }
         config.addDefault("land.OwnerCanSet.Permissions", new String[] {"BUILD", "OPEN", "USE"});
         ownerConfigPerm = new TreeSet<PermissionType>();
         for (String value : config.getStringList("land.OwnerCanSet.Permissions")) {
-            ownerConfigPerm.add(Factoid.getThisPlugin().iParameters().getPermissionTypeNoValid(value.toUpperCase()));
+            ownerConfigPerm.add(Factoid.getParameters().getPermissionTypeNoValid(value.toUpperCase()));
         }
         
         // Add types

@@ -17,16 +17,36 @@
  */ 
 package me.tabinol.factoid.minecraft.sponge;
 
+import java.io.File;
+
 import me.tabinol.factoid.minecraft.Server;
+import me.tabinol.factoid.minecraft.Task;
+import me.tabinol.factoid.utilities.FactoidRunnable;
+
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.service.config.ConfigDir;
 import org.spongepowered.api.world.World;
 
 import com.google.inject.Inject;
 
 public class ServerSponge extends Server {
 	
+	@Inject
+	private Logger logger;
+	
+	@Inject 
+	private Game game;
+	
+	@Inject
+	PluginContainer plugin;
+	
+	@Inject 
+	@ConfigDir(sharedRoot = false)
+	File configDir;
+
 	public ServerSponge() {
 		
 		super();
@@ -41,12 +61,6 @@ public class ServerSponge extends Server {
         	addPlayer(new FPlayerSponge(player));
         }
 	}
-
-	@Inject
-	private Logger logger;
-	
-	@Inject 
-	private Game game;
 
 	@Override
     public void info(String msg) {
@@ -66,5 +80,33 @@ public class ServerSponge extends Server {
 	@Override
     public void error(String msg) {
 	    logger.error(msg);
+    }
+
+	@Override
+    public Task createTask(FactoidRunnable runnable, Long tick, boolean multiple) {
+		
+		org.spongepowered.api.service.scheduler.Task task;
+		
+		runnable.stopNextRun();
+		
+		if(multiple) {
+			task = game.getSyncScheduler().runRepeatingTask(plugin, runnable, tick).get();
+		} else {
+			task = game.getSyncScheduler().runTaskAfter(plugin, runnable, tick).get();
+		}
+		
+		return new TaskSponge(task);
+    }
+
+	@Override
+    public File getDataFolder() {
+
+		return configDir;
+    }
+
+	@Override
+    public String getVersion() {
+	    
+		return plugin.getVersion();
     }
 }

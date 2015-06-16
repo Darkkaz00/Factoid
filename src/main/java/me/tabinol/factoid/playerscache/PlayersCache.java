@@ -137,7 +137,7 @@ public class PlayersCache extends Thread {
 		updateList.add(new PlayerCacheEntry(uuid, playerName));
 		lock.lock();
 		commandRequest.signal();
-		Factoid.getThisPlugin().iLog().write("Name request (Thread wake up...)");
+		Factoid.getLog().write("Name request (Thread wake up...)");
 		lock.unlock();
 	}
 	
@@ -179,7 +179,7 @@ public class PlayersCache extends Thread {
 		outputList.add(new OutputRequest(commandExec, playerNames));
 		lock.lock();
 		commandRequest.signal();
-		Factoid.getThisPlugin().iLog().write("Name request (Thread wake up...)");
+		Factoid.getLog().write("Name request (Thread wake up...)");
 		lock.unlock();
 	}
 	
@@ -213,7 +213,7 @@ public class PlayersCache extends Thread {
    				
    				// Pass 2 check in Minecraft website
    				if(!names.isEmpty()) {
-   					Factoid.getThisPlugin().iLog().write("HTTP profile request: " + names);
+   					Factoid.getLog().write("HTTP profile request: " + names);
    					Profile[] profiles = httpProfileRepository.findProfilesByNames(names.toArray(new String[0]));
    					for(Profile profile : profiles) {
    						// Put in the correct position
@@ -222,7 +222,7 @@ public class PlayersCache extends Thread {
    						
    						while(compt != length && !found) {
    							if(entries[compt] == null) {
-   								Factoid.getThisPlugin().iLog().write("HTTP Found : " + profile.getName() + ", " + profile.getId());
+   								Factoid.getLog().write("HTTP Found : " + profile.getName() + ", " + profile.getId());
    								UUID uuid = stringToUUID(profile.getId());
    								if(uuid != null) {
    									entries[compt] = new PlayerCacheEntry(uuid, 
@@ -248,7 +248,7 @@ public class PlayersCache extends Thread {
     		// wait!
     		try {
     			commandRequest.await();
-    			Factoid.getThisPlugin().iLog().write("PlayersCache Thread wake up!");
+    			Factoid.getLog().write("PlayersCache Thread wake up!");
    			} catch (InterruptedException e) {
    				// TODO Auto-generated catch block
    				e.printStackTrace();

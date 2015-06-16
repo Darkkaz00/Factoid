@@ -62,11 +62,11 @@ public class ActiveAreaSelection extends AreaSelection implements PlayerMoveList
         isCollision = false;
 
         Location loc = player.getLocation();
-        int landXr = Factoid.getThisPlugin().iConf().getDefaultXSize() / 2;
-        int landZr = Factoid.getThisPlugin().iConf().getDefaultZSize() / 2;
+        int landXr = Factoid.getConf().getDefaultXSize() / 2;
+        int landZr = Factoid.getConf().getDefaultZSize() / 2;
         area = new CuboidArea(loc.getWorld().getName(),
-                loc.getBlockX() - landXr, Factoid.getThisPlugin().iConf().getDefaultBottom(), loc.getBlockZ() - landZr,
-                loc.getBlockX() + landXr, Factoid.getThisPlugin().iConf().getDefaultTop(), loc.getBlockZ() + landZr);
+                loc.getBlockX() - landXr, Factoid.getConf().getDefaultBottom(), loc.getBlockZ() - landZr,
+                loc.getBlockX() + landXr, Factoid.getConf().getDefaultTop(), loc.getBlockZ() + landZr);
 
         makeVisualSelection();
     }

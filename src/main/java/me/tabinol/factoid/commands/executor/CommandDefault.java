@@ -54,6 +54,6 @@ public class CommandDefault extends CommandExec {
         checkPermission(true, true, null, null);
         
         entity.playerConf.setConfirm(new ConfirmEntry(ConfirmEntry.ConfirmType.LAND_DEFAULT, land, 0));
-        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CONFIRM"));
+        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CONFIRM"));
     }
 }

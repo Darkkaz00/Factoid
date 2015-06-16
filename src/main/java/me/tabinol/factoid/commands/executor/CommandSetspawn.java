@@ -28,7 +28,7 @@ import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.parameters.FlagList;
 import me.tabinol.factoid.parameters.LandFlag;
-import me.tabinol.factoidapi.utilities.StringChanges;
+import me.tabinol.factoid.utilities.StringChanges;
 
 @InfoCommand(name="setspawn")
 public class CommandSetspawn extends CommandExec {
@@ -67,7 +67,7 @@ public class CommandSetspawn extends CommandExec {
         LandFlag flag = new LandFlag(FlagList.SPAWN.getFlagType(), posStr, true);
         ((Land) land).addFlag(flag);
         
-        entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.TP.CREATED"));
+        entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.TP.CREATED"));
 	}
 
 }

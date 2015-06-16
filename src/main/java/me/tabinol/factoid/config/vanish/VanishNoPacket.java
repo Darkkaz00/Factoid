@@ -39,7 +39,7 @@ public class VanishNoPacket implements Vanish {
      */
     public VanishNoPacket() {
 
-        // vanishNoPacket = (VanishPlugin) Factoid.getThisPlugin().iDependPlugin().getVanishNoPacket();
+        // vanishNoPacket = (VanishPlugin) Factoid.getDependPlugin().getVanishNoPacket();
     }
 
     /* (non-Javadoc)
@@ -48,7 +48,7 @@ public class VanishNoPacket implements Vanish {
     @Override
     public boolean isVanished(Player player) {
 
-        if((Factoid.getThisPlugin().iConf().isSpectatorIsVanish() 
+        if((Factoid.getConf().isSpectatorIsVanish() 
         		&& BKVersion.isSpectatorMode(player))) {
         	return true;
         }

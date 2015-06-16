@@ -214,7 +214,7 @@ public class PlayerSelection {
         
         // Get land price
         if (land == null) {
-            priceFlag = Factoid.getThisPlugin().iLands().getOutsideArea(area.getWorldName())
+            priceFlag = Factoid.getLands().getOutsideArea(area.getWorldName())
             		.getFlagAndInherit(flagType).getValueDouble();
                     
         } else {
@@ -251,7 +251,7 @@ public class PlayerSelection {
 
         // The area is from parent ask parent
         if (land.getParent() == null) {
-            priceFlag = Factoid.getThisPlugin().iLands().getOutsideArea(area.getWorldName())
+            priceFlag = Factoid.getLands().getOutsideArea(area.getWorldName())
             		.getFlagAndInherit(flagType).getValueDouble();
         } else {
             priceFlag = land.getParent().getFlagAndInherit(flagType).getValueDouble();
@@ -292,8 +292,8 @@ public class PlayerSelection {
     private boolean isPlayerMustPay() {
         
         // Is Economy?
-        if (Factoid.getThisPlugin().iPlayerMoney() == null
-        		|| !Factoid.getThisPlugin().iConf().useEconomy()
+        if (Factoid.getPlayerMoney() == null
+        		|| !Factoid.getConf().useEconomy()
         		|| playerConfEntry.isAdminMod()) {
             return false;
         }

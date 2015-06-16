@@ -66,9 +66,9 @@ public class CommandExpand extends CommandExec {
                 throw new FactoidCommandException("Player Expand", entity.player, "COMMAND.EXPAND.ALREADY");
             }
 
-            entity.player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.EXPAND.JOINMODE"));
-            entity.player.sendMessage(ChatStyle.DARK_GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.EXPAND.HINT", ChatStyle.ITALIC.toString(), ChatStyle.RESET.toString(), ChatStyle.DARK_GRAY.toString()));
-            Factoid.getThisPlugin().iLog().write(entity.player.getName() + " have join ExpandMode.");
+            entity.player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.EXPAND.JOINMODE"));
+            entity.player.sendMessage(ChatStyle.DARK_GRAY + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.EXPAND.HINT", ChatStyle.ITALIC.toString(), ChatStyle.RESET.toString(), ChatStyle.DARK_GRAY.toString()));
+            Factoid.getLog().write(entity.player.getName() + " have join ExpandMode.");
 
             // Check the selection before (if exist)
             ICuboidArea area = entity.playerConf.getSelection().getCuboidArea();
@@ -88,9 +88,9 @@ public class CommandExpand extends CommandExec {
         } else if (curArg.equalsIgnoreCase("done")) {
 
             // Expand done
-            entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.EXPAND.COMPLETE"));
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.EXPAND.QUITMODE"));
-            Factoid.getThisPlugin().iLog().write(entity.playerName + " have quit ExpandMode.");
+            entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.EXPAND.COMPLETE"));
+            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.EXPAND.QUITMODE"));
+            Factoid.getLog().write(entity.playerName + " have quit ExpandMode.");
 
             ICuboidArea area = entity.playerConf.getSelection().getCuboidArea();
             if (area != null) {
@@ -99,10 +99,10 @@ public class CommandExpand extends CommandExec {
 
                 if (!((AreaSelection) entity.playerConf.getSelection().getSelection(SelectionType.AREA)).getCollision()) {
                     entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.DARK_GRAY
-                            + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.LAND.NOCOLLISION"));
+                            + Factoid.getLanguage().getMessage("COMMAND.SELECT.LAND.NOCOLLISION"));
                 } else {
                     entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.RED
-                            + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.LAND.COLLISION"));
+                            + Factoid.getLanguage().getMessage("COMMAND.SELECT.LAND.COLLISION"));
                 }
             }
 

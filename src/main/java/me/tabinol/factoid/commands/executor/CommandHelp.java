@@ -117,7 +117,7 @@ public class CommandHelp extends CommandExec {
      */
     private void showHelp() throws FactoidCommandException {
 
-        String help = Factoid.getThisPlugin().iLanguage().getHelp(mainCommand.name(), commandName);
+        String help = Factoid.getLanguage().getHelp(mainCommand.name(), commandName);
         
         // If there is no help for this command
         if(help == null) {

@@ -40,7 +40,7 @@ public class VanishEssentials implements Vanish {
      */
     public VanishEssentials() {
         
-        essentials = (Essentials)Factoid.getThisPlugin().iDependPlugin().getEssentials();
+        essentials = (Essentials)Factoid.getDependPlugin().getEssentials();
     }
     
     /* (non-Javadoc)
@@ -49,7 +49,7 @@ public class VanishEssentials implements Vanish {
     @Override
     public boolean isVanished(Player player) {
         
-        return (Factoid.getThisPlugin().iConf().isSpectatorIsVanish() 
+        return (Factoid.getConf().isSpectatorIsVanish() 
         		&& BKVersion.isSpectatorMode(player))
         		|| essentials.getUser(player).isVanished();
     }

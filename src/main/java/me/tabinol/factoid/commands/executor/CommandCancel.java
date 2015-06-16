@@ -82,8 +82,8 @@ public class CommandCancel extends CommandExec {
 
         if (playerConf.getConfirm() != null) {
             playerConf.setConfirm(null);
-            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CANCEL.ACTION"));
-            Factoid.getThisPlugin().iLog().write(player.getName() + " cancel for action");
+            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CANCEL.ACTION"));
+            Factoid.getLog().write(player.getName() + " cancel for action");
             
             if(!fromAutoCancel) {
                 return;
@@ -93,8 +93,8 @@ public class CommandCancel extends CommandExec {
         if (playerConf.getSelection().getSelection(SelectionType.AREA) != null) {
 
             playerConf.getSelection().removeSelection(SelectionType.AREA);
-            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.SELECT.CANCEL"));
-            Factoid.getThisPlugin().iLog().write(player.getName() + ": Select cancel");
+            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.CANCEL"));
+            Factoid.getLog().write(player.getName() + ": Select cancel");
 
             if(!fromAutoCancel) {
                 return;
@@ -105,7 +105,7 @@ public class CommandCancel extends CommandExec {
         if (playerConf.getSetFlagUI() != null) {
 
             playerConf.setSetFlagUI(null);
-            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CANCEL.FLAGS"));
+            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CANCEL.FLAGS"));
 
             if(!fromAutoCancel) {
                 return;
@@ -116,7 +116,7 @@ public class CommandCancel extends CommandExec {
         if (playerConf.getSelection().getSelection(SelectionType.LAND) != null) {
 
             playerConf.getSelection().removeSelection(SelectionType.LAND);
-            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage("COMMAND.CANCEL.SELECT"));
+            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CANCEL.SELECT"));
 
             // Cancel selection (it is the last think selected)
             playerConf.setAutoCancelSelect(false);

@@ -70,7 +70,7 @@ public class WorldListener extends CommonListener implements Listener {
     public WorldListener() {
 
         super();
-        conf = Factoid.getThisPlugin().iConf();
+        conf = Factoid.getConf();
     }
 
     /**
@@ -86,7 +86,7 @@ public class WorldListener extends CommonListener implements Listener {
         }
 
         Location loc = event.getEntity().getLocation();
-        IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(loc);
+        IDummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
         EntityType entityType = event.getEntityType();
 
         // Check for Explosion cancel 
@@ -166,7 +166,7 @@ public class WorldListener extends CommonListener implements Listener {
         if (conf.isOverrideExplosions()) {
             // Check for painting
             if (event.getCause() == RemoveCause.EXPLOSION) {
-                Factoid.getThisPlugin().iLog().write("Cancel HangingBreak : " + event.getEntity() + ", Cause: " + event.getCause());
+                Factoid.getLog().write("Cancel HangingBreak : " + event.getEntity() + ", Cause: " + event.getCause());
                 event.setCancelled(true);
             }
         }
@@ -192,12 +192,12 @@ public class WorldListener extends CommonListener implements Listener {
         Iterator<Block> itBlock = blocks.iterator();
         Block block;
 
-        Factoid.getThisPlugin().iLog().write("Explosion : " + ", Yield: " + yield + ", power: " + power);
+        Factoid.getLog().write("Explosion : " + ", Yield: " + yield + ", power: " + power);
 
         // Check if 1 block or more is in a protected place
         while(itBlock.hasNext() && !cancelEvent) {
         	block = itBlock.next();
-        	value = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(block.getLocation()).getFlagAndInherit(ft);
+        	value = Factoid.getLands().getLandOrOutsideArea(block.getLocation()).getFlagAndInherit(ft);
             if (value.getValueBoolean() == false) {
                 cancelEvent = true;
             }
@@ -221,7 +221,7 @@ public class WorldListener extends CommonListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onEntityChangeBlock(EntityChangeBlockEvent event) {
 
-        IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(event.getBlock().getLocation());
+        IDummyLand land = Factoid.getLands().getLandOrOutsideArea(event.getBlock().getLocation());
         Material matFrom = event.getBlock().getType();
         Material matTo = event.getTo();
 
@@ -248,7 +248,7 @@ public class WorldListener extends CommonListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockIgnite(BlockIgniteEvent event) {
 
-        IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(event.getBlock().getLocation());
+        IDummyLand land = Factoid.getLands().getLandOrOutsideArea(event.getBlock().getLocation());
 
         if (((event.getCause() == IgniteCause.SPREAD || event.getCause() == IgniteCause.LAVA)
                 && land.getFlagAndInherit(FlagList.FIRESPREAD.getFlagType()).getValueBoolean() == false)
@@ -265,7 +265,7 @@ public class WorldListener extends CommonListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockBurn(BlockBurnEvent event) {
 
-        IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(event.getBlock().getLocation());
+        IDummyLand land = Factoid.getLands().getLandOrOutsideArea(event.getBlock().getLocation());
 
         if ((land.getFlagAndInherit(FlagList.FIRESPREAD.getFlagType()).getValueBoolean() == false)
                 || (land.getFlagAndInherit(FlagList.FIRE.getFlagType()).getValueBoolean() == false)) {
@@ -281,7 +281,7 @@ public class WorldListener extends CommonListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onCreatureSpawn(CreatureSpawnEvent event) {
 
-        IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(event.getEntity().getLocation());
+        IDummyLand land = Factoid.getLands().getLandOrOutsideArea(event.getEntity().getLocation());
 
         if ((event.getEntity() instanceof Animals
                 && land.getFlagAndInherit(FlagList.ANIMAL_SPAWN.getFlagType()).getValueBoolean() == false)
@@ -301,7 +301,7 @@ public class WorldListener extends CommonListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onLeavesDecay(LeavesDecayEvent event) {
 
-        IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(event.getBlock().getLocation());
+        IDummyLand land = Factoid.getLands().getLandOrOutsideArea(event.getBlock().getLocation());
 
         if (land.getFlagAndInherit(FlagList.LEAF_DECAY.getFlagType()).getValueBoolean() == false) {
             event.setCancelled(true);
@@ -316,7 +316,7 @@ public class WorldListener extends CommonListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockFromTo(BlockFromToEvent event) {
 
-        IDummyLand land = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(event.getBlock().getLocation());
+        IDummyLand land = Factoid.getLands().getLandOrOutsideArea(event.getBlock().getLocation());
         Material ml = event.getBlock().getType();
 
         // Liquid flow
@@ -341,7 +341,7 @@ public class WorldListener extends CommonListener implements Listener {
                 && (event.getCause() == DamageCause.BLOCK_EXPLOSION || event.getCause() == DamageCause.ENTITY_EXPLOSION
                 || event.getCause() == DamageCause.PROJECTILE)) {
             // Check for ItemFrame
-            Factoid.getThisPlugin().iLog().write("Cancel HangingBreak : " + event.getEntity() + ", Cause: " + event.getCause());
+            Factoid.getLog().write("Cancel HangingBreak : " + event.getEntity() + ", Cause: " + event.getCause());
             event.setCancelled(true);
         }
     }

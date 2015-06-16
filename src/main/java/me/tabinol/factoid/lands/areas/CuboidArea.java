@@ -24,13 +24,11 @@ import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.minecraft.FWorld;
 import me.tabinol.factoid.utilities.Calculate;
-import me.tabinol.factoidapi.lands.areas.ICuboidArea;
-
 
 /**
  * The Class CuboidArea.
  */
-public class CuboidArea implements Comparable<CuboidArea>, ICuboidArea {
+public class CuboidArea implements Comparable<CuboidArea> {
 
     /** The world name. */
     private String worldName;
@@ -69,7 +67,7 @@ public class CuboidArea implements Comparable<CuboidArea>, ICuboidArea {
      * @param area2 the area2
      * @return true, if successful
      */
-    public boolean equals(ICuboidArea area2) {
+    public boolean equals(CuboidArea area2) {
 
         return worldName.equals(area2.getWorldName())
                 && x1 == area2.getX1() && y1 == area2.getY1() && z1 == area2.getZ1()
@@ -184,7 +182,7 @@ public class CuboidArea implements Comparable<CuboidArea>, ICuboidArea {
      * @param area2 the area2
      * @return true, if is collision
      */
-    public boolean isCollision(ICuboidArea area2) {
+    public boolean isCollision(CuboidArea area2) {
 
         return (worldName.equals(area2.getWorldName())
                 && (Calculate.isInInterval(x1, area2.getX1(), area2.getX2())
@@ -204,9 +202,9 @@ public class CuboidArea implements Comparable<CuboidArea>, ICuboidArea {
     public boolean isLocationInside(Point loc) {
 
         return loc.getWorldName().equals(worldName)
-                && Calculate.isInInterval(loc.getX(), x1, x2)
-                && Calculate.isInInterval(loc.getY(), y1, y2)
-                && Calculate.isInInterval(loc.getZ(), z1, z2);
+                && Calculate.isInInterval(loc.getBlockX(), x1, x2)
+                && Calculate.isInInterval(loc.getBlockY(), y1, y2)
+                && Calculate.isInInterval(loc.getBlockZ(), z1, z2);
     }
     
     /**
@@ -214,7 +212,7 @@ public class CuboidArea implements Comparable<CuboidArea>, ICuboidArea {
      * @param area2 The second area to compare
      * @return the CuboidArea collision or null if there is no collision
      */
-    public CuboidArea getCollisionArea(ICuboidArea area2) {
+    public CuboidArea getCollisionArea(CuboidArea area2) {
         
         // Return null if the world is not the same
         if (!worldName.equals(area2.getWorldName())) {
@@ -286,14 +284,13 @@ public class CuboidArea implements Comparable<CuboidArea>, ICuboidArea {
     }
     
     /**
-     * Create a collection of outside areas. DO NOT USE TO GET THE AREA PRICE
+     * Create a collection of outside areas. DO NOT USE TO GET THE AREA PRICE OR VOLUME
      * @param area2 Area to compare
      * @return A collection of outside areas
      */
-    public Collection<ICuboidArea> 
-    	getOutside(ICuboidArea area2) {
+    public Collection<CuboidArea> getOutside(CuboidArea area2) {
 
-    	HashSet<ICuboidArea> areaList = new HashSet<ICuboidArea>();
+    	HashSet<CuboidArea> areaList = new HashSet<CuboidArea>();
 
         if (!worldName.equals(area2.getWorldName())) {
             areaList.add(area2);

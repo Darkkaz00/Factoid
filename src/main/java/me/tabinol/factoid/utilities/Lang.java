@@ -65,9 +65,9 @@ public class Lang {
      * Reload config.
      */
     public final void reloadConfig() {
-        this.lang = Factoid.getThisPlugin().iConf().getLang();
+        this.lang = Factoid.getConf().getLang();
         this.langFile = new File(plugin.getDataFolder() + "/lang/", lang + ".yml");
-        if (Factoid.getThisPlugin().iConf().getLang() != null) {
+        if (Factoid.getConf().getLang() != null) {
             copyLang();
             loadYamls();
         }

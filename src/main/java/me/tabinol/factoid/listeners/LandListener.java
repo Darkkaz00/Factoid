@@ -72,7 +72,7 @@ public class LandListener extends CommonListener implements Listener {
 
             for (Player player : playerHeal) {
                 if (!player.isDead()) {
-                    Factoid.getThisPlugin().iLog().write("Healing: " + player.getName());
+                    Factoid.getLog().write("Healing: " + player.getName());
                     foodLevel = player.getFoodLevel();
                     if (foodLevel < 20) {
                         foodLevel += 5;
@@ -101,7 +101,7 @@ public class LandListener extends CommonListener implements Listener {
     public LandListener() {
 
         super();
-        playerConf = Factoid.getThisPlugin().iPlayerConf();
+        playerConf = Factoid.getPlayerConf();
         playerHeal = new ArrayList<Player>();
         landHeal = new LandHeal();
         landHeal.runTaskTimer(Factoid.getThisPlugin(), 20, 20);
@@ -160,9 +160,9 @@ public class LandListener extends CommonListener implements Listener {
             }
 
             /*for(String playername : lastLand.getPlayersInLand()){
-             Factoid.getThisPlugin().iScoreboard().sendScoreboard(lastLand.getPlayersInLand(), Factoid.getThisPlugin().getServer().getPlayer(playername), lastLand.getName());
+             Factoid.getScoreboard().sendScoreboard(lastLand.getPlayersInLand(), Factoid.getThisPlugin().getServer().getPlayer(playername), lastLand.getName());
              }
-             Factoid.getThisPlugin().iScoreboard().sendScoreboard(lastLand.getPlayersInLand(), player, lastLand.getName());*/
+             Factoid.getScoreboard().sendScoreboard(lastLand.getPlayersInLand(), player, lastLand.getName());*/
         }
         if (land != null) {
             dummyLand = land;
@@ -183,7 +183,7 @@ public class LandListener extends CommonListener implements Listener {
                         tpSpawn(player, land, message);
                         return;
                     } else {
-                        player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage(message, land.getName()));
+                        player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getLanguage().getMessage(message, land.getName()));
                         event.setCancelled(true);
                         return;
                     }
@@ -207,12 +207,12 @@ public class LandListener extends CommonListener implements Listener {
 
 
             /*for(String playername:land.getPlayersInLand()){
-             Factoid.getThisPlugin().iScoreboard().sendScoreboard(land.getPlayersInLand(), Factoid.getThisPlugin().getServer().getPlayer(playername), land.getName());
+             Factoid.getScoreboard().sendScoreboard(land.getPlayersInLand(), Factoid.getThisPlugin().getServer().getPlayer(playername), land.getName());
              }
-             Factoid.getThisPlugin().iScoreboard().sendScoreboard(land.getPlayersInLand(), player, land.getName());*/
+             Factoid.getScoreboard().sendScoreboard(land.getPlayersInLand(), player, land.getName());*/
         } else {
-            dummyLand = Factoid.getThisPlugin().iLands().getOutsideArea(event.getToLoc());
-            Factoid.getThisPlugin().iScoreboard().resetScoreboard(player);
+            dummyLand = Factoid.getLands().getOutsideArea(event.getToLoc());
+            Factoid.getScoreboard().resetScoreboard(player);
         }
 
         //Check for Healing
@@ -321,7 +321,7 @@ public class LandListener extends CommonListener implements Listener {
             if (player != null && player != playerIn
                     // Only adminmod can see vanish
                     && (!playerConf.isVanished(playerIn) || playerConf.get(player).isAdminMod())) {
-                player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage(
+                player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getLanguage().getMessage(
                         message, playerIn.getDisplayName(), land.getName() + ChatStyle.GRAY));
             }
         }
@@ -337,6 +337,6 @@ public class LandListener extends CommonListener implements Listener {
     private void tpSpawn(Player player, ILand land, String message) {
 
         player.teleport(player.getWorld().getSpawnLocation());
-        player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getThisPlugin().iLanguage().getMessage(message, land.getName()));
+        player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getLanguage().getMessage(message, land.getName()));
     }
 }

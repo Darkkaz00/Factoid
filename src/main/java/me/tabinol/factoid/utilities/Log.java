@@ -42,8 +42,8 @@ public class Log {
      */
     public Log() {
 
-        this.debug = Factoid.getThisPlugin().iConf().isDebug();
-        this.Folder = Factoid.getThisPlugin().getDataFolder();
+        this.debug = Factoid.getConf().isDebug();
+        this.Folder = Factoid.getServer().getDataFolder();
     }
 
     /**
@@ -70,7 +70,7 @@ public class Log {
                 fileWriter = new FileWriter(filename, true);
                 bufWriter = new BufferedWriter(fileWriter);
                 bufWriter.newLine();
-                bufWriter.write("[Factoid][v." + Factoid.getThisPlugin().getDescription().getVersion()
+                bufWriter.write("[Factoid][v." + Factoid.getServer().getVersion()
                 		+ "][" + Dates.time() + "]" + text);
                 bufWriter.close();
             } catch (IOException ex) {

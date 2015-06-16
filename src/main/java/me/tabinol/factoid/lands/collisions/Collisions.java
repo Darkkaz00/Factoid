@@ -157,7 +157,7 @@ public class Collisions {
             IPlayerContainer owner, double price, boolean checkApproveList) {
 
         coll = new ArrayList<CollisionsEntry>();
-        lands = Factoid.getThisPlugin().iLands();
+        lands = Factoid.getLands();
         this.landName = landName;
         this.land = land;
         this.action = action;
@@ -212,7 +212,7 @@ public class Collisions {
         	
         	// Pass 7 check if the player has enough money
         	if(price > 0 && newArea != null) {
-        		double playerBalance = Factoid.getThisPlugin().iPlayerMoney().getPlayerBalance(
+        		double playerBalance = Factoid.getPlayerMoney().getPlayerBalance(
         				((IPlayerContainerPlayer)owner).getOfflinePlayer(), newArea.getWorldName());
         		if(playerBalance < price) {
         			coll.add(new CollisionsEntry(LandError.NOT_ENOUGH_MONEY, null, 0));
@@ -220,13 +220,13 @@ public class Collisions {
         	}
         
         	// Pass 8 check if the land has more than the maximum number of areas
-        	if(action == LandAction.AREA_ADD && land.getAreas().size() >= Factoid.getThisPlugin().iConf().getMaxAreaPerLand()) {
+        	if(action == LandAction.AREA_ADD && land.getAreas().size() >= Factoid.getConf().getMaxAreaPerLand()) {
         		coll.add(new CollisionsEntry(LandError.MAX_AREA_FOR_LAND, land, 0));
         	}
         
         	// Pass 9 check if the player has more than the maximum number of land
         	if(action == LandAction.LAND_ADD && owner != null 
-        			&& Factoid.getThisPlugin().iLands().getLands(owner).size() >= Factoid.getThisPlugin().iConf().getMaxLandPerPlayer()) {
+        			&& Factoid.getLands().getLands(owner).size() >= Factoid.getConf().getMaxLandPerPlayer()) {
         		coll.add(new CollisionsEntry(LandError.MAX_LAND_FOR_PLAYER, null, 0));
         	}
         }

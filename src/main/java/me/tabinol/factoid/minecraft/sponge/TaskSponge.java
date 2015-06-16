@@ -14,29 +14,27 @@
 
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-package me.tabinol.factoid.config.vanish;
+ */ 
 
-import me.tabinol.factoid.BKVersion;
-import me.tabinol.factoid.Factoid;
+package me.tabinol.factoid.minecraft.sponge;
 
-import org.bukkit.entity.Player;
+import me.tabinol.factoid.minecraft.Task;
 
+public class TaskSponge implements Task {
 
-/**
- * Only return false if there is no Vanish plugin.
- *
- * @author michel
- */
-public class DummyVanish implements Vanish {
+	org.spongepowered.api.service.scheduler.Task taskId;
+	
+	public TaskSponge(org.spongepowered.api.service.scheduler.Task taskId) {
+		
+		this.taskId = taskId;
+	}
+	
+	@Override
+	public void cancel() {
+		
+        if (taskId != null) {
 
-    /* (non-Javadoc)
-     * @see me.tabinol.factoid.config.vanish.Vanish#isVanished(org.bukkit.entity.Player)
-     */
-    @Override
-    public boolean isVanished(Player player) {
-        
-        return Factoid.getConf().isSpectatorIsVanish() 
-        		&& BKVersion.isSpectatorMode(player);
-    }
+            taskId.cancel();
+        }
+	}
 }

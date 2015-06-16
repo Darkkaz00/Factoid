@@ -112,41 +112,41 @@ public class AreaSelection extends RegionSelection implements Listener {
         int diffZ = area.getZ2() - area.getZ1();
 
         // Do not show a too big select to avoid crash or severe lag
-        int maxSize = Factoid.getThisPlugin().iConf().getMaxVisualSelect();
-        int maxDisPlayer = Factoid.getThisPlugin().iConf().getMaxVisualSelectFromPlayer();
+        int maxSize = Factoid.getConf().getMaxVisualSelect();
+        int maxDisPlayer = Factoid.getConf().getMaxVisualSelectFromPlayer();
         Location playerLoc = player.getLocation();
         if (diffX > maxSize || diffZ > maxSize
                 || abs(area.getX1() - playerLoc.getBlockX()) > maxDisPlayer
                 || abs(area.getX2() - playerLoc.getBlockX()) > maxDisPlayer
                 || abs(area.getZ1() - playerLoc.getBlockZ()) > maxDisPlayer
                 || abs(area.getZ2() - playerLoc.getBlockZ()) > maxDisPlayer) {
-            Factoid.getThisPlugin().iLog().write("Selection disabled!");
+            Factoid.getLog().write("Selection disabled!");
             return;
         }
         
         // Detect the curent land from the 8 points
-        IDummyLand Land1 = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(new Location(
+        IDummyLand Land1 = Factoid.getLands().getLandOrOutsideArea(new Location(
         		area.getWord(), area.getX1(), area.getY1(), area.getZ1()));
-        IDummyLand Land2 = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(new Location(
+        IDummyLand Land2 = Factoid.getLands().getLandOrOutsideArea(new Location(
         		area.getWord(), area.getX1(), area.getY1(), area.getZ2()));
-        IDummyLand Land3 = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(new Location(
+        IDummyLand Land3 = Factoid.getLands().getLandOrOutsideArea(new Location(
         		area.getWord(), area.getX2(), area.getY1(), area.getZ1()));
-        IDummyLand Land4 = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(new Location(
+        IDummyLand Land4 = Factoid.getLands().getLandOrOutsideArea(new Location(
         		area.getWord(), area.getX2(), area.getY1(), area.getZ2()));
-        IDummyLand Land5 = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(new Location(
+        IDummyLand Land5 = Factoid.getLands().getLandOrOutsideArea(new Location(
         		area.getWord(), area.getX1(), area.getY2(), area.getZ1()));
-        IDummyLand Land6 = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(new Location(
+        IDummyLand Land6 = Factoid.getLands().getLandOrOutsideArea(new Location(
         		area.getWord(), area.getX1(), area.getY2(), area.getZ2()));
-        IDummyLand Land7 = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(new Location(
+        IDummyLand Land7 = Factoid.getLands().getLandOrOutsideArea(new Location(
         		area.getWord(), area.getX2(), area.getY2(), area.getZ1()));
-        IDummyLand Land8 = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(new Location(
+        IDummyLand Land8 = Factoid.getLands().getLandOrOutsideArea(new Location(
         		area.getWord(), area.getX2(), area.getY2(), area.getZ2()));
         
         if(Land1 == Land2 && Land1 == Land3 && Land1 == Land4 && Land1 == Land5 && Land1 == Land6
         		&& Land1 == Land7 && Land1 == Land8) {
         	parentDetected = Land1;
         } else {
-        	parentDetected = Factoid.getThisPlugin().iLands().getOutsideArea(Land1.getWorldName());
+        	parentDetected = Factoid.getLands().getOutsideArea(Land1.getWorldName());
         }
         
         boolean canCreate = parentDetected.checkPermissionAndInherit(player, PermissionList.LAND_CREATE.getPermissionType());
@@ -163,9 +163,9 @@ public class AreaSelection extends RegionSelection implements Listener {
                     if (!isFromLand) {
 
                         // Active Selection
-                        IDummyLand testCuboidarea = Factoid.getThisPlugin().iLands().getLandOrOutsideArea(newloc);
+                        IDummyLand testCuboidarea = Factoid.getLands().getLandOrOutsideArea(newloc);
                         if (parentDetected == testCuboidarea 
-                        		&& (canCreate == true || Factoid.getThisPlugin().iPlayerConf().get(player).isAdminMod())) {
+                        		&& (canCreate == true || Factoid.getPlayerConf().get(player).isAdminMod())) {
                             this.player.sendBlockChange(newloc, Material.SPONGE, this.by);
                         } else {
                             this.player.sendBlockChange(newloc, Material.REDSTONE_BLOCK, this.by);

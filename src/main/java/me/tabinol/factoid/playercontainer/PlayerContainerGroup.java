@@ -68,7 +68,7 @@ public class PlayerContainerGroup extends PlayerContainer {
     public boolean hasAccess(Player player) {
         
         if(player != null) {
-            return Factoid.getThisPlugin().iDependPlugin().getPermission().playerInGroup(player, name);
+            return Factoid.getDependPlugin().getPermission().playerInGroup(player, name);
         } else {
             return false;
         }

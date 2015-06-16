@@ -74,7 +74,7 @@ public class PlayerContainerFactionTerritory extends PlayerContainer {
             return false;
         }
         
-        return land.getFactionTerritory().isPlayerInList(Factoid.getThisPlugin().iPlayerConf().get(player).getPlayerContainer());
+        return land.getFactionTerritory().isPlayerInList(Factoid.getPlayerConf().get(player).getPlayerContainer());
     }
 
     @Override
