@@ -17,4 +17,4 @@ Sponge
 
 Factoid-->FactoidSongeAPI-->FactoidSponge
 
-To create Sponge Plugin, you need to compile "FactoidSponge" package. If you want to use Factoid has dependency for your own plugin, you need to use "FactoidSpongeAPI" package. See FactoidAPI wiki for more informations.
+To create Sponge Plugin, you need to compile "FactoidSponge" package. If you want to use Factoid has dependency for your own plugin, you need to use "FactoidSpongeAPI" package. See FactoidSpongeAPI wiki for more informations.
