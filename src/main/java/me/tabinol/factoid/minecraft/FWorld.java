@@ -20,9 +20,12 @@ package me.tabinol.factoid.minecraft;
 
 import java.util.UUID;
 
+import me.tabinol.factoid.lands.areas.Point;
+
 public interface FWorld {
 	
 	public String getName();
 	public UUID getUUID();
 	public int getMaxHeight();
+	public Point getSpawnLocation();
 }

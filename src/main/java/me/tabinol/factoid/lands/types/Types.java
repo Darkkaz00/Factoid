@@ -20,20 +20,16 @@ package me.tabinol.factoid.lands.types;
 import java.util.Collection;
 import java.util.TreeMap;
 
-import me.tabinol.factoidapi.lands.types.IType;
-import me.tabinol.factoidapi.lands.types.ITypes;
-
 public class Types {
 
-	final private TreeMap<String, IType> types;
+	final private TreeMap<String, Type> types;
 	
 	public Types() {
 		
-		types = new TreeMap<String, IType>();
+		types = new TreeMap<String, Type>();
 	}
 	
-	@Override
-	public IType addOrGetType(String arg0) {
+	public Type addOrGetType(String arg0) {
 		
 		if(arg0 == null || arg0.equals("")) {
 			return null;
@@ -41,7 +37,7 @@ public class Types {
 		
 		String typeName = arg0.toLowerCase();
 		
-		IType type = types.get(typeName);
+		Type type = types.get(typeName);
 		
 		if(type != null) {
 			return type;
@@ -54,14 +50,12 @@ public class Types {
 		return type;
 	}
 
-	@Override
-	public IType getType(String arg0) {
+	public Type getType(String arg0) {
 
 		return types.get(arg0.toLowerCase());
 	}
 
-	@Override
-	public Collection<IType> getTypes() {
+	public Collection<Type> getTypes() {
 
 		return types.values();
 	}

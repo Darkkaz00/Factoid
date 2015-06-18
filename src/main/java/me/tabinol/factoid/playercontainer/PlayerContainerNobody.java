@@ -17,13 +17,9 @@
  */
 package me.tabinol.factoid.playercontainer;
 
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainerNobody;
-
-import org.bukkit.entity.Player;
-
+import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.playercontainer.PlayerContainerType;
 
 /**
  * The Class PlayerContainerNobody.
@@ -35,14 +31,14 @@ public class PlayerContainerNobody extends PlayerContainer {
      */
     public PlayerContainerNobody() {
         
-        super("", EPlayerContainerType.NOBODY, false);
+        super("", PlayerContainerType.NOBODY, false);
     }
     
     /* (non-Javadoc)
      * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#equals(me.tabinol.factoid.playercontainer.PlayerContainer)
      */
     @Override
-    public boolean equals(IPlayerContainer container2) {
+    public boolean equals(PlayerContainer container2) {
         
         return container2 instanceof PlayerContainerNobody;
     }
@@ -60,13 +56,13 @@ public class PlayerContainerNobody extends PlayerContainer {
      * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#hasAccess(org.bukkit.entity.Player)
      */
     @Override
-    public boolean hasAccess(Player player) {
+    public boolean hasAccess(FPlayer player) {
         
         return false;
     }
 
     @Override
-    public boolean hasAccess(Player player, ILand land) {
+    public boolean hasAccess(FPlayer player, Land land) {
         
         return false;
     }
@@ -75,7 +71,7 @@ public class PlayerContainerNobody extends PlayerContainer {
      * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#setLand(me.tabinol.factoid.lands.Land)
      */
     @Override
-    public void setLand(ILand land) {
+    public void setLand(Land land) {
         
     }
 }

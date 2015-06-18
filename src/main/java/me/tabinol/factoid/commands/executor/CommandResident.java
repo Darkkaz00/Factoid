@@ -25,11 +25,10 @@ import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.parameters.PermissionList;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 import me.tabinol.factoid.playerscache.PlayerCacheEntry;
-import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
-
-import org.bukkit.ChatStyle;
+import me.tabinol.factoid.playercontainer.PlayerContainer;
+import me.tabinol.factoid.playercontainer.PlayerContainerType;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 
 /**
@@ -61,7 +60,7 @@ public class CommandResident extends CommandThreadExec {
         checkPermission(true, true, PermissionList.RESIDENT_MANAGER.getPermissionType(), null);
        
         // Double check: The player must be resident, owner or adminmod
-        if(!entity.playerConf.isAdminMod() && !land.isResident(entity.player) && !land.isOwner(entity.player)) {
+        if(!entity.player.isAdminMod() && !land.isResident(entity.player) && !land.isOwner(entity.player)) {
         	throw new FactoidCommandException("No permission to do this action", entity.player, "GENERAL.MISSINGPERMISSION");
         }
         
@@ -70,9 +69,9 @@ public class CommandResident extends CommandThreadExec {
         if (fonction.equalsIgnoreCase("add")) {
             
             pc = entity.argList.getPlayerContainerFromArg(land,
-                    new EPlayerContainerType[]{EPlayerContainerType.EVERYBODY,
-                        EPlayerContainerType.OWNER, EPlayerContainerType.VISITOR,
-                        EPlayerContainerType.RESIDENT});
+                    new PlayerContainerType[]{PlayerContainerType.EVERYBODY,
+                        PlayerContainerType.OWNER, PlayerContainerType.VISITOR,
+                        PlayerContainerType.RESIDENT});
             Factoid.getPlayersCache().getUUIDWithNames(this, pc);
         
         } else if (fonction.equalsIgnoreCase("remove")) {
@@ -84,7 +83,7 @@ public class CommandResident extends CommandThreadExec {
             
             StringBuilder stList = new StringBuilder();
             if (!land.getResidents().isEmpty()) {
-                for (IPlayerContainer pc : land.getResidents()) {
+                for (PlayerContainer pc : land.getResidents()) {
                     if (stList.length() != 0) {
                         stList.append(" ");
                     }
@@ -114,7 +113,7 @@ public class CommandResident extends CommandThreadExec {
 
             land.addResident(pc);
             entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.RESIDENT.ISDONE", pc.getPrint(), land.getName()));
-            Factoid.getLog().write("Resident added: " + pc.toString());
+            Factoid.getFactoidLog().write("Resident added: " + pc.toString());
 
         } else if (fonction.equalsIgnoreCase("remove")) {
 		
@@ -122,7 +121,7 @@ public class CommandResident extends CommandThreadExec {
                 throw new FactoidCommandException("Resident", entity.player, "COMMAND.RESIDENT.REMOVENOTEXIST");
             }
             entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.RESIDENT.REMOVEISDONE", pc.getPrint(), land.getName()));
-            Factoid.getLog().write("Resident removed: " + pc.toString());
+            Factoid.getFactoidLog().write("Resident removed: " + pc.toString());
         }
 	}
 }

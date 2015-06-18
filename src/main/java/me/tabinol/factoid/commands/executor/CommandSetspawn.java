@@ -17,18 +17,16 @@
  */
 package me.tabinol.factoid.commands.executor;
 
-import org.bukkit.ChatStyle;
-import org.bukkit.Location;
-
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.CommandEntities;
 import me.tabinol.factoid.commands.CommandExec;
 import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.parameters.FlagList;
 import me.tabinol.factoid.parameters.LandFlag;
-import me.tabinol.factoid.utilities.StringChanges;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 @InfoCommand(name="setspawn")
 public class CommandSetspawn extends CommandExec {
@@ -53,7 +51,7 @@ public class CommandSetspawn extends CommandExec {
         checkSelections(true, null);
         checkPermission(true, true, null, null);
         
-        Location loc = entity.player.getLocation();
+        Point loc = entity.player.getLocation();
         
         // If the player is not inside the land
         if(!land.isLocationInside(loc)) {
@@ -61,7 +59,7 @@ public class CommandSetspawn extends CommandExec {
         }
         
         // put player position to String
-        String posStr = StringChanges.locationToString(loc);
+        String posStr = loc.toString();
         
         // Set flag
         LandFlag flag = new LandFlag(FlagList.SPAWN.getFlagType(), posStr, true);

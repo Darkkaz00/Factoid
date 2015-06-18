@@ -50,7 +50,19 @@ public class FSenderBukkit extends FSender {
 	}
 
 	@Override
+    public String getName() {
+
+		return sender.getName();
+    }
+	
+	@Override
     public void sendMessage(String msg) {
+	    
+		sender.sendMessage(msg);
+    }
+
+	@Override
+    public void sendMessage(String[] msg) {
 	    
 		sender.sendMessage(msg);
     }

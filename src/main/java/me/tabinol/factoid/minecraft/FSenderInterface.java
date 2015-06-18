@@ -127,5 +127,7 @@ public interface FSenderInterface {
     public void setAutoCancelSelect(boolean value);
 
 	public abstract void sendMessage(String msg);
+	public abstract void sendMessage(String[] msg);
 	public abstract boolean hasPermission(String perm);
+	public abstract String getName();
 }

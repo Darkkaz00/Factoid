@@ -28,12 +28,14 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.event.LandModifyReason;
 import me.tabinol.factoid.factions.Faction;
 import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.lands.types.Type;
 import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.parameters.FlagType;
+import me.tabinol.factoid.parameters.FlagValue;
 import me.tabinol.factoid.parameters.LandFlag;
 import me.tabinol.factoid.parameters.Permission;
 import me.tabinol.factoid.parameters.PermissionType;
@@ -232,8 +234,7 @@ public class Land extends DummyLand {
         doSave();
         
         // Start Event
-        Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
-                new LandModifyEvent(this, LandModifyReason.AREA_ADD, area));
+        Factoid.getServer().CallEvents().callLandModifyEvent(this, LandModifyReason.AREA_ADD, area));
     }
 
     /**
@@ -251,8 +252,7 @@ public class Land extends DummyLand {
             doSave();
             
             // Start Event
-            Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
-                    new LandModifyEvent(this, LandModifyReason.AREA_REMOVE, area));
+            Factoid.getServer().CallEvents().callLandModifyEvent(this, LandModifyReason.AREA_REMOVE, area));
 
             return true;
         }
@@ -313,8 +313,7 @@ public class Land extends DummyLand {
             doSave();
 
             // Start Event
-            Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
-                    new LandModifyEvent(this, LandModifyReason.AREA_REPLACE, area));
+            Factoid.getServer().CallEvents().callLandModifyEvent(this, LandModifyReason.AREA_REPLACE, area));
 
             return true;
         }
@@ -471,8 +470,7 @@ public class Land extends DummyLand {
         doSave();
 
         // Start Event
-        Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
-                new LandModifyEvent(this, LandModifyReason.RENAME, name));
+        Factoid.getServer().CallEvents().callLandModifyEvent(this, LandModifyReason.RENAME, name));
     }
 
     /**
@@ -520,8 +518,8 @@ public class Land extends DummyLand {
         doSave();
 
         // Start Event
-        Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
-                new LandModifyEvent(this, LandModifyReason.FACTION_TERRITORY_CHANGE, faction));
+        Factoid.getServer().CallEvents().callLandModifyEvent(this, 
+        		LandModifyReason.FACTION_TERRITORY_CHANGE, faction));
     }
 
     /**
@@ -535,8 +533,7 @@ public class Land extends DummyLand {
         doSave();
 
         // Start Event
-        Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
-                new LandModifyEvent(this, LandModifyReason.OWNER_CHANGE, owner));
+        Factoid.getServer().CallEvents().callLandModifyEvent(this, LandModifyReason.OWNER_CHANGE, owner));
     }
 
     /**
@@ -551,8 +548,7 @@ public class Land extends DummyLand {
         doSave();
 
         // Start Event
-        Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
-                new LandModifyEvent(this, LandModifyReason.RESIDENT_ADD, resident));
+        Factoid.getServer().CallEvents().callLandModifyEvent(this, LandModifyReason.RESIDENT_ADD, resident));
     }
 
     /**
@@ -567,8 +563,8 @@ public class Land extends DummyLand {
             doSave();
 
             // Start Event
-            Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
-                    new LandModifyEvent(this, LandModifyReason.RESIDENT_REMOVE, resident));
+            Factoid.getServer().CallEvents().callLandModifyEvent(this, 
+            		LandModifyReason.RESIDENT_REMOVE, resident));
             
             return true;
         }
@@ -615,12 +611,7 @@ public class Land extends DummyLand {
         doSave();
 
         // Start Event
-        Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
-                new PlayerContainerLandBanEvent(this, banned));
-    
-        // Deprecated to remove
-        Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
-                new me.tabinol.factoid.event.PlayerContainerLandBanEvent((Land) this, (PlayerContainer) banned));
+        Factoid.getServer().CallEvents().callPlayerContainerLandBanEvent(this, banned));
     }
 
     /**
@@ -784,7 +775,7 @@ public class Land extends DummyLand {
      * @param land the land
      * @return true, if is descendants
      */
-    public boolean isDescendants(ILand land) {
+    public boolean isDescendants(Land land) {
 
         if (land == this) {
             return true;

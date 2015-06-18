@@ -26,6 +26,10 @@ import me.tabinol.factoid.Factoid;
 import me.tabinol.factoidapi.lands.IDummyLand;
 import me.tabinol.factoidapi.lands.ILand;
 import me.tabinol.factoidapi.lands.areas.ICuboidArea;
+import me.tabinol.factoid.lands.DummyLand;
+import me.tabinol.factoid.lands.areas.CuboidArea;
+import me.tabinol.factoid.lands.areas.Point;
+import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.parameters.PermissionList;
 import me.tabinol.factoid.selection.PlayerSelection.SelectionType;
 
@@ -42,7 +46,7 @@ import org.bukkit.event.Listener;
 public class AreaSelection extends RegionSelection implements Listener {
 
     /** The area. */
-    ICuboidArea area;
+    CuboidArea area;
     
     /** The is collision. */
     boolean isCollision = false;
@@ -57,7 +61,7 @@ public class AreaSelection extends RegionSelection implements Listener {
     private boolean isFromLand = false;
     
     /** Parent detected */
-    private IDummyLand parentDetected = null;
+    private DummyLand parentDetected = null;
 
     /**
      * Instantiates a new area selection.
@@ -65,7 +69,7 @@ public class AreaSelection extends RegionSelection implements Listener {
      * @param player the player
      * @param area the area
      */
-    public AreaSelection(Player player, ICuboidArea area) {
+    public AreaSelection(FPlayer player, CuboidArea area) {
 
         super(SelectionType.AREA, player);
         this.area = area;
@@ -81,7 +85,7 @@ public class AreaSelection extends RegionSelection implements Listener {
      * @param area the area
      * @param isFromLand the is from land
      */
-    public AreaSelection(Player player, ICuboidArea area, boolean isFromLand) {
+    public AreaSelection(FPlayer player, CuboidArea area, boolean isFromLand) {
 
         super(SelectionType.AREA, player);
         this.area = area;
@@ -96,7 +100,7 @@ public class AreaSelection extends RegionSelection implements Listener {
      *
      * @param player the player
      */
-    AreaSelection(Player player) {
+    AreaSelection(FPlayer player) {
 
         super(SelectionType.AREA, player);
     }
@@ -120,27 +124,27 @@ public class AreaSelection extends RegionSelection implements Listener {
                 || abs(area.getX2() - playerLoc.getBlockX()) > maxDisPlayer
                 || abs(area.getZ1() - playerLoc.getBlockZ()) > maxDisPlayer
                 || abs(area.getZ2() - playerLoc.getBlockZ()) > maxDisPlayer) {
-            Factoid.getLog().write("Selection disabled!");
+            Factoid.getFactoidLog().write("Selection disabled!");
             return;
         }
         
         // Detect the curent land from the 8 points
-        IDummyLand Land1 = Factoid.getLands().getLandOrOutsideArea(new Location(
-        		area.getWord(), area.getX1(), area.getY1(), area.getZ1()));
-        IDummyLand Land2 = Factoid.getLands().getLandOrOutsideArea(new Location(
-        		area.getWord(), area.getX1(), area.getY1(), area.getZ2()));
-        IDummyLand Land3 = Factoid.getLands().getLandOrOutsideArea(new Location(
-        		area.getWord(), area.getX2(), area.getY1(), area.getZ1()));
-        IDummyLand Land4 = Factoid.getLands().getLandOrOutsideArea(new Location(
-        		area.getWord(), area.getX2(), area.getY1(), area.getZ2()));
-        IDummyLand Land5 = Factoid.getLands().getLandOrOutsideArea(new Location(
-        		area.getWord(), area.getX1(), area.getY2(), area.getZ1()));
-        IDummyLand Land6 = Factoid.getLands().getLandOrOutsideArea(new Location(
-        		area.getWord(), area.getX1(), area.getY2(), area.getZ2()));
-        IDummyLand Land7 = Factoid.getLands().getLandOrOutsideArea(new Location(
-        		area.getWord(), area.getX2(), area.getY2(), area.getZ1()));
-        IDummyLand Land8 = Factoid.getLands().getLandOrOutsideArea(new Location(
-        		area.getWord(), area.getX2(), area.getY2(), area.getZ2()));
+        DummyLand Land1 = Factoid.getLands().getLandOrOutsideArea(new Point(
+        		area.getWorldName(), area.getX1(), area.getY1(), area.getZ1()));
+        DummyLand Land2 = Factoid.getLands().getLandOrOutsideArea(new Point(
+        		area.getWorldName(), area.getX1(), area.getY1(), area.getZ2()));
+        DummyLand Land3 = Factoid.getLands().getLandOrOutsideArea(new Point(
+        		area.getWorldName(), area.getX2(), area.getY1(), area.getZ1()));
+        DummyLand Land4 = Factoid.getLands().getLandOrOutsideArea(new Point(
+        		area.getWorldName(), area.getX2(), area.getY1(), area.getZ2()));
+        DummyLand Land5 = Factoid.getLands().getLandOrOutsideArea(new Point(
+        		area.getWorldName(), area.getX1(), area.getY2(), area.getZ1()));
+        DummyLand Land6 = Factoid.getLands().getLandOrOutsideArea(new Point(
+        		area.getWorldName(), area.getX1(), area.getY2(), area.getZ2()));
+        DummyLand Land7 = Factoid.getLands().getLandOrOutsideArea(new Point(
+        		area.getWorldName(), area.getX2(), area.getY2(), area.getZ1()));
+        DummyLand Land8 = Factoid.getLands().getLandOrOutsideArea(new Point(
+        		area.getWorldName(), area.getX2(), area.getY2(), area.getZ2()));
         
         if(Land1 == Land2 && Land1 == Land3 && Land1 == Land4 && Land1 == Land5 && Land1 == Land6
         		&& Land1 == Land7 && Land1 == Land8) {
@@ -157,7 +161,7 @@ public class AreaSelection extends RegionSelection implements Listener {
                 if (posX == area.getX1() || posX == area.getX2()
                         || posZ == area.getZ1() || posZ == area.getZ2()) {
 
-                    Location newloc = new Location(area.getWord(), posX, this.getYNearPlayer(posX, posZ) - 1, posZ);
+                    Point newloc = new Location(area.getWordName(), posX, this.getYNearPlayer(posX, posZ) - 1, posZ);
                     blockList.put(newloc, newloc.getBlock().getType());
 
                     if (!isFromLand) {
@@ -223,7 +227,7 @@ public class AreaSelection extends RegionSelection implements Listener {
      *
      * @return the cuboid area
      */
-    public ICuboidArea getCuboidArea() {
+    public CuboidArea getCuboidArea() {
         
         return area;
     }
@@ -238,10 +242,10 @@ public class AreaSelection extends RegionSelection implements Listener {
         return isCollision;
     }
     
-    public ILand getParentDetected() {
+    public Land getParentDetected() {
     	
-    	if(parentDetected instanceof ILand) {
-    		return (ILand) parentDetected;
+    	if(parentDetected instanceof Land) {
+    		return (Land) parentDetected;
     	} else {
     		return null;
     	}
@@ -256,7 +260,7 @@ public class AreaSelection extends RegionSelection implements Listener {
       */
      private int getYNearPlayer(int x, int z) {
 
-        Location loc = new Location(player.getWorld(), x, player.getLocation().getY() - 1, z);
+        Point loc = new Point(player.getWorldName(), x, player.getLocation().getY() - 1, z);
 
         if (loc.getBlock().getType() == Material.AIR) {
             while (loc.getBlock().getRelative(BlockFace.DOWN).getType() == Material.AIR

@@ -23,11 +23,11 @@ import java.util.logging.Logger;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.exceptions.FactoidLandException;
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.lands.areas.ICuboidArea;
-import me.tabinol.factoidapi.lands.types.IType;
+import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.lands.collisions.Collisions.LandAction;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
+import me.tabinol.factoid.lands.types.Type;
+import me.tabinol.factoid.playercontainer.PlayerContainer;
 
 
 /**
@@ -42,19 +42,19 @@ public class Approve {
     private final String landName;
     
     /** The type */
-    private final IType type;
+    private final Type type;
     
     /** The removed area id. */
     private final int removedAreaId;
     
     /** The new area. */
-    private final ICuboidArea newArea;
+    private final CuboidArea newArea;
     
     /** The owner. */
-    private final IPlayerContainer owner;
+    private final PlayerContainer owner;
     
     /** The parent. */
-    private final ILand parent;
+    private final Land parent;
     
     /** The price. */
     private final double price;
@@ -75,8 +75,8 @@ public class Approve {
      * @param price the price
      * @param dateTime the date time
      */
-    public Approve(String landName, IType type, LandAction action, int removedAreaId, 
-            ICuboidArea newArea, IPlayerContainer owner, ILand parent, double price,
+    public Approve(String landName, Type type, LandAction action, int removedAreaId, 
+            CuboidArea newArea, PlayerContainer owner, Land parent, double price,
             Calendar dateTime) {
         
         this.action = action;
@@ -115,7 +115,7 @@ public class Approve {
      *
      * @return the type
      */
-    public IType getType() {
+    public Type getType() {
     	
     	return type;
     }
@@ -135,7 +135,7 @@ public class Approve {
      *
      * @return the new area
      */
-    public ICuboidArea getNewArea() {
+    public CuboidArea getNewArea() {
         
         return newArea;
     }
@@ -145,7 +145,7 @@ public class Approve {
      *
      * @return the owner
      */
-    public IPlayerContainer getOwner() {
+    public PlayerContainer getOwner() {
         
         return owner;
     }
@@ -155,7 +155,7 @@ public class Approve {
      *
      * @return the parent
      */
-    public ILand getParent() {
+    public Land getParent() {
         
         return parent;
     }

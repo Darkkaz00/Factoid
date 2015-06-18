@@ -22,9 +22,9 @@ import java.util.UUID;
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.factions.Faction;
 import me.tabinol.factoid.utilities.StringChanges;
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
+import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.playercontainer.PlayerContainerType;
 
 
 /**
@@ -36,7 +36,7 @@ public abstract class PlayerContainer implements Comparable<PlayerContainer> {
     protected String name;
     
     /** The container type. */
-    protected EPlayerContainerType containerType;
+    protected PlayerContainerType containerType;
 
     /**
      * Instantiates a new player container.
@@ -45,7 +45,7 @@ public abstract class PlayerContainer implements Comparable<PlayerContainer> {
      * @param containerType the container type
      * @param toLowerCase the to lower case
      */
-    protected PlayerContainer(String name, EPlayerContainerType containerType, boolean toLowerCase) {
+    protected PlayerContainer(String name, PlayerContainerType containerType, boolean toLowerCase) {
 
         if (toLowerCase) {
             this.name = name.toLowerCase();
@@ -63,30 +63,30 @@ public abstract class PlayerContainer implements Comparable<PlayerContainer> {
      * @param name the name
      * @return the player container
      */
-    public static PlayerContainer create(ILand land, EPlayerContainerType pct, String name) {
+    public static PlayerContainer create(Land land, PlayerContainerType pct, String name) {
 
-        if (pct == EPlayerContainerType.FACTION) {
+        if (pct == PlayerContainerType.FACTION) {
             Faction faction = Factoid.getFactions().getFaction(name);
             if (faction != null) {
                 return new PlayerContainerFaction(faction);
             } else {
                 return null;
             }
-        } else if (pct == EPlayerContainerType.GROUP) {
+        } else if (pct == PlayerContainerType.GROUP) {
             return new PlayerContainerGroup(name);
-        } else if (pct == EPlayerContainerType.RESIDENT) {
+        } else if (pct == PlayerContainerType.RESIDENT) {
             return new PlayerContainerResident(land);
-        } else if (pct == EPlayerContainerType.VISITOR) {
+        } else if (pct == PlayerContainerType.VISITOR) {
             return new PlayerContainerVisitor(land);
-        } else if (pct == EPlayerContainerType.FACTION_TERRITORY) {
+        } else if (pct == PlayerContainerType.FACTION_TERRITORY) {
             return new PlayerContainerFactionTerritory(land);
-        } else if (pct == EPlayerContainerType.OWNER) {
+        } else if (pct == PlayerContainerType.OWNER) {
             return new PlayerContainerOwner(land);
-        } else if (pct == EPlayerContainerType.EVERYBODY) {
+        } else if (pct == PlayerContainerType.EVERYBODY) {
             return new PlayerContainerEverybody();
-        } else if (pct == EPlayerContainerType.NOBODY) {
+        } else if (pct == PlayerContainerType.NOBODY) {
             return new PlayerContainerNobody();
-        } else if (pct == EPlayerContainerType.PLAYER || pct == EPlayerContainerType.PLAYERNAME) {
+        } else if (pct == PlayerContainerType.PLAYER || pct == PlayerContainerType.PLAYERNAME) {
             UUID minecraftUUID;
 
             // First check if the ID is valid or was connected to the server
@@ -100,18 +100,14 @@ public abstract class PlayerContainer implements Comparable<PlayerContainer> {
 
             // If not null, assign the value to a new PlayerContainer
             return new PlayerContainerPlayer(minecraftUUID);
-        } else if (pct == EPlayerContainerType.PERMISSION) {
+        } else if (pct == PlayerContainerType.PERMISSION) {
             return new PlayerContainerPermission(name);
-        } else if (pct == EPlayerContainerType.TENANT) {
+        } else if (pct == PlayerContainerType.TENANT) {
             return new PlayerContainerTenant(land);
         }
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#getName()
-     */
-    @Override
     public String getName() {
 
         return name;
@@ -122,7 +118,7 @@ public abstract class PlayerContainer implements Comparable<PlayerContainer> {
      *
      * @return the container type
      */
-    public EPlayerContainerType getContainerType() {
+    public PlayerContainerType getContainerType() {
 
         return containerType;
     }
@@ -156,7 +152,6 @@ public abstract class PlayerContainer implements Comparable<PlayerContainer> {
     /* (non-Javadoc)
      * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#getPrint()
      */
-    @Override
     public String getPrint() {
 
         return containerType.toString();
@@ -171,15 +166,51 @@ public abstract class PlayerContainer implements Comparable<PlayerContainer> {
     public static PlayerContainer getFromString(String string) {
 
         String strs[] = StringChanges.splitAddVoid(string, ":");
-        EPlayerContainerType type = EPlayerContainerType.getFromString(strs[0]);
+        PlayerContainerType type = PlayerContainerType.getFromString(strs[0]);
         return create(null, type, strs[1]);
     }
     
+    /**
+     * Equals.
+     *
+     * @param container2 the container2
+     * @return true, if successful
+     */
+    public abstract boolean equals(PlayerContainer container2);
+    
+    /**
+     * Copy of.
+     *
+     * @return the player container
+     */
+    public abstract PlayerContainer copyOf();
+    
+    /**
+     * Checks if the player has access or is member of this player container.
+     *
+     * @param player the player
+     * @return true, if successful
+     */
+    public abstract boolean hasAccess(FPlayer player);
+    
+    /**
+     * Check if the player has access or is member of this player container.
+     * The land option is for assume the player to check if the player is
+     * owner/resident/... of this specific land. This method is only used
+     * from a DummyLand (Default or World)
+     * 
+     * @param player the player
+     * @param land from what land?
+     * @return true, if successful
+     */
+    public abstract boolean hasAccess(FPlayer player, Land land);
+    
+
     /**
      * Sets the land. Not in Common API for security.
      *
      * @param land the new land
      */
-    public abstract void setLand(ILand land);
+    public abstract void setLand(Land land);
     
 }

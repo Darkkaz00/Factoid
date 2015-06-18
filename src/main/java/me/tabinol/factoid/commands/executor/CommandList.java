@@ -25,13 +25,10 @@ import me.tabinol.factoid.commands.CommandEntities;
 import me.tabinol.factoid.commands.CommandThreadExec;
 import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
-import me.tabinol.factoidapi.FactoidAPI;
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.lands.types.IType;
+import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.lands.types.Type;
 import me.tabinol.factoid.playerscache.PlayerCacheEntry;
-
-import org.bukkit.ChatStyle;
-
+import me.tabinol.factoid.utilities.ChatStyle;
 
 /**
  * The Class CommandList.
@@ -42,7 +39,7 @@ import org.bukkit.ChatStyle;
 public class CommandList extends CommandThreadExec {
 
     private String worldName = null;
-    private IType type = null;
+    private Type type = null;
 
     /**
      * Instantiates a new command list.
@@ -80,7 +77,7 @@ public class CommandList extends CommandThreadExec {
                 String typeName = entity.argList.getNext();
                 
                 if(typeName != null) {
-                	type = FactoidAPI.iTypes().getType(typeName);
+                	type = Factoid.getTypes().getType(typeName);
                 }
                 
                 if(type == null) {
@@ -109,19 +106,19 @@ public class CommandList extends CommandThreadExec {
     	convertPcIfNeeded(playerCacheEntry);
 
     	// Check if the player is AdminMod or send only owned lands
-        Collection<ILand> lands;
+        Collection<Land> lands;
 
-        if (entity.playerConf.isAdminMod()) {
+        if (entity.player.isAdminMod()) {
             lands = Factoid.getLands().getLands();
         } else {
-            lands = Factoid.getLands().getLands(entity.playerConf.getPlayerContainer());
+            lands = Factoid.getLands().getLands(entity.player.getPlayerContainer());
         }
 
         // Get the list of the land
         StringBuilder stList = new StringBuilder();
         stList.append(ChatStyle.YELLOW);
 
-        for (ILand land : lands) {
+        for (Land land : lands) {
             if (((worldName != null && worldName.equals(land.getWorldName()))
             		|| (type !=null && type == land.getType())
             		|| (worldName == null && type == null))

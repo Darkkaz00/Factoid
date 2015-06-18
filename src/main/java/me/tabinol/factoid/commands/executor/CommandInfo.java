@@ -25,15 +25,13 @@ import me.tabinol.factoid.commands.CommandExec;
 import me.tabinol.factoid.commands.InfoCommand;
 import static me.tabinol.factoid.config.Config.NEWLINE;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.lands.areas.ICuboidArea;
+import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.lands.areas.CuboidArea;
+import me.tabinol.factoid.lands.areas.Point;
+import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.parameters.PermissionList;
-import me.tabinol.factoidapi.parameters.IPermissionType;
-
-import org.bukkit.ChatStyle;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-
+import me.tabinol.factoid.parameters.PermissionType;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 /**
  * The Class CommandInfo.
@@ -42,10 +40,10 @@ import org.bukkit.entity.Player;
 public class CommandInfo extends CommandExec {
 
     /** The area. */
-    private ICuboidArea area;
+    private CuboidArea area;
     
     /** The player. */
-    private final Player player;
+    private final FPlayer player;
     
     /** The arg list. */
     private final ArgList argList;
@@ -60,7 +58,7 @@ public class CommandInfo extends CommandExec {
 
         super(entity);
         player = entity.player;
-        Location playerloc = entity.player.getLocation();
+        Point playerloc = entity.player.getLocation();
         area = Factoid.getLands().getCuboidArea(playerloc);
         argList = entity.argList;
     }
@@ -73,7 +71,7 @@ public class CommandInfo extends CommandExec {
      * @param area the area
      * @throws FactoidCommandException the factoid command exception
      */
-    public CommandInfo(Player player, ICuboidArea area) throws FactoidCommandException {
+    public CommandInfo(FPlayer player, CuboidArea area) throws FactoidCommandException {
 
         super(null);
         this.player = player;
@@ -143,7 +141,7 @@ public class CommandInfo extends CommandExec {
                 stList.append(NEWLINE);
             }
             // Create the multiple page
-            new ChatPage("COMMAND.INFO.LAND.LISTSTART", stList.toString(), player, land.getName()).getPage(1);
+            new ChatPage("COMMAND.INFO.LAND.LISTSTART", stList.toString(), player, land.getName()).getPage();
 
         } else {
             player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.INFO.NOLAND"));
@@ -157,7 +155,7 @@ public class CommandInfo extends CommandExec {
      * @param pt the pt
      * @return the permission in col for pl
      */
-    private String getPermissionInColForPl(ILand land, IPermissionType pt) {
+    private String getPermissionInColForPl(Land land, PermissionType pt) {
 
         boolean result = land.checkPermissionAndInherit(player, pt);
 

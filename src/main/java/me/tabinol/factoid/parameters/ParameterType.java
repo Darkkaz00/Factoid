@@ -17,7 +17,7 @@
  */
 package me.tabinol.factoid.parameters;
 
-import org.bukkit.ChatStyle;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 
 /**

@@ -18,11 +18,9 @@
 package me.tabinol.factoid.minecraft;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.Map;
-import java.util.TreeMap;
+import java.io.InputStream;
 import java.util.UUID;
-
+import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.utilities.FactoidRunnable;
 
 /**
@@ -30,87 +28,39 @@ import me.tabinol.factoid.utilities.FactoidRunnable;
  * @author Tabinol
  *
  */
-public abstract class Server {
+public interface Server {
 	
-	protected final Map<UUID, FWorld> worldUList;
-	protected final Map<String, FWorld> worldNList;
-	protected final Map<UUID, FPlayer> playerUList;
-	protected final Map<String, FPlayer> playerNList;
+	// init
+	public void initServer();
 	
-	protected Server() {
-		
-		worldUList = new TreeMap<UUID, FWorld>();
-		worldNList = new TreeMap<String, FWorld>();
-		playerUList = new TreeMap<UUID, FPlayer>();
-		playerNList = new TreeMap<String, FPlayer>();
-	}
+	public Factoid getFactoid();
 	
 	// Messages
-	public abstract void info(String msg);
-	public abstract void debug(String msg);
-	public abstract void warn(String msg);
-	public abstract void error(String msg);
-	
-	// Worlds
-	public void addWorld(FWorld world) {
-		
-		worldUList.put(world.getUUID(), world);
-		worldNList.put(world.getName(), world);
-	}
-	
-	public void removeWorld(FWorld world) {
-		
-		worldUList.remove(world.getUUID());
-		worldNList.remove(world.getName());
-	}
-	
-	public FWorld getWorld(String worldName) {
-		
-		return worldNList.get(worldName);
-	}
-	
-	public FWorld getWorld(UUID uuid) {
-		
-		return worldUList.get(uuid);
-	}
-	
-	public Collection<FWorld> getWorlds() {
-		
-		return worldNList.values();
-	}
-
-	// Players
-	public void addPlayer(FPlayer player) {
-		
-		playerUList.put(player.getUUID(), player);
-		playerNList.put(player.getName(), player);
-	}
-	
-	public void removePlayer(FPlayer player) {
-		
-		playerUList.remove(player.getUUID());
-		playerNList.remove(player.getName());
-	}
-	
-	public FPlayer getPlayer(String playerName) {
-		
-		return playerNList.get(playerName);
-	}
-	
-	public FPlayer getPlayer(UUID uuid) {
-		
-		return playerUList.get(uuid);
-	}
-	
-	public Collection<FPlayer> getPlayers() {
-		
-		return playerNList.values();
-	}
+	public void info(String msg);
+	public void debug(String msg);
+	public void warn(String msg);
+	public void error(String msg);
 	
 	// Task
-	public abstract Task createTask(FactoidRunnable runnable, Long tick, boolean multiple);
+	public Task createTask(FactoidRunnable runnable, Long tick, boolean multiple);
+	public void callTaskNow(Runnable runnable);
 	
-	public abstract File getDataFolder();
+	// Files
+	public File getDataFolder();
+	public InputStream getResource(String path);
 	
-	public abstract String getVersion();
+	public String getVersion();
+	
+	public CallEvents CallEvents();
+	
+	public FPlayer getOfflinePlayer(UUID uuid);
+	public String getOfflinePlayerName(UUID uuid);
+	
+	public ChatPaginator getChatPaginator(String text, int pageNumber);
+	
+	/**
+	 * Return complete list of material type
+	 * @return list of material type
+	 */
+	public String[] getMaterials();
 }

@@ -17,8 +17,6 @@
  */
 package me.tabinol.factoid.commands.executor;
 
-import org.bukkit.ChatStyle;
-
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.CommandEntities;
 import me.tabinol.factoid.commands.CommandExec;
@@ -26,6 +24,7 @@ import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.lands.collisions.Collisions.LandAction;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 @InfoCommand(name="parent", forceParameter=true)
 public class CommandParent extends CommandExec {
@@ -69,10 +68,10 @@ public class CommandParent extends CommandExec {
         land.setParent(parent);
         if(parent == null) {
         	entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.PARENT.REMOVEDONE"));
-        	Factoid.getLog().write(entity.playerName + " has set land " + land.getName() + " to no parent ");
+        	Factoid.getFactoidLog().write(entity.playerName + " has set land " + land.getName() + " to no parent ");
         } else {
         	entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.PARENT.DONE", parent.getName()));
-        	Factoid.getLog().write(entity.playerName + " has set land " + land.getName() + " to parent " + parent.getName());
+        	Factoid.getFactoidLog().write(entity.playerName + " has set land " + land.getName() + " to parent " + parent.getName());
         }
     }
 }

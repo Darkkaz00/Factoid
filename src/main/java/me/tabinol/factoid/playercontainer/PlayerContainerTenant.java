@@ -17,14 +17,10 @@
  */
 package me.tabinol.factoid.playercontainer;
 
+import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.parameters.FlagList;
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainerTenant;
-
-import org.bukkit.entity.Player;
-
+import me.tabinol.factoid.playercontainer.PlayerContainerType;
 
 /**
  * The Class PlayerContainerTenant.
@@ -32,16 +28,16 @@ import org.bukkit.entity.Player;
 public class PlayerContainerTenant extends PlayerContainer {
     
     /** The land. */
-    private ILand land;
+    private Land land;
     
     /**
      * Instantiates a new player container tenant.
      *
      * @param land the land
      */
-    public PlayerContainerTenant(ILand land) {
+    public PlayerContainerTenant(Land land) {
         
-        super("", EPlayerContainerType.TENANT, false);
+        super("", PlayerContainerType.TENANT, false);
         this.land = land;
     }
     
@@ -49,7 +45,7 @@ public class PlayerContainerTenant extends PlayerContainer {
      * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#equals(me.tabinol.factoid.playercontainer.PlayerContainer)
      */
     @Override
-    public boolean equals(IPlayerContainer container2) {
+    public boolean equals(PlayerContainer container2) {
         
         return container2 instanceof PlayerContainerTenant &&
                 land == ((PlayerContainerTenant)container2).land;
@@ -68,21 +64,21 @@ public class PlayerContainerTenant extends PlayerContainer {
      * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#hasAccess(org.bukkit.entity.Player)
      */
     @Override
-    public boolean hasAccess(Player player) {
+    public boolean hasAccess(FPlayer player) {
         
     	return hasAccess(player, land);
     }
     
     @Override
-    public boolean hasAccess(Player player, ILand land) {
+    public boolean hasAccess(FPlayer player, Land land) {
 
     	if(land == null) {
     		return false;
     	}
 
     	boolean value = land.isTenant(player);
-        ILand actual = land;
-        ILand parent;
+        Land actual = land;
+        Land parent;
 
         while(!value && (parent = actual.getParent()) != null 
     			&& actual.getFlagAndInherit(FlagList.INHERIT_RESIDENTS.getFlagType()).getValueBoolean() == true) {
@@ -98,7 +94,7 @@ public class PlayerContainerTenant extends PlayerContainer {
      *
      * @return the land
      */
-    public ILand getLand() {
+    public Land getLand() {
         
         return land;
     }
@@ -107,7 +103,7 @@ public class PlayerContainerTenant extends PlayerContainer {
      * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#setLand(me.tabinol.factoid.lands.Land)
      */
     @Override
-    public void setLand(ILand land) {
+    public void setLand(Land land) {
         
         this.land = land;
     }

@@ -18,7 +18,7 @@
 package me.tabinol.factoid.commands;
 
 import me.tabinol.factoid.exceptions.FactoidCommandException;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
+import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoid.playercontainer.PlayerContainerPlayer;
 import me.tabinol.factoid.playercontainer.PlayerContainerPlayerName;
 import me.tabinol.factoid.playerscache.PlayerCacheEntry;
@@ -29,7 +29,7 @@ import me.tabinol.factoid.playerscache.PlayerCacheEntry;
  */
 public abstract class CommandThreadExec extends CommandExec {
 	
-	protected IPlayerContainer pc;
+	protected PlayerContainer pc;
 
 	/**
 	 * Instantiates a new command thread exec.
@@ -65,7 +65,7 @@ public abstract class CommandThreadExec extends CommandExec {
 			if(playerCacheEntry.length == 1 && playerCacheEntry[0] != null) {
 				pc = new PlayerContainerPlayer(playerCacheEntry[0].getUUID());
 			} else {
-				throw new FactoidCommandException("Player not exist Error", entity.player, "COMMAND.CONTAINER.PLAYERNOTEXIST");
+				throw new FactoidCommandException("Player not exist Error", entity.sender, "COMMAND.CONTAINER.PLAYERNOTEXIST");
 			}
 		}
 	}

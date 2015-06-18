@@ -28,8 +28,7 @@ import me.tabinol.factoid.config.BannedWords;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.exceptions.FactoidLandException;
 import me.tabinol.factoid.lands.collisions.Collisions;
-
-import org.bukkit.ChatStyle;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 
 /**
@@ -78,9 +77,9 @@ public class CommandRename extends CommandExec {
             throw new FactoidCommandException("On land rename", entity.player, "GENERAL.ERROR");
         }
         entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.RENAME.ISDONE", oldName, curArg));
-        Factoid.getLog().write(entity.playerName + " has renamed " + oldName + " to " + curArg);
+        Factoid.getFactoidLog().write(entity.playerName + " has renamed " + oldName + " to " + curArg);
 
         // Cancel the selection
-        new CommandCancel(entity.playerConf, true).commandExecute();
+        new CommandCancel(entity.player, true).commandExecute();
     }
 }

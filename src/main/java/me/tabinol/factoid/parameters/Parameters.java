@@ -24,10 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import me.tabinol.factoidapi.parameters.IParameters;
-
-import org.bukkit.Material;
-
+import me.tabinol.factoid.Factoid;
 
 /**
  * The Class Parameters.
@@ -45,10 +42,28 @@ public class Parameters {
     /** List of unregistered flags for an update **/
     protected final List<LandFlag> unRegisteredFlags;
     
-    /** Special permission Map Prefix-->Material-->PermissionType */
-    private final Map<SpecialPermPrefix, Map<Material, PermissionType>> specialPermMap;
+    /** Special permission Map Prefix-->Material (String) -->PermissionType */
+    private final Map<SpecialPermPrefix, Map<String, PermissionType>> specialPermMap;
 
     /**
+     *  Prefix of specials permissions (ex: PLACE_SIGN).
+     */
+	public enum SpecialPermPrefix {
+    	
+	    /** Place a block */
+	    PLACE,
+    	
+	    /** Prevent place a block */
+	    NOPLACE,
+    	
+	    /** Destroy a block */
+	    DESTROY,
+    	
+	    /** Prevent destroy a block */
+	    NODESTROY;
+    }
+
+	/**
      * Instantiates a new parameters.
      */
     public Parameters() {
@@ -65,12 +80,12 @@ public class Parameters {
             flagList.setFlagType(registerFlagType(flagList.name(), flagList.baseValue));
         }
         // Add special permissions (PLACE_XXX and DESTROY_XXX, NOPLACE_XXX, NODESTROY_XXX)
-        specialPermMap = new EnumMap<SpecialPermPrefix, Map<Material, PermissionType>>(SpecialPermPrefix.class);
+        specialPermMap = new EnumMap<SpecialPermPrefix, Map<String, PermissionType>>(SpecialPermPrefix.class);
         
         for(SpecialPermPrefix pref : SpecialPermPrefix.values()) {
-        	Map<Material, PermissionType> matPerms = new EnumMap<Material, PermissionType>(Material.class);
-            for(Material mat : Material.values()) {
-            	matPerms.put(mat, registerPermissionType(pref.name() + "_" + mat.name(), false));
+        	Map<String, PermissionType> matPerms = new TreeMap<String, PermissionType>();
+            for(String mat : Factoid.getServer().getMaterials()) {
+            	matPerms.put(mat, registerPermissionType(pref.name() + "_" + mat, false));
             }
             specialPermMap.put(pref, matPerms);
         }
@@ -202,9 +217,9 @@ public class Parameters {
         return ft;
     }
     
-    public final PermissionType getSpecialPermission(SpecialPermPrefix prefix, Material mat) {
+    public final PermissionType getSpecialPermission(SpecialPermPrefix prefix, String mat) {
     	
-    	Map<Material, PermissionType> matPerms = specialPermMap.get(prefix);
+    	Map<String, PermissionType> matPerms = specialPermMap.get(prefix);
     	
     	if(matPerms == null) {
     		return null;

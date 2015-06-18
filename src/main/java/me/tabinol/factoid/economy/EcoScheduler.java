@@ -23,13 +23,12 @@ import java.util.Calendar;
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.exceptions.SignException;
 import me.tabinol.factoid.lands.Land;
-import me.tabinol.factoidapi.FactoidAPI;
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainerPlayer;
+import me.tabinol.factoid.playercontainer.PlayerContainerPlayer;
+import me.tabinol.factoid.utilities.FactoidRunnable;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class EcoScheduler extends BukkitRunnable {
+public class EcoScheduler extends FactoidRunnable {
 
     /* (non-Javadoc)
      * @see java.lang.Runnable#run()
@@ -39,7 +38,7 @@ public class EcoScheduler extends BukkitRunnable {
     	Calendar now = Calendar.getInstance();
     	
     	// Check for rent renew
-    	for(ILand land : FactoidAPI.iLands().getForRent()) {
+    	for(Land land : Factoid.getLands().getForRent()) {
     		
     		long nextPaymentTime = land.getLastPaymentTime().getTime() + (86400000 * land.getRentRenew());
     		
@@ -50,9 +49,9 @@ public class EcoScheduler extends BukkitRunnable {
     					|| !land.getRentAutoRenew()) {
     				
 					// Unrent
-					((Land) land).unSetRented();
+					land.unSetRented();
 					try {
-						new EcoSign((ILand) land, land.getRentSignLoc()).createSignForRent(
+						new EcoSign(land, land.getRentSignLoc()).createSignForRent(
 								land.getRentPrice(), land.getRentRenew(),
 								land.getRentAutoRenew(), null);
 					} catch (SignException e) {
@@ -64,11 +63,11 @@ public class EcoScheduler extends BukkitRunnable {
     				// renew rent
     				Factoid.getPlayerMoney().getFromPlayer(land.getTenant().getOfflinePlayer(), 
     					land.getWorldName(), land.getRentPrice());
-    				if(land.getOwner() instanceof IPlayerContainerPlayer) {
-        				Factoid.getPlayerMoney().giveToPlayer(((IPlayerContainerPlayer)land.getOwner()).getOfflinePlayer(), 
+    				if(land.getOwner() instanceof PlayerContainerPlayer) {
+        				Factoid.getPlayerMoney().giveToPlayer(((PlayerContainerPlayer)land.getOwner()).getOfflinePlayer(), 
         					land.getWorldName(), land.getRentPrice());
     				}
-    				((Land) land).setLastPaymentTime(new Timestamp(now.getTime().getTime()));
+    				land.setLastPaymentTime(new Timestamp(now.getTime().getTime()));
     			}
     		}
     	}

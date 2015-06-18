@@ -22,8 +22,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import me.tabinol.factoid.Factoid;
-import me.tabinol.factoidapi.factions.IFaction;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainerPlayer;
+import me.tabinol.factoid.playercontainer.PlayerContainerPlayer;
 
 /**
  * The Class Faction.
@@ -37,7 +36,7 @@ public class Faction {
     private final UUID uuid;
     
     /** The players. */
-    private TreeSet<IPlayerContainerPlayer> players;
+    private TreeSet<PlayerContainerPlayer> players;
     
     /** The auto save. */
     private boolean autoSave = true;
@@ -52,7 +51,7 @@ public class Faction {
 
         this.name = name.toLowerCase();
         this.uuid = uuid;
-        this.players = new TreeSet<IPlayerContainerPlayer>();
+        this.players = new TreeSet<PlayerContainerPlayer>();
         doSave();
     }
 
@@ -81,7 +80,7 @@ public class Faction {
      *
      * @param player the player
      */
-    public void addPlayer(IPlayerContainerPlayer player) {
+    public void addPlayer(PlayerContainerPlayer player) {
 
         players.add(player);
         doSave();
@@ -94,7 +93,7 @@ public class Faction {
      * @param player the player
      * @return true, if successful
      */
-    public boolean removePlayer(IPlayerContainerPlayer player) {
+    public boolean removePlayer(PlayerContainerPlayer player) {
 
         if (players.remove(player)) {
             doSave();
@@ -111,7 +110,7 @@ public class Faction {
      * @param player the player
      * @return true, if is player in list
      */
-    public boolean isPlayerInList(IPlayerContainerPlayer player) {
+    public boolean isPlayerInList(PlayerContainerPlayer player) {
 
         return players.contains(player);
     }
@@ -121,7 +120,7 @@ public class Faction {
      *
      * @return the players
      */
-    public Collection<IPlayerContainerPlayer> getPlayers() {
+    public Collection<PlayerContainerPlayer> getPlayers() {
 
         return players;
     }

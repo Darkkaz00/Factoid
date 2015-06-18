@@ -17,8 +17,6 @@
  */
 package me.tabinol.factoid.parameters;
 
-import me.tabinol.factoidapi.parameters.IPermissionType;
-
 
 /**
  * The Class PermissionType.

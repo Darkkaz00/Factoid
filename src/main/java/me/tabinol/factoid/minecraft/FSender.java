@@ -23,10 +23,10 @@ import java.util.UUID;
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ChatPage;
 import me.tabinol.factoid.commands.ConfirmEntry;
-import me.tabinol.factoid.config.players.PlayerAutoCancelSelect;
 import me.tabinol.factoid.lands.DummyLand;
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.playercontainer.PlayerContainerPlayer;
+import me.tabinol.factoid.selection.PlayerAutoCancelSelect;
 import me.tabinol.factoid.selection.PlayerSelection;
 
 /**
@@ -101,20 +101,7 @@ public abstract class FSender implements FSenderInterface, Comparable<FSender> {
 	@Override
     public int compareTo(FSender arg0) {
 		
-		if(this instanceof FPlayer) {
-			if(arg0 instanceof FPlayer) {
-				return ((FPlayer) this).getName().compareTo(((FPlayer) arg0).getName());
-			} else {
-				return -1;
-			}
-		} else {
-			if(arg0 instanceof FPlayer) {
-				return 1;
-			} else {
-				// FSender and FSender
-				return 0;
-			}
-		}
+		return getName().compareTo(getName());
     }
 	
 	public PlayerContainerPlayer getPlayerContainer() {
@@ -290,11 +277,4 @@ public abstract class FSender implements FSenderInterface, Comparable<FSender> {
             cancelSelect.stopNextRun();
         }
     }
-
-    /**************************************************************************
-     * Abstract methods
-     *************************************************************************/
-
-	public abstract void sendMessage(String msg);
-	public abstract boolean hasPermission(String perm);
 }

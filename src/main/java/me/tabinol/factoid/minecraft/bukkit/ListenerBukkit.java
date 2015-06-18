@@ -19,7 +19,6 @@
 package me.tabinol.factoid.minecraft.bukkit;
 
 import me.tabinol.factoid.Factoid;
-import me.tabinol.factoid.FactoidBukkit;
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.listeners.ChatListener;
 import me.tabinol.factoid.listeners.CommonListener.Click;
@@ -31,9 +30,7 @@ import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.minecraft.Listener;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
@@ -52,8 +49,8 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
+import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -73,9 +70,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
-
-import com.google.common.base.Optional;
-import com.sk89q.worldedit.blocks.ItemType;
+import org.bukkit.plugin.java.JavaPlugin;
 
 // TODO: Put Citizens bugfix
 
@@ -87,7 +82,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
     private final PvpListener pvpListener;
     private final WorldListener worldListener;
     
-    public ListenerBukkit(FactoidBukkit plugin) {
+    public ListenerBukkit(JavaPlugin plugin) {
     	
     	chatListener = new ChatListener();
     	landListener = new LandListener();
@@ -102,14 +97,14 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	public void onWorldLoadMonitor(WorldLoadEvent event) {
 		
 		// Add world to list
-		Factoid.getServer().addWorld(new FWorldBukkit(event.getWorld()));
+		Factoid.getServerCache().addWorld(new FWorldBukkit(event.getWorld()));
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onWorldUnloadMonitor(WorldUnloadEvent event) {
 		
 		// Remove world to list
-		Factoid.getServer().removeWorld(new FWorldBukkit(event.getWorld()));
+		Factoid.getServerCache().removeWorld(new FWorldBukkit(event.getWorld()));
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -117,30 +112,30 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		
 		FPlayer player = new FPlayerBukkit(event.getPlayer());
 		
-		Factoid.getServer().addPlayer(player); // Add player in the list
+		Factoid.getServerCache().addPlayer(player); // Add player in the list
 		playerListener.onPlayerJoinMonitor(player);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuitMonitor(PlayerQuitEvent event) {
 
-		FPlayer player = Factoid.getServer().getPlayer(event.getPlayer().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
 		
-		Factoid.getServer().removePlayer(player); // Remove player from the list
+		Factoid.getServerCache().removePlayer(player); // Remove player from the list
 		playerListener.onPlayerQuitMonitor(player);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerTeleportMonitor(PlayerTeleportEvent event) {
 		
-		FPlayer player = Factoid.getServer().getPlayer(event.getPlayer().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
 			return;
 		}
 
-		if(playerListener.onPlayerTeleport(player, toPoint(event.getTo()),
+		if(playerListener.onPlayerTeleport(player, BukkitUtils.toPoint(event.getTo()),
 				event.getCause() == TeleportCause.ENDER_PEARL)) {
 			event.setCancelled(true);
 		}
@@ -149,7 +144,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerMoveMonitor(PlayerMoveEvent event) {
 
-		FPlayer player = Factoid.getServer().getPlayer(event.getPlayer().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
 
 		// Real player?
 		if(player == null) {
@@ -157,7 +152,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		}
 
 		playerListener.onPlayerMoveMonitor(player, 
-				toPoint(event.getFrom()), toPoint(event.getTo()));
+				BukkitUtils.toPoint(event.getFrom()), BukkitUtils.toPoint(event.getTo()));
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -188,9 +183,9 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		// Check item in hand
 		String itemInHand = event.getPlayer().getItemInHand().getType().name();
 		
-    	FPlayer player = Factoid.getServer().getPlayer(event.getPlayer().getUniqueId());
+    	FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
 		if(playerListener.onPlayerInteract(player, click, itemInHand, event.getClickedBlock().getType().name(),
-				toPoint(event.getClickedBlock().getLocation()))) {
+				BukkitUtils.toPoint(event.getClickedBlock().getLocation()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -198,7 +193,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		
-		FPlayer player = Factoid.getServer().getPlayer(event.getPlayer().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
@@ -206,7 +201,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		}
 
 		if(playerListener.onBlockPlace(player, event.getBlockPlaced().getType().name(),
-				toPoint(event.getBlockPlaced().getLocation()))) {
+				BukkitUtils.toPoint(event.getBlockPlaced().getLocation()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -214,10 +209,10 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		
-		FPlayer player = Factoid.getServer().getPlayer(event.getPlayer().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
 		
 		if(playerListener.onPlayerInteractEntity(player, event.getRightClicked().getType().name(),
-				toPoint(event.getRightClicked().getLocation()))) {
+				BukkitUtils.toPoint(event.getRightClicked().getLocation()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -225,7 +220,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {
 		
-		FPlayer player = Factoid.getServer().getPlayer(((Player) event.getPlayer()).getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(((Player) event.getPlayer()).getUniqueId());
 		
 		// Real player?
 		if(player == null) {
@@ -233,7 +228,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		}
 
 		if(playerListener.onBlockBreak(player, event.getBlock().getType().name(),
-				toPoint(event.getBlock().getLocation()))) {
+				BukkitUtils.toPoint(event.getBlock().getLocation()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -241,7 +236,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
 		
-		FPlayer player = Factoid.getServer().getPlayer(event.getPlayer().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
@@ -249,7 +244,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		}
 
 		if(playerListener.onPlayerDropItem(player, event.getItemDrop().getType().name(),
-				toPoint(event.getItemDrop().getLocation()))) {
+				BukkitUtils.toPoint(event.getItemDrop().getLocation()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -257,7 +252,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
 		
-		FPlayer player = Factoid.getServer().getPlayer(event.getPlayer().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
@@ -265,7 +260,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		}
 
 		if(playerListener.onPlayerPickupItem(player, event.getItem().getType().name(),
-				toPoint(event.getItem().getLocation()))) {
+				BukkitUtils.toPoint(event.getItem().getLocation()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -273,9 +268,9 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerBedEnter(PlayerBedEnterEvent event) {
 		
-		FPlayer player = Factoid.getServer().getPlayer(event.getPlayer().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
 		
-		if(playerListener.onPlayerBedEnter(player, toPoint(event.getBed().getLocation()))) {
+		if(playerListener.onPlayerBedEnter(player, BukkitUtils.toPoint(event.getBed().getLocation()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -302,10 +297,10 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			isTamedAndNotOwner = true;
 		}
 		
-		FPlayer player = Factoid.getServer().getPlayer(mplayer.getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(mplayer.getUniqueId());
 
 		if(playerListener.onEntityDamageByEntity(player, entity.getType().name(),
-				toPoint(event.getEntity().getLocation()),
+				BukkitUtils.toPoint(event.getEntity().getLocation()),
 				isAnimal, isMonster, isTamedAndNotOwner)) {
 			event.setCancelled(true);
 		}
@@ -314,7 +309,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerBucketFill(PlayerBucketFillEvent event) {
 		
-		FPlayer player = Factoid.getServer().getPlayer(event.getPlayer().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
@@ -322,7 +317,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		}
 
 		if(playerListener.onPlayerBucketFill(player, event.getBlockClicked().getType().name(),
-				toPoint(event.getBlockClicked().getLocation()))) {
+				BukkitUtils.toPoint(event.getBlockClicked().getLocation()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -330,7 +325,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
 
-		FPlayer player = Factoid.getServer().getPlayer(event.getPlayer().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
 		Block block = event.getBlockClicked().getRelative(event.getBlockFace());
 		
 		// Real player?
@@ -339,7 +334,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		}
 
 		if(playerListener.onPlayerBucketEmpty(player, event.getBucket().name(),
-				toPoint(block.getLocation()))) {
+				BukkitUtils.toPoint(block.getLocation()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -351,7 +346,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 		
-		FPlayer player = Factoid.getServer().getPlayer(((Player) event.getEntity()).getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(((Player) event.getEntity()).getUniqueId());
 		
 		// Real player?
 		if(player == null) {
@@ -359,7 +354,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		}
 
     	if(playerListener.onPlayerChangeBlock(player, event.getBlock().getType().name(),
-    			event.getTo().name(), toPoint(event.getBlock().getLocation()))) {
+    			event.getTo().name(), BukkitUtils.toPoint(event.getBlock().getLocation()))) {
     		event.setCancelled(true);
     	}
 	}
@@ -367,17 +362,17 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		
-    	FPlayer player = Factoid.getServer().getPlayer(event.getPlayer().getUniqueId());
+    	FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
 			return;
 		}
 
-    	Point newLoc = playerListener.onPlayerRespawn(player, toPoint(event.getRespawnLocation()));
+    	Point newLoc = playerListener.onPlayerRespawn(player, BukkitUtils.toPoint(event.getRespawnLocation()));
     	
     	if(newLoc != null) {
-    		event.setRespawnLocation(toLocation(Bukkit.getWorld(newLoc.getWorldName()), newLoc));
+    		event.setRespawnLocation(BukkitUtils.toLocation(Bukkit.getWorld(newLoc.getWorldName()), newLoc));
     	}
 	}
 	
@@ -385,14 +380,14 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	// For land listener
 	public void onPlayerRespawnMonitor(PlayerRespawnEvent event) {
 		
-    	FPlayer player = Factoid.getServer().getPlayer(event.getPlayer().getUniqueId());
+    	FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
 			return;
 		}
 
-    	playerListener.onPlayerRespawnMonitor(player, toPoint(event.getRespawnLocation()));
+    	playerListener.onPlayerRespawnMonitor(player, BukkitUtils.toPoint(event.getRespawnLocation()));
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -402,14 +397,14 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 		
-		FPlayer player = Factoid.getServer().getPlayer(event.getPlayer().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
 			return;
 		}
 
-		if(playerListener.onBlockIgnite(player, toPoint(event.getBlock().getLocation()))) {
+		if(playerListener.onBlockIgnite(player, BukkitUtils.toPoint(event.getBlock().getLocation()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -423,14 +418,14 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 		
-		FPlayer player = Factoid.getServer().getPlayer(((Player) event.getEntity().getShooter()).getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(((Player) event.getEntity().getShooter()).getUniqueId());
 		
 		// Real player?
 		if(player == null) {
 			return;
 		}
 
-		if(playerListener.onPotionSplash(player, toPoint(event.getEntity().getLocation()))) {
+		if(playerListener.onPotionSplash(player, BukkitUtils.toPoint(event.getEntity().getLocation()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -446,14 +441,14 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 		
-		FPlayer player = Factoid.getServer().getPlayer(((Player) event.getEntity()).getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(((Player) event.getEntity()).getUniqueId());
 
 		// Real player?
 		if(player == null) {
 			return;
 		}
 
-		if(playerListener.onEntityRegainHealth(player, toPoint(event.getEntity().getLocation()))) {
+		if(playerListener.onEntityRegainHealth(player, BukkitUtils.toPoint(event.getEntity().getLocation()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -461,14 +456,14 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
 		
-		FPlayer player = Factoid.getServer().getPlayer(event.getPlayer().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
 			return;
 		}
 
-		if(playerListener.onPlayerItemConsume(player, toPoint(event.getPlayer().getLocation()))) {
+		if(playerListener.onPlayerItemConsume(player, BukkitUtils.toPoint(event.getPlayer().getLocation()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -476,10 +471,10 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 		
-		FPlayer player = Factoid.getServer().getPlayer(event.getPlayer().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
 		String commandTyped = event.getMessage().substring(1).split(" ")[0];
 
-		if(playerListener.onPlayerCommandPreprocess(player, toPoint(event.getPlayer().getLocation()),
+		if(playerListener.onPlayerCommandPreprocess(player, BukkitUtils.toPoint(event.getPlayer().getLocation()),
 				commandTyped)) {
 			event.setCancelled(true);
 		}
@@ -493,14 +488,14 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 		
-		FPlayer player = Factoid.getServer().getPlayer(event.getEntity().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
 			return;
 		}
 
-		if(playerListener.onPlayerDamage(player, toPoint(event.getEntity().getLocation()))) {
+		if(playerListener.onPlayerDamage(player, BukkitUtils.toPoint(event.getEntity().getLocation()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -508,7 +503,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
 		
-		FPlayer player = Factoid.getServer().getPlayer(event.getPlayer().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
 
 		// Check if item in hand is present
 		String itemInHandType = null;
@@ -517,7 +512,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		}
 		
 		if(playerListener.onPlayerInteractAtEntity(player, event.getRightClicked().getType().name(),
-				itemInHandType, toPoint(event.getPlayer().getLocation()))) {
+				itemInHandType, BukkitUtils.toPoint(event.getPlayer().getLocation()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -527,16 +522,6 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	 * Private methods
 	 *************************************************************************/
 	
-	private Point toPoint(Location loc) {
-		
-		return new Point(loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ());
-	}
-	
-	private Location toLocation(World world, Point loc) {
-		
-		return new Location(world, loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
-	}
-
 	/**
 	 * Gets the source player from entity
 	 *

@@ -23,11 +23,9 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import me.tabinol.factoid.Factoid;
-import me.tabinol.factoid.config.players.PlayerConfEntry;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.selection.region.AreaSelection;
-import org.bukkit.ChatStyle;
 import org.bukkit.entity.Player;
 
 
@@ -42,20 +40,15 @@ public class CommandSelectWorldedit {
     /** The player. */
     Player player;
     
-    /** The entry. */
-    PlayerConfEntry entry;
-    
     /**
      * Instantiates a new command select worldedit.
      *
      * @param player the player
-     * @param entry the entry
      * @throws FactoidCommandException the factoid command exception
      */
-    public CommandSelectWorldedit(Player player, PlayerConfEntry entry) throws FactoidCommandException{
+    public CommandSelectWorldedit(Player player) throws FactoidCommandException{
         
         this.player = player;
-        this.entry = entry;
     }
     
     /**
@@ -78,7 +71,7 @@ public class CommandSelectWorldedit {
             }
 
             player.sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.DARK_GRAY + Factoid.getLanguage().getMessage("COMMAND.SELECT.WORLDEDIT.SELECTIONNED"));
-            Factoid.getLog().write(Factoid.getLanguage().getMessage("COMMAND.SELECT.WORLDEDIT.SELECTIONNED"));
+            Factoid.getFactoidLog().write(Factoid.getLanguage().getMessage("COMMAND.SELECT.WORLDEDIT.SELECTIONNED"));
             
             AreaSelection select = new AreaSelection(player, new CuboidArea(player.getWorld().getName(), 
                     sel.getMinimumPoint().getBlockX(), sel.getMinimumPoint().getBlockY(),

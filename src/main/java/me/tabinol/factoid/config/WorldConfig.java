@@ -32,7 +32,7 @@ import me.tabinol.factoid.parameters.Permission;
 import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoidapi.FactoidAPI;
 import me.tabinol.factoidapi.lands.types.IType;
-import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
+import me.tabinol.factoid.playercontainer.PlayerContainerType;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -109,7 +109,7 @@ public class WorldConfig {
     private void createConfForWorld(String worldName, TreeMap<String, DummyLand> landList, boolean copyFromGlobal) {
     	
         String worldNameLower = worldName.toLowerCase();
-        Factoid.getLog().write("Create conf for World: " + worldNameLower);
+        Factoid.getFactoidLog().write("Create conf for World: " + worldNameLower);
         DummyLand dl = new DummyLand(worldName);
         if(copyFromGlobal) {
         	landList.get(GLOBAL).copyPermsFlagsTo(dl);
@@ -125,7 +125,7 @@ public class WorldConfig {
      */
     private DummyLand getLandDefaultConf() {
 
-        Factoid.getLog().write("Create default conf for lands");
+        Factoid.getFactoidLog().write("Create default conf for lands");
         return landModify(new DummyLand(GLOBAL), landDefault, "ContainerPermissions", "ContainerFlags");
     }
     
@@ -144,7 +144,7 @@ public class WorldConfig {
      */
     public TreeMap<IType, DummyLand> getTypeDefaultConf() {
     	
-        Factoid.getLog().write("Create default conf for lands");
+        Factoid.getFactoidLog().write("Create default conf for lands");
     	TreeMap<IType, DummyLand> defaultConf = new TreeMap<IType, DummyLand>();
 
     	for(IType type : FactoidAPI.iTypes().getTypes()) {
@@ -172,16 +172,16 @@ public class WorldConfig {
         if (csPerm != null) {
             for (String container : csPerm.getKeys(false)) {
                 
-                EPlayerContainerType pcType = EPlayerContainerType.getFromString(container);
+                PlayerContainerType pcType = PlayerContainerType.getFromString(container);
                 
                 if (pcType.hasParameter()) {
                     for (String containerName : fc.getConfigurationSection(perms + "." + container).getKeys(false)) {
                         for (String perm : fc.getConfigurationSection(perms + "." + container + "." + containerName).getKeys(false)) {
-                            Factoid.getLog().write("Container: " + container + ":" + containerName + ", " + perm);
+                            Factoid.getFactoidLog().write("Container: " + container + ":" + containerName + ", " + perm);
                             
                             // Remove _ if it is a Bukkit Permission
                             String containerNameLower;
-                            if(pcType == EPlayerContainerType.PERMISSION) {
+                            if(pcType == PlayerContainerType.PERMISSION) {
                                 containerNameLower = containerName.toLowerCase().replaceAll("_", ".");
                             } else {
                                 containerNameLower = containerName.toLowerCase();
@@ -196,7 +196,7 @@ public class WorldConfig {
                     }
                 } else {
                     for (String perm : fc.getConfigurationSection(perms + "." + container).getKeys(false)) {
-                        Factoid.getLog().write("Container: " + container + ", " + perm);
+                        Factoid.getFactoidLog().write("Container: " + container + ", " + perm);
                         dl.addPermission(
                                 PlayerContainer.create(null, pcType, null),
                                 new Permission(Factoid.getParameters().getPermissionTypeNoValid(perm.toUpperCase()),
@@ -210,7 +210,7 @@ public class WorldConfig {
         // add flags
         if (csFlags != null) {
             for (String flag : csFlags.getKeys(false)) {
-                Factoid.getLog().write("Flag: " + flag);
+                Factoid.getFactoidLog().write("Flag: " + flag);
                 FlagType ft = Factoid.getParameters().getFlagTypeNoValid(flag.toUpperCase());
                 dl.addFlag(new LandFlag(ft,
                         FlagValue.getFromString(fc.getString(flags + "." + flag + ".Value"), ft), 

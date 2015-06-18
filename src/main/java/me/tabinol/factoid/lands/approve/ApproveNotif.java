@@ -17,13 +17,10 @@
  */
 package me.tabinol.factoid.lands.approve;
 
-import java.util.logging.Level;
-
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.utilities.ChatStyle;
 import me.tabinol.factoid.utilities.FactoidRunnable;
-
-import org.bukkit.ChatStyle;
-import org.bukkit.entity.Player;
 
 
 /**
@@ -100,12 +97,12 @@ public class ApproveNotif extends FactoidRunnable {
      */
     private void notifyPlayer(String message) {
 
-        for (Player players : Factoid.getThisPlugin().getServer().getOnlinePlayers()) {
+        for (FPlayer players : Factoid.getServerCache().getPlayers()) {
             if (players.hasPermission(PERM_APPROVE)) {
                 players.sendMessage(ChatStyle.GREEN + "[Factoid] " + message);
             }
         }
 
-        Factoid.getThisPlugin().getLogger().log(Level.INFO, "[Factoid] " + message);
+        Factoid.getServer().info("[Factoid] " + message);
     }
 }

@@ -38,10 +38,8 @@ import java.util.logging.Logger;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.CommandThreadExec;
+import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoid.playercontainer.PlayerContainerPlayerName;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
-
-import org.bukkit.Bukkit;
 
 import com.mojang.api.profiles.HttpProfileRepository;
 import com.mojang.api.profiles.Profile;
@@ -118,7 +116,7 @@ public class PlayersCache extends Thread {
 	public PlayersCache() {
 		
         this.setName("Factoid Players cache");
-		fileName = Factoid.getThisPlugin().getDataFolder() + "/" + "playerscache.conf";
+		fileName = Factoid.getServer().getDataFolder() + "/" + "playerscache.conf";
         file = new File(fileName);
         outputList = Collections.synchronizedList(new ArrayList<OutputRequest>());
         updateList = Collections.synchronizedList(new ArrayList<PlayerCacheEntry>());
@@ -137,7 +135,7 @@ public class PlayersCache extends Thread {
 		updateList.add(new PlayerCacheEntry(uuid, playerName));
 		lock.lock();
 		commandRequest.signal();
-		Factoid.getLog().write("Name request (Thread wake up...)");
+		Factoid.getFactoidLog().write("Name request (Thread wake up...)");
 		lock.unlock();
 	}
 	
@@ -158,7 +156,7 @@ public class PlayersCache extends Thread {
 	 * @param commandExec the command exec
 	 * @param pc the pc
 	 */
-	public void getUUIDWithNames(CommandThreadExec commandExec, IPlayerContainer pc) {
+	public void getUUIDWithNames(CommandThreadExec commandExec, PlayerContainer pc) {
 		
 		if(pc != null && pc instanceof PlayerContainerPlayerName) {
 			getUUIDWithNames(commandExec, pc.getName());
@@ -179,7 +177,7 @@ public class PlayersCache extends Thread {
 		outputList.add(new OutputRequest(commandExec, playerNames));
 		lock.lock();
 		commandRequest.signal();
-		Factoid.getLog().write("Name request (Thread wake up...)");
+		Factoid.getFactoidLog().write("Name request (Thread wake up...)");
 		lock.unlock();
 	}
 	
@@ -213,7 +211,7 @@ public class PlayersCache extends Thread {
    				
    				// Pass 2 check in Minecraft website
    				if(!names.isEmpty()) {
-   					Factoid.getLog().write("HTTP profile request: " + names);
+   					Factoid.getFactoidLog().write("HTTP profile request: " + names);
    					Profile[] profiles = httpProfileRepository.findProfilesByNames(names.toArray(new String[0]));
    					for(Profile profile : profiles) {
    						// Put in the correct position
@@ -222,7 +220,7 @@ public class PlayersCache extends Thread {
    						
    						while(compt != length && !found) {
    							if(entries[compt] == null) {
-   								Factoid.getLog().write("HTTP Found : " + profile.getName() + ", " + profile.getId());
+   								Factoid.getFactoidLog().write("HTTP Found : " + profile.getName() + ", " + profile.getId());
    								UUID uuid = stringToUUID(profile.getId());
    								if(uuid != null) {
    									entries[compt] = new PlayerCacheEntry(uuid, 
@@ -237,7 +235,7 @@ public class PlayersCache extends Thread {
    				}
    				// Return the output of the request on the main thread
    				ReturnToCommand returnToCommand = new ReturnToCommand(outputRequest.commandExec, entries);
-  				Bukkit.getScheduler().callSyncMethod(Factoid.getThisPlugin(), returnToCommand);
+  				Factoid.getServer().callTaskNow(returnToCommand);
    			}
    			
    			// Update playerList
@@ -248,7 +246,7 @@ public class PlayersCache extends Thread {
     		// wait!
     		try {
     			commandRequest.await();
-    			Factoid.getLog().write("PlayersCache Thread wake up!");
+    			Factoid.getFactoidLog().write("PlayersCache Thread wake up!");
    			} catch (InterruptedException e) {
    				// TODO Auto-generated catch block
    				e.printStackTrace();
@@ -282,7 +280,7 @@ public class PlayersCache extends Thread {
 	public void stopNextRun() {
 		
 		if(!isAlive()) {
-			Factoid.getThisPlugin().getLogger().log(Level.SEVERE, "Problem with Players Cache Thread. Possible data loss!");
+			Factoid.getServer().error("Problem with Players Cache Thread. Possible data loss!");
 			return;
 		}
 		exitRequest = true;

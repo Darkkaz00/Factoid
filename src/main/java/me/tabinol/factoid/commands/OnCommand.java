@@ -25,14 +25,13 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.reflections.Reflections;
+
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.executor.CommandHelp;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
+import me.tabinol.factoid.minecraft.FSender;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.reflections.Reflections;
 
 
 /**
@@ -72,11 +71,7 @@ public class OnCommand {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.bukkit.command.CommandExecutor#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
-     */
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] arg) {
+    public boolean onCommand(FSender sender, String cmd, String label, String[] arg) {
 
         // Others commands then /factoid, /claim and /fd will not be send.
         
@@ -92,10 +87,10 @@ public class OnCommand {
     }
 
     // Get command from args
-    private void getCommand(CommandSender sender, Command cmd, ArgList argList) throws FactoidCommandException {
+    private void getCommand(FSender sender, String cmd, ArgList argList) throws FactoidCommandException {
 
         try {
-            MainCommand mainCommand = MainCommand.valueOf(cmd.getName().toUpperCase());
+            MainCommand mainCommand = MainCommand.valueOf(cmd.toUpperCase());
             
             // Show help if there is no arguments
             if (argList.isLast()) {
@@ -115,7 +110,7 @@ public class OnCommand {
             
             // Remove page from memory if needed
             if(cv != commands.get(MainCommand.FACTOID).get("page")) {
-                Factoid.getPlayerConf().get(sender).setChatPage(null);
+                sender.setChatPage(null);
             }
 
             // Do the command

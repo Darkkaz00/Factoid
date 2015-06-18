@@ -28,12 +28,10 @@ import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.commands.ConfirmEntry.ConfirmType;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
-import me.tabinol.factoidapi.lands.areas.ICuboidArea;
+import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.lands.collisions.Collisions.LandAction;
 import me.tabinol.factoid.lands.Land;
-
-import org.bukkit.ChatStyle;
-
+import me.tabinol.factoid.utilities.ChatStyle;
 
 /**
  * The Class CommandArea.
@@ -65,8 +63,8 @@ public class CommandArea extends CommandExec {
             checkPermission(true, true, null, null);
             checkSelections(true, true);
 
-            ICuboidArea area = entity.playerConf.getSelection().getCuboidArea();
-            double price = entity.playerConf.getSelection().getAreaAddPrice();
+            CuboidArea area = entity.player.getSelection().getCuboidArea();
+            double price = entity.player.getSelection().getAreaAddPrice();
 
             // Check for collision
             if (checkCollision(land.getName(), land, null, LandAction.AREA_ADD, 0, area, land.getParent(), 
@@ -78,9 +76,9 @@ public class CommandArea extends CommandExec {
             ((Land) land).addArea(area, price);
 
             entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CREATE.AREA.ISDONE", land.getName()));
-            Factoid.getLog().write(entity.playerName + " have create an area named " + land.getName() + " at position " + land.getAreas().toString());
-            new CommandCancel(entity.playerConf, false).commandExecute();
-            entity.playerConf.getSelection().refreshLand();
+            Factoid.getFactoidLog().write(entity.playerName + " have create an area named " + land.getName() + " at position " + land.getAreas().toString());
+            new CommandCancel(entity.player, false).commandExecute();
+            entity.player.getSelection().refreshLand();
 
         } else if (curArg.equalsIgnoreCase("remove") || curArg.equalsIgnoreCase("replace")) {
 
@@ -92,7 +90,7 @@ public class CommandArea extends CommandExec {
             int areaNb = 0;
 
             // check here if there is an area to replace
-            ICuboidArea areaToReplace = entity.playerConf.getSelection().getAreaToReplace();
+            CuboidArea areaToReplace = entity.player.getSelection().getAreaToReplace();
             if (areaToReplace != null) {
                 areaNb = areaToReplace.getKey();
             }
@@ -105,15 +103,15 @@ public class CommandArea extends CommandExec {
             // 0 is same has not set
             if (areaNb == 0) {
                 if (areaNbStr == null) {
-                    throw new FactoidCommandException("Area", entity.player, "COMMAND.REMOVE.AREA.EMPTY");
+                    throw new FactoidCommandException("Area", entity.sender, "COMMAND.REMOVE.AREA.EMPTY");
                 }
                 try {
                     areaNb = Integer.parseInt(areaNbStr);
                 } catch (NumberFormatException ex) {
-                    throw new FactoidCommandException("Area", entity.player, "COMMAND.REMOVE.AREA.INVALID");
+                    throw new FactoidCommandException("Area", entity.sender, "COMMAND.REMOVE.AREA.INVALID");
                 }
                 if (land.getArea(areaNb) == null) {
-                    throw new FactoidCommandException("Area", entity.player, "COMMAND.REMOVE.AREA.INVALID");
+                    throw new FactoidCommandException("Area", entity.sender, "COMMAND.REMOVE.AREA.INVALID");
                 }
             }
 
@@ -131,7 +129,7 @@ public class CommandArea extends CommandExec {
                     throw new FactoidCommandException("Area", entity.sender, "COMMAND.REMOVE.AREA.INVALID");
                 }
 
-                entity.playerConf.setConfirm(new ConfirmEntry(
+                entity.player.setConfirm(new ConfirmEntry(
                         ConfirmType.REMOVE_AREA, land, areaNb));
                 entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CONFIRM"));
 
@@ -140,8 +138,8 @@ public class CommandArea extends CommandExec {
                 //Only for a replace
                 checkSelections(true, true);
 
-                ICuboidArea area = entity.playerConf.getSelection().getCuboidArea();
-                double price = entity.playerConf.getSelection().getAreaReplacePrice(areaNb);
+                CuboidArea area = entity.player.getSelection().getCuboidArea();
+                double price = entity.player.getSelection().getAreaReplacePrice(areaNb);
 
                 // Check for collision
                 if (checkCollision(land.getName(), land, null, LandAction.AREA_MODIFY, areaNb, area, land.getParent(), 
@@ -153,16 +151,16 @@ public class CommandArea extends CommandExec {
                 ((Land) land).replaceArea(areaNb, area, price);
 
                 entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CREATE.AREA.ISDONE", land.getName()));
-                Factoid.getLog().write(entity.playerName + " have create an area named " + land.getName() + " at position " + land.getAreas().toString());
-                new CommandCancel(entity.playerConf, false).commandExecute();
-                entity.playerConf.getSelection().refreshLand();
+                Factoid.getFactoidLog().write(entity.playerName + " have create an area named " + land.getName() + " at position " + land.getAreas().toString());
+                new CommandCancel(entity.player, false).commandExecute();
+                entity.player.getSelection().refreshLand();
             }
 
         } else if (curArg.equalsIgnoreCase("list")) {
 
         	checkSelections(true, null);
         	StringBuilder stList = new StringBuilder();
-            for (Map.Entry<Integer, ICuboidArea> entry : land.getIdsAndAreas().entrySet()) {
+            for (Map.Entry<Integer, CuboidArea> entry : land.getIdsAndAreas().entrySet()) {
                 stList.append("ID: " + entry.getKey() + ", " + entry.getValue().getPrint() + Config.NEWLINE);
             }
             new ChatPage("COMMAND.AREA.LISTSTART", stList.toString(), entity.sender, land.getName()).getPage(1);

@@ -17,15 +17,10 @@
  */
 package me.tabinol.factoid.playercontainer;
 
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainerPermission;
-
-import org.bukkit.ChatStyle;
-import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permission;
-
+import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.playercontainer.PlayerContainerType;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 /**
  * The Class PlayerContainerPermission.
@@ -33,7 +28,7 @@ import org.bukkit.permissions.Permission;
 public class PlayerContainerPermission extends PlayerContainer {
 
     /** The perm. */
-    private Permission perm;
+    private String perm;
     
     /**
      * Instantiates a new player container permission.
@@ -42,15 +37,15 @@ public class PlayerContainerPermission extends PlayerContainer {
      */
     public PlayerContainerPermission(String bukkitPermission) {
 
-        super(bukkitPermission, EPlayerContainerType.PERMISSION, true);
-        perm = new Permission(bukkitPermission);
+        super(bukkitPermission, PlayerContainerType.PERMISSION, true);
+        perm = bukkitPermission;
     }
 
     /* (non-Javadoc)
      * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#equals(me.tabinol.factoid.playercontainer.PlayerContainer)
      */
     @Override
-    public boolean equals(IPlayerContainer container2) {
+    public boolean equals(PlayerContainer container2) {
 
         return container2 instanceof PlayerContainerPermission
                 && name.equalsIgnoreCase(container2.getName());
@@ -69,13 +64,13 @@ public class PlayerContainerPermission extends PlayerContainer {
      * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#hasAccess(org.bukkit.entity.Player)
      */
     @Override
-    public boolean hasAccess(Player player) {
+    public boolean hasAccess(FPlayer player) {
 
         return player.hasPermission(perm);
     }
 
     @Override
-    public boolean hasAccess(Player player, ILand land) {
+    public boolean hasAccess(FPlayer player, Land land) {
         
         return hasAccess(player);
     }
@@ -93,7 +88,7 @@ public class PlayerContainerPermission extends PlayerContainer {
      * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#setLand(me.tabinol.factoid.lands.Land)
      */
     @Override
-    public void setLand(ILand land) {
+    public void setLand(Land land) {
 
     }
 }

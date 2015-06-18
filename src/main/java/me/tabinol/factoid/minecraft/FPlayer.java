@@ -31,8 +31,17 @@ public interface FPlayer extends FSenderInterface {
 	
     
     public Point getLocation();
-	public String getName();
 	public UUID getUUID();
+	public String getName();
 	public String getDisplayName();
 	public boolean isOnline();
+	
+	/**
+	 * Get the game mode in STRING format
+	 * @return
+	 */
+	public String getGameMode();
+	
+	public void removeOneItemFromHand();
+	public void teleport(Point newLocation);
 }

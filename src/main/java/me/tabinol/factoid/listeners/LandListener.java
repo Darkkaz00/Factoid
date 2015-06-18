@@ -72,7 +72,7 @@ public class LandListener extends CommonListener implements Listener {
 
             for (Player player : playerHeal) {
                 if (!player.isDead()) {
-                    Factoid.getLog().write("Healing: " + player.getName());
+                    Factoid.getFactoidLog().write("Healing: " + player.getName());
                     foodLevel = player.getFoodLevel();
                     if (foodLevel < 20) {
                         foodLevel += 5;
@@ -160,7 +160,7 @@ public class LandListener extends CommonListener implements Listener {
             }
 
             /*for(String playername : lastLand.getPlayersInLand()){
-             Factoid.getScoreboard().sendScoreboard(lastLand.getPlayersInLand(), Factoid.getThisPlugin().getServer().getPlayer(playername), lastLand.getName());
+             Factoid.getScoreboard().sendScoreboard(lastLand.getPlayersInLand(), Factoid.getThisPlugin().getServerCache().getPlayer(playername), lastLand.getName());
              }
              Factoid.getScoreboard().sendScoreboard(lastLand.getPlayersInLand(), player, lastLand.getName());*/
         }
@@ -207,7 +207,7 @@ public class LandListener extends CommonListener implements Listener {
 
 
             /*for(String playername:land.getPlayersInLand()){
-             Factoid.getScoreboard().sendScoreboard(land.getPlayersInLand(), Factoid.getThisPlugin().getServer().getPlayer(playername), land.getName());
+             Factoid.getScoreboard().sendScoreboard(land.getPlayersInLand(), Factoid.getThisPlugin().getServerCache().getPlayer(playername), land.getName());
              }
              Factoid.getScoreboard().sendScoreboard(land.getPlayersInLand(), player, land.getName());*/
         } else {

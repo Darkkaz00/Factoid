@@ -47,7 +47,7 @@ public class CommandSale extends CommandExec {
     	
         checkSelections(true, null);
         checkPermission(true, true, null, null);
-        if(!entity.playerConf.isAdminMod()) {
+        if(!entity.player.isAdminMod()) {
         	// If the player not adminmod, he must be owner && permission true
         	checkPermission(false, false, PermissionList.ECO_LAND_FOR_SALE.getPermissionType(), null);
         }
@@ -79,7 +79,7 @@ public class CommandSale extends CommandExec {
 			}
         	
             entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.RECREATE"));
-            Factoid.getLog().write("Sign recreated for land " + land.getName() + " by: " + entity.playerName);
+            Factoid.getFactoidLog().write("Sign recreated for land " + land.getName() + " by: " + entity.playerName);
             
             return;
         }
@@ -106,7 +106,7 @@ public class CommandSale extends CommandExec {
 		}
         ((Land) land).setForSale(true, salePrice, ecoSign.getLocation());
         entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.SIGNDONE"));
-        Factoid.getLog().write("The land " + land.getName() + " is set to for sale by: " + entity.playerName);
+        Factoid.getFactoidLog().write("The land " + land.getName() + " is set to for sale by: " + entity.playerName);
     }
 
 

@@ -18,10 +18,8 @@
 package me.tabinol.factoid.exceptions;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.minecraft.FSenderInterface;
 import me.tabinol.factoid.utilities.ChatStyle;
-
-import org.bukkit.command.CommandSender;
-
 
 /**
  * The Class FactoidCommandException.
@@ -41,7 +39,7 @@ public class FactoidCommandException extends Exception {
      * @param langMsg the lang msg
      * @param param the param
      */
-    public FactoidCommandException(String logMsg, CommandSender sender, String langMsg, String... param) {
+    public FactoidCommandException(String logMsg, FSenderInterface sender, String langMsg, String... param) {
         
         super(logMsg);
         if (sender != null) {

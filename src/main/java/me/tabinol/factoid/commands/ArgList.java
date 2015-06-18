@@ -20,21 +20,15 @@ package me.tabinol.factoid.commands;
 // Work with command arguments
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.Factoid;
-import me.tabinol.factoidapi.FactoidAPI;
-import me.tabinol.factoidapi.lands.ILand;
+import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.minecraft.FSender;
 import me.tabinol.factoid.parameters.FlagType;
 import me.tabinol.factoid.parameters.FlagValue;
 import me.tabinol.factoid.parameters.LandFlag;
 import me.tabinol.factoid.parameters.Permission;
 import me.tabinol.factoid.parameters.PermissionType;
 import me.tabinol.factoid.playercontainer.PlayerContainer;
-import me.tabinol.factoidapi.parameters.IFlagType;
-import me.tabinol.factoidapi.parameters.IFlagValue;
-import me.tabinol.factoidapi.parameters.IPermissionType;
-import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
-
-import org.bukkit.command.CommandSender;
-
+import me.tabinol.factoid.playercontainer.PlayerContainerType;
 
 /**
  * The Class ArgList.
@@ -48,7 +42,7 @@ public class ArgList {
     private int iterator;
     
     /** The player. */
-    private final CommandSender player;
+    private final FSender player;
 
     /**
      * Instantiates a new arg list.
@@ -56,7 +50,7 @@ public class ArgList {
      * @param arg the arg
      * @param player the player
      */
-    public ArgList(String[] arg, CommandSender player) {
+    public ArgList(String[] arg, FSender player) {
 
         this.arg = arg;
         this.player = player;
@@ -159,16 +153,16 @@ public class ArgList {
      * @return the flag type from arg
      * @throws FactoidCommandException the factoid command exception
      */
-    public IFlagType getFlagTypeFromArg(boolean isAdminmod, boolean isOwner) throws FactoidCommandException {
+    public FlagType getFlagTypeFromArg(boolean isAdminmod, boolean isOwner) throws FactoidCommandException {
 
         String curArg = getNext();
-        IFlagType flagType;
+        FlagType flagType;
 
         if (curArg == null) {
             throw new FactoidCommandException("Flag error", player, "COMMAND.FLAGS.FLAGNULL");
         }
 
-        flagType = FactoidAPI.iParameters().getFlagType(curArg.toUpperCase());
+        flagType = Factoid.getParameters().getFlagType(curArg.toUpperCase());
         if (flagType == null) {
             throw new FactoidCommandException("Flag error", player, "COMMAND.FLAGS.FLAGNULL");
         }
@@ -190,13 +184,13 @@ public class ArgList {
      */
     public LandFlag getFlagFromArg(boolean isAdminmob, boolean isOwner) throws FactoidCommandException {
 
-        IFlagType flagType = getFlagTypeFromArg(isAdminmob, isOwner);
+        FlagType flagType = getFlagTypeFromArg(isAdminmob, isOwner);
 
         if (isLast()) {
             throw new FactoidCommandException("Flag error", player, "GENERAL.MISSINGINFO");
         }
         
-        IFlagValue flagValue = FlagValue.getFromString(getNextToEnd(), (FlagType) flagType);
+        FlagValue flagValue = FlagValue.getFromString(getNextToEnd(), (FlagType) flagType);
 
         if(flagValue != null) {
         	return new LandFlag((FlagType) flagType, flagValue, true);
@@ -213,8 +207,8 @@ public class ArgList {
      * @return the player container from arg
      * @throws FactoidCommandException the factoid command exception
      */
-    public PlayerContainer getPlayerContainerFromArg(ILand land,
-            EPlayerContainerType[] bannedPCTList) throws FactoidCommandException {
+    public PlayerContainer getPlayerContainerFromArg(Land land,
+            PlayerContainerType[] bannedPCTList) throws FactoidCommandException {
 
         String curArg = getNext();
         String param = null;
@@ -224,16 +218,16 @@ public class ArgList {
             throw new FactoidCommandException("PlayerContainer Error", player, "COMMAND.CONTAINERTYPE.TYPENULL");
         }
 
-        EPlayerContainerType pcType = EPlayerContainerType.getFromString(curArg);
+        PlayerContainerType pcType = PlayerContainerType.getFromString(curArg);
 
         if (pcType == null) {
             // Type player if it is the player directly
-            pcType = EPlayerContainerType.PLAYER;
+            pcType = PlayerContainerType.PLAYER;
             param = curArg;
         }
 
         if (bannedPCTList != null) {
-            for (EPlayerContainerType bPCT : bannedPCTList) {
+            for (PlayerContainerType bPCT : bannedPCTList) {
                 if (pcType == bPCT) {
                     throw new FactoidCommandException("PlayerContainer Error", player, "COMMAND.CONTAINERTYPE.NOTPERMITTED");
                 }
@@ -252,7 +246,7 @@ public class ArgList {
             pc = PlayerContainer.create(land, pcType, "");
         }
 
-        if (pcType == EPlayerContainerType.PLAYER && pc == null) {
+        if (pcType == PlayerContainerType.PLAYER && pc == null) {
 
             // this player doesn't exist
             throw new FactoidCommandException("Player not exist Error", player, "COMMAND.CONTAINER.PLAYERNOTEXIST");
@@ -269,16 +263,16 @@ public class ArgList {
      * @return the permission type from arg
      * @throws FactoidCommandException the factoid command exception
      */
-    public IPermissionType getPermissionTypeFromArg(boolean isAdminmod, boolean isOwner) throws FactoidCommandException {
+    public PermissionType getPermissionTypeFromArg(boolean isAdminmod, boolean isOwner) throws FactoidCommandException {
 
         String curArg = getNext();
-        IPermissionType pt;
+        PermissionType pt;
 
         if (curArg == null) {
             throw new FactoidCommandException("Permission Error", player, "COMMAND.PERMISSIONTYPE.TYPENULL");
         }
 
-        pt = FactoidAPI.iParameters().getPermissionType(curArg.toUpperCase());
+        pt = Factoid.getParameters().getPermissionType(curArg.toUpperCase());
         if (pt == null) {
             throw new FactoidCommandException("Permission Error", player, "COMMAND.PERMISSIONTYPE.INVALID");
         }
@@ -300,7 +294,7 @@ public class ArgList {
      */
     public Permission getPermissionFromArg(boolean isAdminmod, boolean isOwner) throws FactoidCommandException {
 
-        IPermissionType pt = getPermissionTypeFromArg(isAdminmod, isOwner);
+        PermissionType pt = getPermissionTypeFromArg(isAdminmod, isOwner);
         String curArg = getNext();
 
         if (curArg == null) {

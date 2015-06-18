@@ -23,10 +23,9 @@ import me.tabinol.factoid.commands.CommandEntities;
 import me.tabinol.factoid.commands.CommandExec;
 import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
+import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.parameters.PermissionList;
-
-import org.bukkit.ChatStyle;
-import org.bukkit.entity.Player;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 
 /**
@@ -39,7 +38,7 @@ public class CommandKick extends CommandExec {
     private final ArgList argList;
     
     /** The player. */
-    private final Player player;
+    private final FPlayer player;
 
     /**
      * Instantiates a new command kick.
@@ -76,12 +75,11 @@ public class CommandKick extends CommandExec {
             throw new FactoidCommandException("Kicked", player, "COMMAND.KICK.PLAYERNULL");
         }
 
-        @SuppressWarnings("deprecation")
-		Player playerKick = Factoid.getThisPlugin().getServer().getPlayer(playerKickName);
+		FPlayer playerKick = Factoid.getServerCache().getPlayer(playerKickName);
 
         // Player not in land?
         if (playerKick == null || !land.isPlayerinLandNoVanish(playerKick, player)
-                || Factoid.getPlayerConf().get(playerKick).isAdminMod()
+                || playerKick.isAdminMod()
                 || playerKick.hasPermission("factoid.bypassban")) {
             throw new FactoidCommandException("Kicked", player, "COMMAND.KICK.NOTINLAND");
         }
@@ -90,6 +88,6 @@ public class CommandKick extends CommandExec {
         playerKick.teleport(playerKick.getLocation().getWorld().getSpawnLocation());
         player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.KICK.DONE", playerKickName, land.getName()));
         playerKick.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.KICK.KICKED", land.getName()));
-        Factoid.getLog().write("Player " + playerKick + " kicked from " + land.getName() + ".");
+        Factoid.getFactoidLog().write("Player " + playerKick + " kicked from " + land.getName() + ".");
     }
 }

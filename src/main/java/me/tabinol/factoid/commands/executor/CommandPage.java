@@ -47,7 +47,7 @@ public class CommandPage extends CommandExec {
     @Override
     public void commandExecute() throws FactoidCommandException {
 
-        ChatPage chatPage = entity.playerConf.getChatPage();
+        ChatPage chatPage = entity.player.getChatPage();
         int pageNumber;
 
         if (chatPage == null) {

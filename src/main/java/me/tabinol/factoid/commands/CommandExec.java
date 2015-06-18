@@ -24,15 +24,15 @@ import me.tabinol.factoid.commands.executor.CommandCancel;
 import me.tabinol.factoid.commands.executor.CommandHelp;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
-import me.tabinol.factoidapi.lands.ILand;
+import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.lands.approve.Approve;
-import me.tabinol.factoidapi.lands.areas.ICuboidArea;
-import me.tabinol.factoidapi.lands.types.IType;
+import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.lands.collisions.Collisions;
+import me.tabinol.factoid.lands.types.Type;
+import me.tabinol.factoid.parameters.PermissionType;
+import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoid.playercontainer.PlayerContainerOwner;
 import me.tabinol.factoid.utilities.ChatStyle;
-import me.tabinol.factoidapi.parameters.IPermissionType;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -49,7 +49,7 @@ public abstract class CommandExec {
     protected final CommandEntities entity;
     
     /** The land. */
-    protected ILand land;
+    protected Land land;
     
     /** The is executable. */
     private boolean isExecutable = true;
@@ -75,13 +75,13 @@ public abstract class CommandExec {
 
         if (entity.player != null) {
             // get the land Selected or null
-            land = entity.playerConf.getSelection().getLand();
+            land = entity.player.getSelection().getLand();
         }
 
         if (entity.player == null && !entity.infoCommand.allowConsole()) {
 
             // Send a message if this command is player only
-            throw new FactoidCommandException("Impossible to do from console", Bukkit.getConsoleSender(), "CONSOLE");
+            throw new FactoidCommandException("Impossible to do from console", entity.sender, "CONSOLE");
         }
 
         // Show help if there is no more parameter and the command needs one
@@ -128,20 +128,20 @@ public abstract class CommandExec {
         // "If" is not in checkSelection to save CPU
 /*
          if (mustBeExpandMode != null) {
-         checkSelection(entity.playerConf.getExpendingLand() != null, mustBeExpandMode, "GENERAL.QUIT.EXPANDMODE", null, true);
+         checkSelection(entity.player.getExpendingLand() != null, mustBeExpandMode, "GENERAL.QUIT.EXPANDMODE", null, true);
          }
 
          if (mustBeExpandMode != null) {
-         checkSelection(entity.playerConf.getSetFlagUI() != null, mustBeFlagMode, "GENERAL.QUIT.FLAGMODE", null, true);
+         checkSelection(entity.player.getSetFlagUI() != null, mustBeFlagMode, "GENERAL.QUIT.FLAGMODE", null, true);
          }
          */
         if (mustBeSelectMode != null) {
             // Pasted to variable land, can take direcly
             checkSelection(land != null, mustBeSelectMode, null, "GENERAL.JOIN.SELECTMODE",
-                    entity != null && entity.playerConf.getSelection().getLand() != null);
+                    entity != null && entity.player.getSelection().getLand() != null);
         }
         if (mustBeAreaSelected != null) {
-            checkSelection(entity.playerConf.getSelection().getCuboidArea() != null, mustBeAreaSelected, null, "GENERAL.JOIN.SELECTAREA", true);
+            checkSelection(entity.player.getSelection().getCuboidArea() != null, mustBeAreaSelected, null, "GENERAL.JOIN.SELECTAREA", true);
         }
     }
 
@@ -161,15 +161,15 @@ public abstract class CommandExec {
 
         if (result != neededResult) {
             if (result == true) {
-                throw new FactoidCommandException("Player Select", entity.player, messageTrue);
+                throw new FactoidCommandException("Player Select", entity.sender, messageTrue);
             } else {
-                throw new FactoidCommandException("Player Select", entity.player, messageFalse);
+                throw new FactoidCommandException("Player Select", entity.sender, messageFalse);
             }
         } else {
             if (startSelectCancel && !resetSelectCancel && result == true) {
 
                 // Reset autocancel if there is a command executed that need it
-                entity.playerConf.setAutoCancelSelect(true);
+                entity.player.setAutoCancelSelect(true);
                 resetSelectCancel = true;
             }
         }
@@ -186,11 +186,11 @@ public abstract class CommandExec {
      * @throws FactoidCommandException the factoid command exception
      */
     protected void checkPermission(boolean mustBeAdminMod, boolean mustBeOwner,
-            IPermissionType neededPerm, String bukkitPermission) throws FactoidCommandException {
+            PermissionType neededPerm, String bukkitPermission) throws FactoidCommandException {
 
         boolean canDo = false;
 
-        if (mustBeAdminMod && entity.playerConf.isAdminMod()) {
+        if (mustBeAdminMod && entity.player.isAdminMod()) {
             canDo = true;
         }
         if (mustBeOwner && (land == null || (land !=null && new PlayerContainerOwner(land).hasAccess(entity.player)))) {
@@ -205,7 +205,7 @@ public abstract class CommandExec {
 
         // No permission, this is an exception
         if (canDo == false) {
-            throw new FactoidCommandException("No permission to do this action", entity.player, "GENERAL.MISSINGPERMISSION");
+            throw new FactoidCommandException("No permission to do this action", entity.sender, "GENERAL.MISSINGPERMISSION");
         }
     }
 
@@ -226,8 +226,8 @@ public abstract class CommandExec {
      * @return true, if successful
      * @throws FactoidCommandException the factoid command exception
      */
-    protected boolean checkCollision(String landName, ILand land, IType type, Collisions.LandAction action,
-            int removeId, ICuboidArea newArea, ILand parent, IPlayerContainer owner, 
+    protected boolean checkCollision(String landName, Land land, Type type, Collisions.LandAction action,
+            int removeId, CuboidArea newArea, Land parent, PlayerContainer owner, 
             double price, boolean addForApprove) throws FactoidCommandException {
 
         // allowApprove: false: The command can absolutely not be done if there is error!
@@ -241,10 +241,10 @@ public abstract class CommandExec {
             if (addForApprove) {
                 if (Factoid.getConf().getAllowCollision() == Config.AllowCollisionType.APPROVE && allowApprove == true) {
                     entity.sender.sendMessage(ChatStyle.RED + "[Factoid] " + Factoid.getLanguage().getMessage("COLLISION.GENERAL.NEEDAPPROVE", landName));
-                    Factoid.getLog().write("land " + landName + " has collision and needs approval.");
+                    Factoid.getFactoidLog().write("land " + landName + " has collision and needs approval.");
                     Factoid.getLands().getApproveList().addApprove(new Approve(landName, type, action, removeId, newArea,
                             owner, parent, price, Calendar.getInstance()));
-                    new CommandCancel(entity.playerConf, true).commandExecute();
+                    new CommandCancel(entity.player, true).commandExecute();
                     return true;
                 } else if (Factoid.getConf().getAllowCollision() == Config.AllowCollisionType.FALSE || allowApprove == false) {
                     throw new FactoidCommandException("Land collision", entity.sender, "COLLISION.GENERAL.CANNOTDONE");
@@ -270,12 +270,8 @@ public abstract class CommandExec {
      */
     protected void removeSignFromHand() {
     	
-    	if(entity.player.getGameMode() != GameMode.CREATIVE) {
-    		if(entity.player.getItemInHand().getAmount() == 1) {
-    			entity.player.setItemInHand(new ItemStack(Material.AIR));
-    		} else {
-    			entity.player.getItemInHand().setAmount(entity.player.getItemInHand().getAmount() - 1);
-    		}
+    	if(!entity.player.getGameMode().equals("CREATIVE")) {
+    		entity.player.removeOneItemFromHand();
     	}
     }
 }

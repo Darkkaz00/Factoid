@@ -15,7 +15,7 @@
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.tabinol.factoid.config.players;
+package me.tabinol.factoid.selection;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

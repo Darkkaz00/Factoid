@@ -19,11 +19,8 @@ package me.tabinol.factoid.selection.region;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.lands.areas.CuboidArea;
-import me.tabinol.factoidapi.lands.areas.ICuboidArea;
-
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-
+import me.tabinol.factoid.lands.areas.Point;
+import me.tabinol.factoid.minecraft.FPlayer;
 
 /**
  * The Class ActiveAreaSelection.
@@ -35,7 +32,7 @@ public class ActiveAreaSelection extends AreaSelection implements PlayerMoveList
      *
      * @param player the player
      */
-    public ActiveAreaSelection(Player player) {
+    public ActiveAreaSelection(FPlayer player) {
 
         super(player);
         setActiveSelection();
@@ -47,7 +44,7 @@ public class ActiveAreaSelection extends AreaSelection implements PlayerMoveList
      * @param player the player
      * @param area the area
      */
-    public ActiveAreaSelection(Player player, ICuboidArea area) {
+    public ActiveAreaSelection(FPlayer player, CuboidArea area) {
 
         super(player);
         this.area = area;
@@ -61,7 +58,7 @@ public class ActiveAreaSelection extends AreaSelection implements PlayerMoveList
 
         isCollision = false;
 
-        Location loc = player.getLocation();
+        Point loc = player.getLocation();
         int landXr = Factoid.getConf().getDefaultXSize() / 2;
         int landZr = Factoid.getConf().getDefaultZSize() / 2;
         area = new CuboidArea(loc.getWorld().getName(),

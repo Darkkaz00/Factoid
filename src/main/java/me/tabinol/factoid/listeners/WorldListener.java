@@ -166,7 +166,7 @@ public class WorldListener extends CommonListener implements Listener {
         if (conf.isOverrideExplosions()) {
             // Check for painting
             if (event.getCause() == RemoveCause.EXPLOSION) {
-                Factoid.getLog().write("Cancel HangingBreak : " + event.getEntity() + ", Cause: " + event.getCause());
+                Factoid.getFactoidLog().write("Cancel HangingBreak : " + event.getEntity() + ", Cause: " + event.getCause());
                 event.setCancelled(true);
             }
         }
@@ -192,7 +192,7 @@ public class WorldListener extends CommonListener implements Listener {
         Iterator<Block> itBlock = blocks.iterator();
         Block block;
 
-        Factoid.getLog().write("Explosion : " + ", Yield: " + yield + ", power: " + power);
+        Factoid.getFactoidLog().write("Explosion : " + ", Yield: " + yield + ", power: " + power);
 
         // Check if 1 block or more is in a protected place
         while(itBlock.hasNext() && !cancelEvent) {
@@ -341,7 +341,7 @@ public class WorldListener extends CommonListener implements Listener {
                 && (event.getCause() == DamageCause.BLOCK_EXPLOSION || event.getCause() == DamageCause.ENTITY_EXPLOSION
                 || event.getCause() == DamageCause.PROJECTILE)) {
             // Check for ItemFrame
-            Factoid.getLog().write("Cancel HangingBreak : " + event.getEntity() + ", Cause: " + event.getCause());
+            Factoid.getFactoidLog().write("Cancel HangingBreak : " + event.getEntity() + ", Cause: " + event.getCause());
             event.setCancelled(true);
         }
     }

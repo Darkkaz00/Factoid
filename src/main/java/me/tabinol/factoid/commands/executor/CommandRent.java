@@ -17,7 +17,6 @@
  */
 package me.tabinol.factoid.commands.executor;
 
-import org.bukkit.ChatStyle;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 
@@ -47,7 +46,7 @@ public class CommandRent extends CommandExec {
     	
         checkSelections(true, null);
         checkPermission(true, true, null, null);
-        if(!entity.playerConf.isAdminMod()) {
+        if(!entity.player.isAdminMod()) {
         	// If the player not adminmod, he must be owner && permission true
         	checkPermission(false, false, PermissionList.ECO_LAND_FOR_RENT.getPermissionType(), null);
         }
@@ -82,7 +81,7 @@ public class CommandRent extends CommandExec {
 			}
         	
             entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.RECREATE"));
-            Factoid.getLog().write("Sign recreated for land " + land.getName() + " by: " + entity.playerName);
+            Factoid.getFactoidLog().write("Sign recreated for land " + land.getName() + " by: " + entity.playerName);
             
             return;
         }
@@ -128,6 +127,6 @@ public class CommandRent extends CommandExec {
 		}
         ((Land) land).setForRent(rentPrice, rentRenew, rentAutoRenew, ecoSign.getLocation());
         entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.SIGNDONE"));
-        Factoid.getLog().write("The land " + land.getName() + " is set to for rent by: " + entity.playerName);
+        Factoid.getFactoidLog().write("The land " + land.getName() + " is set to for rent by: " + entity.playerName);
     }
 }

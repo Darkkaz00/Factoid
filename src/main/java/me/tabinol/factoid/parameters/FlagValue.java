@@ -19,10 +19,8 @@ package me.tabinol.factoid.parameters;
 
 import java.util.ArrayList;
 
+import me.tabinol.factoid.utilities.ChatStyle;
 import me.tabinol.factoid.utilities.StringChanges;
-import me.tabinol.factoidapi.parameters.IFlagValue;
-
-import org.bukkit.ChatStyle;
 
 /**
  * The Class FlagValue.

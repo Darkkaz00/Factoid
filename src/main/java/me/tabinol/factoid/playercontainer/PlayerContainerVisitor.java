@@ -17,13 +17,9 @@
  */
 package me.tabinol.factoid.playercontainer;
 
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainerVisitor;
-
-import org.bukkit.entity.Player;
-
+import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.playercontainer.PlayerContainerType;
 
 /**
  * The Class PlayerContainerVisitor.
@@ -31,16 +27,16 @@ import org.bukkit.entity.Player;
 public class PlayerContainerVisitor extends PlayerContainer {
     
     /** The land. */
-    private ILand land;
+    private Land land;
     
     /**
      * Instantiates a new player container visitor.
      *
      * @param land the land
      */
-    public PlayerContainerVisitor(ILand land) {
+    public PlayerContainerVisitor(Land land) {
         
-        super("", EPlayerContainerType.VISITOR, false);
+        super("", PlayerContainerType.VISITOR, false);
         this.land = land;
     }
     
@@ -48,7 +44,7 @@ public class PlayerContainerVisitor extends PlayerContainer {
      * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#equals(me.tabinol.factoid.playercontainer.PlayerContainer)
      */
     @Override
-    public boolean equals(IPlayerContainer container2) {
+    public boolean equals(PlayerContainer container2) {
         
         return container2 instanceof PlayerContainerVisitor
                 && land == ((PlayerContainerVisitor) container2).land;
@@ -67,13 +63,13 @@ public class PlayerContainerVisitor extends PlayerContainer {
      * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#hasAccess(org.bukkit.entity.Player)
      */
     @Override
-    public boolean hasAccess(Player player) {
+    public boolean hasAccess(FPlayer player) {
         
     	return hasAccess(player, land);
     }
     
     @Override
-    public boolean hasAccess(Player player, ILand land) {
+    public boolean hasAccess(FPlayer player, Land land) {
 
     	if(land == null) {
     		return false;
@@ -89,7 +85,7 @@ public class PlayerContainerVisitor extends PlayerContainer {
      *
      * @return the land
      */
-    public ILand getLand() {
+    public Land getLand() {
         
         return land;
     }
@@ -98,7 +94,7 @@ public class PlayerContainerVisitor extends PlayerContainer {
      * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#setLand(me.tabinol.factoid.lands.Land)
      */
     @Override
-    public void setLand(ILand land) {
+    public void setLand(Land land) {
     
         this.land = land;
     }

@@ -20,8 +20,12 @@ package me.tabinol.factoid.minecraft.bukkit;
 
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.minecraft.FPlayer;
@@ -29,11 +33,20 @@ import me.tabinol.factoid.minecraft.FPlayer;
 public class FPlayerBukkit extends FSenderBukkit implements FPlayer {
 	
 	private final Player player;
+	private final OfflinePlayer offlinePlayer;
 	
 	protected FPlayerBukkit(Player player) {
 		
 		super(player, player.getUniqueId());
 		this.player = player;
+		this.offlinePlayer = player;
+	}
+
+	protected FPlayerBukkit(OfflinePlayer player) {
+		
+		super(null, player.getUniqueId());
+		this.player = null;
+		this.offlinePlayer = player;
 	}
 
 	@Override
@@ -45,15 +58,9 @@ public class FPlayerBukkit extends FSenderBukkit implements FPlayer {
     }
 
 	@Override
-    public String getName() {
-
-		return player.getName();
-    }
-	
-	@Override
 	public UUID getUUID() {
 		
-		return player.getUniqueId();
+		return offlinePlayer.getUniqueId();
 	}
 
 	@Override
@@ -65,6 +72,28 @@ public class FPlayerBukkit extends FSenderBukkit implements FPlayer {
 	@Override
     public boolean isOnline() {
 
-		return player.isOnline();
+		return offlinePlayer.isOnline();
+    }
+
+	@Override
+    public String getGameMode() {
+	    
+		return player.getGameMode().name();
+    }
+
+	@Override
+    public void removeOneItemFromHand() {
+
+		if(player.getItemInHand().getAmount() == 1) {
+			player.setItemInHand(new ItemStack(Material.AIR));
+		} else {
+			player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
+		}
+    }
+
+	@Override
+    public void teleport(Point newLocation) {
+	    
+		player.teleport(BukkitUtils.toLocation(Bukkit.getWorld(newLocation.getWorldName()), newLocation));
     }
 }

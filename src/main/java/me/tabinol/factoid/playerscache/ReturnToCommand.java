@@ -17,15 +17,13 @@
  */
 package me.tabinol.factoid.playerscache;
 
-import java.util.concurrent.Callable;
-
 import me.tabinol.factoid.commands.CommandThreadExec;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 
 /**
  * The Class ReturnToCommand.
  */
-public class ReturnToCommand implements Callable<Void> {
+public class ReturnToCommand implements Runnable {
 
 	/** The command exec. */
 	private final CommandThreadExec commandExec;
@@ -49,7 +47,7 @@ public class ReturnToCommand implements Callable<Void> {
 	 * @see java.util.concurrent.Callable#call()
 	 */
 	@Override
-	public Void call() {
+	public void run() {
 		
 		// Return the output of the request
 		try {
@@ -57,7 +55,5 @@ public class ReturnToCommand implements Callable<Void> {
 		} catch (FactoidCommandException e) {
 			// Empty
 		}
-		
-		return null;
 	}
 }

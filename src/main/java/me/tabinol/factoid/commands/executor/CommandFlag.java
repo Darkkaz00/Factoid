@@ -26,15 +26,11 @@ import me.tabinol.factoid.commands.CommandExec;
 import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
+import me.tabinol.factoid.lands.DummyLand;
 import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.lands.Lands;
-import me.tabinol.factoidapi.FactoidAPI;
-import me.tabinol.factoidapi.lands.IDummyLand;
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.parameters.IFlagType;
-import me.tabinol.factoidapi.parameters.ILandFlag;
-
-import org.bukkit.ChatStyle;
+import me.tabinol.factoid.parameters.LandFlag;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 
 /**
@@ -43,7 +39,7 @@ import org.bukkit.ChatStyle;
 @InfoCommand(name="flag", forceParameter=true)
 public class CommandFlag extends CommandExec {
 	
-	private LinkedList<IDummyLand> precDL; // Listed Precedent lands (no duplicates)
+	private LinkedList<DummyLand> precDL; // Listed Precedent lands (no duplicates)
 	private StringBuilder stList;
 
     /**
@@ -70,11 +66,11 @@ public class CommandFlag extends CommandExec {
         if (entity.argList.length() < 2) {
 
             entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.FLAGS.JOINMODE"));
-            Factoid.getLog().write("PlayerSetFlagUI for " + entity.playerName);
+            Factoid.getFactoidLog().write("PlayerSetFlagUI for " + entity.playerName);
             entity.player.sendMessage(ChatStyle.DARK_GRAY + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.FLAGS.HINT"));
             CuboidArea area = Factoid.getLands().getCuboidArea(entity.player.getLocation());
             LandSetFlag setting = new LandSetFlag(entity.player, area);
-            entity.playerConf.setSetFlagUI(setting);
+            entity.player.setSetFlagUI(setting);
             
                     
         } else 
@@ -84,7 +80,7 @@ public class CommandFlag extends CommandExec {
 
             // Permission check is on getFlagFromArg
             
-            ILandFlag landFlag = entity.argList.getFlagFromArg(entity.playerConf.isAdminMod(), land.isOwner(entity.player));
+            LandFlag landFlag = entity.argList.getFlagFromArg(entity.player.isAdminMod(), land.isOwner(entity.player));
             
             if(!landFlag.getFlagType().isRegistered()) {
             	throw new FactoidCommandException("Flag not registered", entity.player, "COMMAND.FLAGS.FLAGNULL");
@@ -94,21 +90,21 @@ public class CommandFlag extends CommandExec {
             entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + 
             Factoid.getLanguage().getMessage("COMMAND.FLAGS.ISDONE", landFlag.getFlagType().toString(), 
                     landFlag.getValue().getValuePrint() + ChatStyle.YELLOW));
-            Factoid.getLog().write("Flag set: " + landFlag.getFlagType().toString() + ", value: " + 
+            Factoid.getFactoidLog().write("Flag set: " + landFlag.getFlagType().toString() + ", value: " + 
                     landFlag.getValue().getValue().toString());
 
         } else if (curArg.equalsIgnoreCase("unset")) {
         
-            IFlagType flagType = entity.argList.getFlagTypeFromArg(entity.playerConf.isAdminMod(), land.isOwner(entity.player));
+            FlagType flagType = entity.argList.getFlagTypeFromArg(entity.player.isAdminMod(), land.isOwner(entity.player));
             if (!land.removeFlag(flagType)) {
                 throw new FactoidCommandException("Flags", entity.player, "COMMAND.FLAGS.REMOVENOTEXIST");
             }
             entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.FLAGS.REMOVEISDONE", flagType.toString()));
-            Factoid.getLog().write("Flag unset: " + flagType.toString());
+            Factoid.getFactoidLog().write("Flag unset: " + flagType.toString());
         
         } else if (curArg.equalsIgnoreCase("list")) {
 
-        	precDL = new LinkedList<IDummyLand>();
+        	precDL = new LinkedList<DummyLand>();
         	stList = new StringBuilder();
         	
         	// For the actual land
@@ -118,11 +114,11 @@ public class CommandFlag extends CommandExec {
         	if(land.getType() != null) {
             	stList.append(ChatStyle.DARK_GRAY + Factoid.getLanguage().getMessage("GENERAL.FROMDEFAULTTYPE",
         				land.getType().getName())).append(Config.NEWLINE);
-            	importDisplayFlagsFrom(((Lands) FactoidAPI.iLands()).getDefaultConf(land.getType()), false);
+            	importDisplayFlagsFrom(Factoid.getLands().getDefaultConf(land.getType()), false);
         	}
         	
         	// For parent (if exist)
-        	ILand parLand = land;
+        	Land parLand = land;
         	while((parLand = parLand.getParent()) != null) {
         		stList.append(ChatStyle.DARK_GRAY + Factoid.getLanguage().getMessage("GENERAL.FROMPARENT",
         				ChatStyle.GREEN + parLand.getName() + ChatStyle.DARK_GRAY)).append(Config.NEWLINE);
@@ -132,7 +128,7 @@ public class CommandFlag extends CommandExec {
         	// For world
         	stList.append(ChatStyle.DARK_GRAY + Factoid.getLanguage().getMessage("GENERAL.FROMWORLD",
     				land.getWorldName())).append(Config.NEWLINE);
-        	importDisplayFlagsFrom(((Lands) FactoidAPI.iLands()).getOutsideArea(land.getWorldName()), true);
+        	importDisplayFlagsFrom(Factoid.getLands().getOutsideArea(land.getWorldName()), true);
                 
             new ChatPage("COMMAND.FLAGS.LISTSTART", stList.toString(), entity.player, land.getName()).getPage(1);
 
@@ -141,10 +137,10 @@ public class CommandFlag extends CommandExec {
         }
     }
     
-    private void importDisplayFlagsFrom(IDummyLand land, boolean onlyInherit) {
+    private void importDisplayFlagsFrom(DummyLand land, boolean onlyInherit) {
     	
     	StringBuilder stSubList = new StringBuilder();
-    	for (ILandFlag flag : land.getFlags()) {
+    	for (LandFlag flag : land.getFlags()) {
             if (stSubList.length() != 0 && !stSubList.toString().endsWith(" ")) {
                 stSubList.append(" ");
             }
@@ -159,10 +155,10 @@ public class CommandFlag extends CommandExec {
     	}
     }
     
-    private boolean flagInList(ILandFlag flag) {
+    private boolean flagInList(LandFlag flag) {
     	
-    	for(IDummyLand listLand : precDL) {
-    		for(ILandFlag listFlag : listLand.getFlags()) {
+    	for(DummyLand listLand : precDL) {
+    		for(LandFlag listFlag : listLand.getFlags()) {
     			if(flag.getFlagType() == listFlag.getFlagType()) {
     				return true;
     			}

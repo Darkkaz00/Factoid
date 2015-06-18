@@ -20,6 +20,7 @@ package me.tabinol.factoid.minecraft.sponge;
 
 import java.util.UUID;
 
+import org.spongepowered.api.text.TextBuilder;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.util.command.CommandSource;
 
@@ -51,9 +52,25 @@ public class FSenderSponge extends FSender {
 	}
 
 	@Override
+    public String getName() {
+
+		return sender.getName();
+    }
+	
+	@Override
     public void sendMessage(String msg) {
 	    
 		sender.sendMessage(Texts.builder(msg).build());
+    }
+
+	@Override
+    public void sendMessage(String[] msg) {
+	    
+		TextBuilder text = Texts.builder();
+		for(String line : msg) {
+			text.append(Texts.builder(line).build());
+		}
+		sender.sendMessage(text.build());
     }
 
 	@Override
@@ -61,4 +78,13 @@ public class FSenderSponge extends FSender {
 
 	    return sender.hasPermission(perm);
     }
+	
+	/**************************************************************************
+	 * Sponge only methods
+	 *************************************************************************/
+	
+	public CommandSource getSpongeSender() {
+		
+		return sender;
+	}
 }

@@ -25,8 +25,7 @@ import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.commands.MainCommand;
 import me.tabinol.factoid.commands.OnCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
-
-import org.bukkit.command.CommandSender;
+import me.tabinol.factoid.minecraft.FSender;
 
 
 /**
@@ -36,7 +35,7 @@ import org.bukkit.command.CommandSender;
 public class CommandHelp extends CommandExec {
 
     /** The sender. */
-    private final CommandSender sender;
+    private final FSender sender;
     
     private final OnCommand onCommand;
     
@@ -70,7 +69,7 @@ public class CommandHelp extends CommandExec {
      * @param commandName the command name
      * @throws FactoidCommandException the factoid command exception
      */
-    public CommandHelp(OnCommand onCommand, CommandSender sender, 
+    public CommandHelp(OnCommand onCommand, FSender sender, 
     		MainCommand mainCommand, String commandName) throws FactoidCommandException {
 
         super(null);

@@ -18,27 +18,18 @@
 
 package me.tabinol.factoid;
 
-import java.io.IOException;
-
-import me.tabinol.factoid.commands.OnCommand;
+import me.tabinol.factoid.cache.ServerCache;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.config.DependPlugin;
-import me.tabinol.factoid.config.players.PlayerStaticConfig;
 import me.tabinol.factoid.economy.EcoScheduler;
 import me.tabinol.factoid.economy.PlayerMoney;
 import me.tabinol.factoid.factions.Factions;
+import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.lands.Lands;
 import me.tabinol.factoid.lands.approve.ApproveNotif;
 import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.lands.types.Types;
-import me.tabinol.factoid.listeners.ChatListener;
-import me.tabinol.factoid.listeners.LandListener;
-import me.tabinol.factoid.listeners.PlayerListener;
-import me.tabinol.factoid.listeners.PvpListener;
-import me.tabinol.factoid.listeners.WorldListener;
 import me.tabinol.factoid.minecraft.Server;
-import me.tabinol.factoid.minecraft.bukkit.ServerBukkit;
-import me.tabinol.factoid.minecraft.sponge.ServerSponge;
 import me.tabinol.factoid.parameters.Parameters;
 import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoid.playerscache.PlayersCache;
@@ -47,11 +38,7 @@ import me.tabinol.factoid.storage.StorageThread;
 import me.tabinol.factoid.utilities.Lang;
 import me.tabinol.factoid.utilities.Log;
 import me.tabinol.factoid.utilities.MavenAppProperties;
-import me.tabinol.factoidapi.FactoidAPI;
-import me.tabinol.factoidapi.IFactoid;
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.lands.areas.ICuboidArea;
-import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
+import me.tabinol.factoid.playercontainer.PlayerContainerType;
 
 /**
  * Main class for both (Bukkit and Sponge).
@@ -59,7 +46,7 @@ import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
 public class Factoid {
 
 	/**  The Economy schedule interval. */
-	public static final int ECO_SCHEDULE_INTERVAL = 20 * 60 * 5;
+	public static final long ECO_SCHEDULE_INTERVAL = 20 * 60 * 5;
 	
 	public enum ServerType {
 		BUKKIT,
@@ -101,14 +88,14 @@ public class Factoid {
     /** The players cache. */
     private static PlayersCache playersCache;
     
-    /** The player conf. */
-    protected PlayerStaticConfig playerConf;
-
-    /**  The economy scheduler. */
-    private EcoScheduler ecoScheduler;
+    /** The server cache. */
+    private static ServerCache serverCache;
     
     /** The approve notif. */
-    private ApproveNotif approveNotif;
+    private static ApproveNotif approveNotif;
+    
+    /**  The economy scheduler. */
+    private EcoScheduler ecoScheduler;
     
     /** The conf. */
     private static Config conf;
@@ -193,6 +180,16 @@ public class Factoid {
     	return parameters;
     }
     
+    public static ServerCache getServerCache() {
+    	
+    	return serverCache;
+    }
+    
+    public static ApproveNotif getApproveNotif() {
+    	
+    	return approveNotif;
+    }
+    
     /**************************************************************************
      * Server init, start and stop
      *************************************************************************/
@@ -208,16 +205,14 @@ public class Factoid {
         mavenAppProperties = new MavenAppProperties();
         mavenAppProperties.loadProperties();
         
-        // Init Server access
-        if(serverType == ServerType.BUKKIT) {
-        	initBukkit();
-        } else {
-        	initSponge();
-        }
+        // Init Server access (Minecraft/Sponge)
+        Factoid.getServer().initServer();
+        
         // Init API
-        FactoidAPI.initFactoidPluginAccess();
+        // TODO: FactoidAPI Re-Enable FactoidAPI.initFactoidPluginAccess();
         
         // Init Factoid
+        serverCache = new ServerCache();
         parameters = new Parameters();
         types = new Types();
         conf = new Config();
@@ -228,8 +223,6 @@ public class Factoid {
         } else {
             playerMoney = null;
         }
-        playerConf = new PlayerStaticConfig();
-        ((PlayerStaticConfig) playerConf).addAll();
         language = new Lang();
         storageThread = new StorageThread();
         factions = new Factions();
@@ -239,20 +232,10 @@ public class Factoid {
         approveNotif = new ApproveNotif();
         approveNotif.runApproveNotifLater();
         ecoScheduler = new EcoScheduler();
-        ecoScheduler.runTaskTimer(this, ECO_SCHEDULE_INTERVAL, ECO_SCHEDULE_INTERVAL);
+        minecraftServer.createTask(ecoScheduler, ECO_SCHEDULE_INTERVAL, true);
         playersCache = new PlayersCache();
         playersCache.start();
         log.write(getLanguage().getMessage("ENABLE"));
-    }
-    
-    private void initBukkit() {
-    	
-    	minecraftServer = new ServerBukkit();
-    }
-
-    private void initSponge() {
-    	
-    	minecraftServer = new ServerSponge();
     }
     
     /**
@@ -279,26 +262,17 @@ public class Factoid {
         approveNotif.runApproveNotifLater();
     }
 
-    protected void serverStop() {
+    public void serverStop() {
 
         log.write(getLanguage().getMessage("DISABLE"));
         playersCache.stopNextRun();
         approveNotif.stopNextRun();
         storageThread.stopNextRun();
-        ((PlayerStaticConfig) playerConf).removeAll();
     }
 
     /**************************************************************************
      * Non-Static methods (gets)
      *************************************************************************/
-
-    /* (non-Javadoc)
-     * @see me.tabinol.factoidapi.IFactoid#iPlayerConf()
-     */
-    public PlayerStaticConfig iPlayerConf() {
-
-        return playerConf;
-    }
 
     /**
      * I scoreboard.
@@ -364,10 +338,10 @@ public class Factoid {
      */
     
     /* (non-Javadoc)
-     * @see me.tabinol.factoidapi.IFactoid#createPlayerContainer(me.tabinol.factoidapi.lands.ILand, me.tabinol.factoidapi.playercontainer.EPlayerContainerType, java.lang.String)
+     * @see me.tabinol.factoidapi.IFactoid#createPlayerContainer(me.tabinol.factoidapi.lands.ILand, me.tabinol.factoid.playercontainer.PlayerContainerType, java.lang.String)
      */
-    public PlayerContainer createPlayerContainer(ILand land, 
-    		EPlayerContainerType pct, String name) {
+    public PlayerContainer createPlayerContainer(Land land, 
+    		PlayerContainerType pct, String name) {
     	
     	return PlayerContainer.create(land, pct, name);
     }
@@ -375,7 +349,7 @@ public class Factoid {
     /* (non-Javadoc)
      * @see me.tabinol.factoidapi.IFactoid#createCuboidArea(java.lang.String, int, int, int, int, int, int)
      */
-    public ICuboidArea createCuboidArea(String worldName, int x1, int y1, 
+    public CuboidArea createCuboidArea(String worldName, int x1, int y1, 
     		int z1, int x2, int y2, int z2) {
     	
     	return new CuboidArea(worldName, x1, y1, z1, x2, y2, z2);

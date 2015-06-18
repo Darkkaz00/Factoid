@@ -20,6 +20,7 @@ package me.tabinol.factoid.minecraft.sponge;
 
 import java.util.UUID;
 
+import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.minecraft.FWorld;
 
 import org.spongepowered.api.world.World;
@@ -49,5 +50,11 @@ public class FWorldSponge implements FWorld {
     public int getMaxHeight() {
 	    
 		return world.getBuildHeight();
+    }
+
+	@Override
+    public Point getSpawnLocation() {
+	    
+		return SpongeUtils.toPoint(world.getSpawnLocation());
     }
 }

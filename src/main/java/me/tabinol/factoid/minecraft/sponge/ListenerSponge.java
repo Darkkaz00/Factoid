@@ -62,11 +62,7 @@ import org.spongepowered.api.event.message.CommandEvent;
 import org.spongepowered.api.event.world.WorldLoadEvent;
 import org.spongepowered.api.event.world.WorldUnloadEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
-import org.spongepowered.api.world.extent.Extent;
 
-import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Optional;
 
 public class ListenerSponge implements Listener {
@@ -90,14 +86,14 @@ public class ListenerSponge implements Listener {
 	public void onWorldLoadMonitor(WorldLoadEvent event) {
 		
 		// Add world to list
-		Factoid.getServer().addWorld(new FWorldSponge(event.getWorld()));
+		Factoid.getServerCache().addWorld(new FWorldSponge(event.getWorld()));
 	}
 
 	@Subscribe(order = Order.BEFORE_POST)
 	public void onWorldUnloadMonitor(WorldUnloadEvent event) {
 		
 		// Remove world to list
-		Factoid.getServer().removeWorld(new FWorldSponge(event.getWorld()));
+		Factoid.getServerCache().removeWorld(new FWorldSponge(event.getWorld()));
 	}
 	
 	@Subscribe(order = Order.BEFORE_POST)
@@ -105,16 +101,16 @@ public class ListenerSponge implements Listener {
 		
 		FPlayer player = new FPlayerSponge(event.getEntity());
 		
-		Factoid.getServer().addPlayer(player); // Add player in the list
+		Factoid.getServerCache().addPlayer(player); // Add player in the list
 		playerListener.onPlayerJoinMonitor(player);
 	}
 
 	@Subscribe(order = Order.BEFORE_POST)
 	public void onPlayerQuitMonitor(PlayerQuitEvent event) {
 
-		FPlayer player = Factoid.getServer().getPlayer(event.getEntity().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
 
-		Factoid.getServer().removePlayer(player); // Remove player from the list
+		Factoid.getServerCache().removePlayer(player); // Remove player from the list
 		playerListener.onPlayerQuitMonitor(player);
 	}
 
@@ -126,14 +122,14 @@ public class ListenerSponge implements Listener {
 			return;
 		}
 
-    	FPlayer player = Factoid.getServer().getPlayer(event.getEntity().getUniqueId());
+    	FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
 			return;
 		}
 
-		if(playerListener.onPlayerTeleport(player, toPoint(event.getNewLocation()),
+		if(playerListener.onPlayerTeleport(player, SpongeUtils.toPoint(event.getNewLocation()),
 				false /* TODO: Support Ender pearl TP */ )) {
 			event.setCancelled(true);
 		}
@@ -142,7 +138,7 @@ public class ListenerSponge implements Listener {
 	@Subscribe(order = Order.BEFORE_POST)
 	public void onPlayerMoveMonitor(PlayerMoveEvent event) {
 
-		FPlayer player = Factoid.getServer().getPlayer(event.getEntity().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
 
 		// Real player?
 		if(player == null) {
@@ -150,7 +146,7 @@ public class ListenerSponge implements Listener {
 		}
 
 		playerListener.onPlayerMoveMonitor(player, 
-				toPoint(event.getOldLocation()), toPoint(event.getNewLocation()));
+				SpongeUtils.toPoint(event.getOldLocation()), SpongeUtils.toPoint(event.getNewLocation()));
 	}
 
 	@Subscribe
@@ -161,7 +157,7 @@ public class ListenerSponge implements Listener {
 			return;
 		}
     	
-    	FPlayer player = Factoid.getServer().getPlayer(((Player) event.getSource()).getUniqueId());
+    	FPlayer player = Factoid.getServerCache().getPlayer(((Player) event.getSource()).getUniqueId());
     	
     	if(chatListener.onAsyncPlayerChat(player, event.getMessage().toString())) {
     		event.setCancelled(true);
@@ -191,9 +187,9 @@ public class ListenerSponge implements Listener {
 			itemInHand = null;
 		}
 		
-    	FPlayer player = Factoid.getServer().getPlayer(event.getEntity().getUniqueId());
+    	FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
 		if(playerListener.onPlayerInteract(player, click, itemInHand, event.getBlock().getType().getName(),
-				toPoint(event.getBlock()))) {
+				SpongeUtils.toPoint(event.getBlock()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -201,7 +197,7 @@ public class ListenerSponge implements Listener {
 	@Subscribe
 	public void onPlayerPlaceBlock(PlayerPlaceBlockEvent event) {
 		
-    	FPlayer player = Factoid.getServer().getPlayer(event.getEntity().getUniqueId());
+    	FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
@@ -209,7 +205,7 @@ public class ListenerSponge implements Listener {
 		}
 
     	if(playerListener.onBlockPlace(player, event.getBlock().getType().getName(),
-    			toPoint(event.getBlock()))) {
+    			SpongeUtils.toPoint(event.getBlock()))) {
     		event.setCancelled(true);
     	}
 	}
@@ -217,7 +213,7 @@ public class ListenerSponge implements Listener {
 	@Subscribe
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		
-		FPlayer player = Factoid.getServer().getPlayer(event.getEntity().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
 		
 		if(event.getInteractionType() == EntityInteractionTypes.USE) {
 			// Right click
@@ -228,14 +224,14 @@ public class ListenerSponge implements Listener {
 			}
 			
 			if(playerListener.onPlayerInteractAtEntity(player, event.getTargetEntity().getType().getName(),
-					itemInHandType, toPoint(event.getTargetEntity().getLocation()))) {
+					itemInHandType, SpongeUtils.toPoint(event.getTargetEntity().getLocation()))) {
 				event.setCancelled(true);
 			}
 		
 		} else {
 			// others
 			if(playerListener.onPlayerInteractEntity(player, event.getTargetEntity().getType().getName(),
-					toPoint(event.getTargetEntity().getLocation()))) {
+					SpongeUtils.toPoint(event.getTargetEntity().getLocation()))) {
 				event.setCancelled(true);
 			}
 		}
@@ -244,7 +240,7 @@ public class ListenerSponge implements Listener {
 	@Subscribe
 	public void onPlayerBreakBlock(PlayerBreakBlockEvent event) {
 		
-    	FPlayer player = Factoid.getServer().getPlayer(event.getEntity().getUniqueId());
+    	FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
@@ -252,7 +248,7 @@ public class ListenerSponge implements Listener {
 		}
 
     	if(playerListener.onBlockPlace(player, event.getBlock().getType().getName(),
-    			toPoint(event.getBlock()))) {
+    			SpongeUtils.toPoint(event.getBlock()))) {
     		event.setCancelled(true);
     	}
 	}
@@ -260,7 +256,7 @@ public class ListenerSponge implements Listener {
 	@Subscribe
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
 		
-		FPlayer player = Factoid.getServer().getPlayer(event.getEntity().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
@@ -269,7 +265,7 @@ public class ListenerSponge implements Listener {
 
 		for(ItemStack item : event.getDroppedItems()) {
 			if(playerListener.onPlayerDropItem(player, item.getItem().getName(),
-					toPoint(event.getEntity().getLocation()))) {
+					SpongeUtils.toPoint(event.getEntity().getLocation()))) {
 				event.setCancelled(true);
 			}
 		}
@@ -278,7 +274,7 @@ public class ListenerSponge implements Listener {
 	@Subscribe
 	public void onPlayerPickUpItem(PlayerPickUpItemEvent event) {
 		
-		FPlayer player = Factoid.getServer().getPlayer(event.getEntity().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
@@ -287,7 +283,7 @@ public class ListenerSponge implements Listener {
 
 		for(Item item : event.getItems()) {
 			if(playerListener.onPlayerPickupItem(player, item.getType().getName(),
-					toPoint(item.getLocation()))) {
+					SpongeUtils.toPoint(item.getLocation()))) {
 				event.setCancelled(true);
 			}
 		}
@@ -296,9 +292,9 @@ public class ListenerSponge implements Listener {
 	@Subscribe
 	public void onPlayerSleep(PlayerSleepEvent event) {
 		
-		FPlayer player = Factoid.getServer().getPlayer(event.getEntity().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
 		
-		if(playerListener.onPlayerBedEnter(player, toPoint(event.getLocation()))) {
+		if(playerListener.onPlayerBedEnter(player, SpongeUtils.toPoint(event.getLocation()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -320,7 +316,7 @@ public class ListenerSponge implements Listener {
 		boolean isMonster = entity instanceof Monster;
 		boolean isTamedAndNotOwner = false; // TODO: Check if animal is tamed
 		
-		FPlayer player = Factoid.getServer().getPlayer(mplayer.getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(mplayer.getUniqueId());
 
 		// Real player?
 		if(player == null) {
@@ -328,7 +324,7 @@ public class ListenerSponge implements Listener {
 		}
 
 		if(playerListener.onEntityDamageByEntity(player, entity.getType().getName(),
-				toPoint(entity.getLocation()), isAnimal, isMonster, isTamedAndNotOwner)) {
+				SpongeUtils.toPoint(entity.getLocation()), isAnimal, isMonster, isTamedAndNotOwner)) {
 			event.setCancelled(true);
 		}
 	}
@@ -340,7 +336,7 @@ public class ListenerSponge implements Listener {
 	@Subscribe
 	public void onPlayerChangeBlock(PlayerChangeBlockEvent event) {
 		
-    	FPlayer player = Factoid.getServer().getPlayer(event.getEntity().getUniqueId());
+    	FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
@@ -348,7 +344,7 @@ public class ListenerSponge implements Listener {
 		}
 
     	if(playerListener.onPlayerChangeBlock(player, event.getBlock().getType().getName(),
-    			event.getReplacementBlock().getState().getType().getName(), toPoint(event.getBlock()))) {
+    			event.getReplacementBlock().getState().getType().getName(), SpongeUtils.toPoint(event.getBlock()))) {
     		event.setCancelled(true);
     	}
 	}
@@ -356,18 +352,18 @@ public class ListenerSponge implements Listener {
 	@Subscribe(order = Order.LAST)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		
-    	FPlayer player = Factoid.getServer().getPlayer(event.getEntity().getUniqueId());
+    	FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
     	
 		// Real player?
 		if(player == null) {
 			return;
 		}
 
-    	Point newLoc = playerListener.onPlayerRespawn(player, toPoint(event.getRespawnLocation()));
+    	Point newLoc = playerListener.onPlayerRespawn(player, SpongeUtils.toPoint(event.getRespawnLocation()));
 		
     	if(newLoc != null) {
     		// TODO: Yaw and Pitch
-    		event.setRespawnLocation(toLocation(event.getGame().getServer().getWorld(newLoc.getWorldName()).get(), 
+    		event.setRespawnLocation(SpongeUtils.toLocation(event.getGame().getServer().getWorld(newLoc.getWorldName()).get(), 
     				newLoc));
     	}
 	}
@@ -375,14 +371,14 @@ public class ListenerSponge implements Listener {
 	@Subscribe(order = Order.BEFORE_POST)
 	public void onPlayerRespawnMonitor(PlayerRespawnEvent event) {
 		
-    	FPlayer player = Factoid.getServer().getPlayer(event.getEntity().getUniqueId());
+    	FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
     	
 		// Real player?
 		if(player == null) {
 			return;
 		}
 
-    	playerListener.onPlayerRespawnMonitor(player, toPoint(event.getRespawnLocation()));
+    	playerListener.onPlayerRespawnMonitor(player, SpongeUtils.toPoint(event.getRespawnLocation()));
 	}
 	
 	@Subscribe
@@ -392,14 +388,14 @@ public class ListenerSponge implements Listener {
 			return;
 		}
 		
-		FPlayer player = Factoid.getServer().getPlayer(((Player) event.getCause().get()).getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(((Player) event.getCause().get()).getUniqueId());
 		
 		// Real player?
 		if(player == null) {
 			return;
 		}
 
-		if(playerListener.onBlockIgnite(player, toPoint(event.getBlock()))) {
+		if(playerListener.onBlockIgnite(player, SpongeUtils.toPoint(event.getBlock()))) {
 			// event.setCancelled(true); TODO: Block Ignite not cancellable?
 		}
 	}
@@ -409,7 +405,7 @@ public class ListenerSponge implements Listener {
 	@Subscribe
 	public void onPlayerChangeHealth(PlayerChangeHealthEvent event) {
 		
-		FPlayer player = Factoid.getServer().getPlayer(event.getEntity().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
@@ -418,7 +414,7 @@ public class ListenerSponge implements Listener {
 
 		// Health loss
 		if(event.getOldData().getHealth() > event.getNewData().getHealth()) {
-			if(playerListener.onPlayerDamage(player, toPoint(event.getEntity().getLocation()))) {
+			if(playerListener.onPlayerDamage(player, SpongeUtils.toPoint(event.getEntity().getLocation()))) {
 				event.setCancelled(true);
 			}
 		}
@@ -429,14 +425,14 @@ public class ListenerSponge implements Listener {
 	@Subscribe
 	public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
 		
-		FPlayer player = Factoid.getServer().getPlayer(event.getEntity().getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
 			return;
 		}
 
-		if(playerListener.onPlayerItemConsume(player, toPoint(event.getEntity().getLocation()))) {
+		if(playerListener.onPlayerItemConsume(player, SpongeUtils.toPoint(event.getEntity().getLocation()))) {
 			event.setCancelled(true);
 		}
 		
@@ -450,10 +446,10 @@ public class ListenerSponge implements Listener {
 			return;
 		}
 		
-		FPlayer player = Factoid.getServer().getPlayer(((Player) event.getSource()).getUniqueId());
+		FPlayer player = Factoid.getServerCache().getPlayer(((Player) event.getSource()).getUniqueId());
 		String commandTyped = event.getCommand();
 
-		if(playerListener.onPlayerCommandPreprocess(player, toPoint(((Player) event.getSource()).getLocation()),
+		if(playerListener.onPlayerCommandPreprocess(player, SpongeUtils.toPoint(((Player) event.getSource()).getLocation()),
 				commandTyped)) {
 			event.setCancelled(true);
 		}
@@ -462,21 +458,6 @@ public class ListenerSponge implements Listener {
 	/**************************************************************************
 	 * Private methods
 	 *************************************************************************/
-	
-	private Point toPoint(Location loc) {
-		
-		return new Point(((World) loc.getExtent()).getName(), loc.getX(), loc.getY(), loc.getZ());
-	}
-	
-	private Location toLocation(Extent extent, Point loc) {
-		
-		return new Location(extent, loc.getX(), loc.getY(), loc.getZ());
-	}
-	
-	private Vector3d toRotation(Point loc) {
-		
-		return new Vector3d(loc.getYaw(), loc.getPitch(), 0);
-	}
 	
 	/**
 	 * Gets the source player from entity

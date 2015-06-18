@@ -18,17 +18,15 @@
 package me.tabinol.factoid.utilities;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Map;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.config.Config;
-
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 
 /**
@@ -44,19 +42,14 @@ public class Lang {
     
     /** The lang file. */
     private File langFile;
-    
-    /** The langconfig. */
-    private final FileConfiguration langconfig;
-    
-    /** The plugin. */
-    private final JavaPlugin plugin;
+
+    Properties properties;
 
     /**
      * Instantiates a new lang.
      */
     public Lang() {
-        this.langconfig = new YamlConfiguration();
-        this.plugin = Factoid.getThisPlugin();
+        this.properties = new Properties();
         reloadConfig();
         checkVersion();
     }
@@ -66,10 +59,10 @@ public class Lang {
      */
     public final void reloadConfig() {
         this.lang = Factoid.getConf().getLang();
-        this.langFile = new File(plugin.getDataFolder() + "/lang/", lang + ".yml");
+        this.langFile = new File(Factoid.getServer().getDataFolder() + "/lang/", lang + ".properties");
         if (Factoid.getConf().getLang() != null) {
             copyLang();
-            loadYamls();
+            loadProperties();
         }
     }
 
@@ -79,14 +72,14 @@ public class Lang {
      */
     public final void checkVersion() {
 
-        int fileVersion = langconfig.getInt("VERSION");
+        int fileVersion = Integer.parseInt(properties.getProperty("VERSION"));
 
         // We must rename the file and activate the new file
         if (ACTUAL_VERSION != fileVersion) {
-            langFile.renameTo(new File(plugin.getDataFolder() + "/lang/", lang + ".yml.v" + fileVersion));
+            langFile.renameTo(new File(Factoid.getServer().getDataFolder() + "/lang/", lang + ".properties.v" + fileVersion));
             reloadConfig();
-            plugin.getLogger().log(Level.INFO, "There is a new language file. Your old language file was renamed \""
-                    + lang + ".yml.v" + fileVersion + "\".");
+            Factoid.getServer().info("There is a new language file. Your old language file was renamed \""
+                    + lang + ".properties.v" + fileVersion + "\".");
         }
     }
 
@@ -99,7 +92,7 @@ public class Lang {
      */
     public String getMessage(String path, String... param) {
 
-        String message = langconfig.getString(path);
+        String message = properties.getProperty(path);
 
         if (message == null) {
             return "MESSAGE NOT FOUND FOR PATH: " + path;
@@ -127,7 +120,7 @@ public class Lang {
      */
     public boolean isMessageExist(String path) {
 
-        return langconfig.getString(path) != null;
+        return properties.containsKey(path);
     }
 
     /**
@@ -157,13 +150,17 @@ public class Lang {
     }
 
     /**
-     * Load yamls.
+     * Load properties.
      */
-    private void loadYamls() {
+    private void loadProperties() {
         try {
-            langconfig.load(langFile);
-        } catch (Exception e) {
-            e.printStackTrace();
+            
+            InputStream resource = new FileInputStream(langFile);
+            properties.load(resource);
+            resource.close();
+        
+        } catch (IOException ex) {
+            Logger.getLogger(MavenAppProperties.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -174,7 +171,7 @@ public class Lang {
         try {
             if (!langFile.exists()) {
                 langFile.getParentFile().mkdirs();
-                FileCopy.copyTextFromJav(plugin.getResource("lang/" + lang + ".yml"), langFile);
+                FileCopy.copyTextFromJav(Factoid.getServer().getResource("lang/" + lang + ".properties"), langFile);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -207,18 +204,18 @@ public class Lang {
      */
     public String getHelp(String mainCommand, String commandName) {
         
-        ConfigurationSection helpSec = langconfig.getConfigurationSection("HELP." + mainCommand + "." + commandName);
-        
         // No help for this command?
-        if(helpSec == null) {
+        if(!properties.containsKey("HELP." + mainCommand + "." + commandName + ".1")) {
             return null;
         }
         
-        Map<String, Object> valueList = helpSec.getValues(false);
         StringBuilder sb = new StringBuilder();
+        int t = 1;
+        String str;
         
-        for(int t = 1; t <= valueList.size(); t ++) {
-            sb.append((String) valueList.get(t + "")).append(Config.NEWLINE);
+        
+        while ((str = properties.getProperty("HELP." + mainCommand + "." + commandName + "." + t)) != null){
+            sb.append(str).append(Config.NEWLINE);
         }
         
         return sb.toString();

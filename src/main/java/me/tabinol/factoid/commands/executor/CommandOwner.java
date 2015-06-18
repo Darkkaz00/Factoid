@@ -23,10 +23,8 @@ import me.tabinol.factoid.commands.CommandThreadExec;
 import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.playerscache.PlayerCacheEntry;
-import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
-
-import org.bukkit.ChatStyle;
-
+import me.tabinol.factoid.playercontainer.PlayerContainerType;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 /**
  * The Class CommandOwner.
@@ -55,8 +53,8 @@ public class CommandOwner extends CommandThreadExec {
         checkPermission(true, true, null, null);
         
         pc = entity.argList.getPlayerContainerFromArg(land,
-                new EPlayerContainerType[]{EPlayerContainerType.EVERYBODY,
-                    EPlayerContainerType.OWNER, EPlayerContainerType.VISITOR});
+                new PlayerContainerType[]{PlayerContainerType.EVERYBODY,
+                    PlayerContainerType.OWNER, PlayerContainerType.VISITOR});
         Factoid.getPlayersCache().getUUIDWithNames(this, pc);
     }
 
@@ -71,10 +69,10 @@ public class CommandOwner extends CommandThreadExec {
 
         land.setOwner(pc);
         entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.OWNER.ISDONE", pc.getPrint(), land.getName()));
-        Factoid.getLog().write("The land " + land.getName() + "is set to owner: " + pc.getPrint());
+        Factoid.getFactoidLog().write("The land " + land.getName() + "is set to owner: " + pc.getPrint());
 
         // Cancel the selection
-        new CommandCancel(entity.playerConf, true).commandExecute();
+        new CommandCancel(entity.player, true).commandExecute();
 
     }
 }

@@ -20,13 +20,12 @@ package me.tabinol.factoid.exceptions;
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.lands.collisions.Collisions;
-import me.tabinol.factoidapi.exceptions.AFactoidLandException;
 
 
 /**
  * The Class FactoidLandException.
  */
-public class FactoidLandException extends AFactoidLandException {
+public class FactoidLandException extends Exception {
     
 	/**
 	 * 
@@ -34,7 +33,7 @@ public class FactoidLandException extends AFactoidLandException {
 	private static final long serialVersionUID = -4561559858019587492L;
 
 	/**
-     * Instantiates a new factoid land exception.
+     * Instantiates a new Factoid land exception.
      *
      * @param landName the land name
      * @param area the area
@@ -42,8 +41,6 @@ public class FactoidLandException extends AFactoidLandException {
      * @param error the error
      */
     public FactoidLandException(String landName, CuboidArea area, Collisions.LandAction action, Collisions.LandError error) {
-        
-        super("Factoid Land Exception");
         
         StringBuilder bf = new StringBuilder();
         

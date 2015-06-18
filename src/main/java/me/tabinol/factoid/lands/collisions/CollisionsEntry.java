@@ -18,7 +18,7 @@
 package me.tabinol.factoid.lands.collisions;
 
 import me.tabinol.factoid.Factoid;
-import me.tabinol.factoidapi.lands.ILand;
+import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.lands.collisions.Collisions.LandError;
 
 
@@ -31,7 +31,7 @@ public class CollisionsEntry {
     private final LandError error;
     
     /** The land. */
-    private final ILand land;
+    private final Land land;
     
     /** The area id. */
     private final int areaId;
@@ -43,7 +43,7 @@ public class CollisionsEntry {
      * @param land the land
      * @param areaId the area id
      */
-    public CollisionsEntry(LandError error, ILand land, int areaId) {
+    public CollisionsEntry(LandError error, Land land, int areaId) {
 
         this.error = error;
         this.land = land;
@@ -65,7 +65,7 @@ public class CollisionsEntry {
      *
      * @return the land
      */
-    public ILand getLand() {
+    public Land getLand() {
 
         return land;
     }

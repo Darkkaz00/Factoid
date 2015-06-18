@@ -23,17 +23,16 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.event.LandModifyReason;
+import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.minecraft.FWorld;
 import me.tabinol.factoid.parameters.FlagType;
+import me.tabinol.factoid.parameters.FlagValue;
 import me.tabinol.factoid.parameters.LandFlag;
 import me.tabinol.factoid.parameters.Permission;
 import me.tabinol.factoid.parameters.PermissionList;
 import me.tabinol.factoid.parameters.PermissionType;
 import me.tabinol.factoid.playercontainer.PlayerContainer;
-
-import org.bukkit.World;
-import org.bukkit.entity.Player;
-
 
 /**
  * The Class DummyLand.
@@ -78,7 +77,7 @@ public class DummyLand {
      */
     public FWorld getWorld() {
 
-        return Factoid.getServer().getWorld(worldName);
+        return Factoid.getServerCache().getWorld(worldName);
     }
 
     public void copyPermsFlagsTo(DummyLand desLand) {
@@ -128,18 +127,11 @@ public class DummyLand {
         			&& perm.getValue() != perm.getPermType().getDefaultValue()) {
                 
         		// Start Event for kick
-        		Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
-        				new PlayerContainerAddNoEnterEvent((Land) this, pc));
-            
-        		// Deprecated to remove
-        		Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
-        				new me.tabinol.factoid.event.PlayerContainerAddNoEnterEvent((Land) this, 
-        						(PlayerContainer) pc));
+        		Factoid.getServer().CallEvents().callPlayerContainerAddNoEnterEvent((Land) this, pc));
         	}
 
         	// Start Event
-        	Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
-        			new LandModifyEvent((Land) this, LandModifyReason.PERMISSION_SET, perm));
+        	Factoid.getServer().CallEvents().callLandModifyEvent((Land) this, LandModifyReason.PERMISSION_SET, perm);
         }
     }
 
@@ -174,8 +166,7 @@ public class DummyLand {
 
     	if(this instanceof Land) {
     		// Start Event
-    		Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
-    				new LandModifyEvent((Land) this, LandModifyReason.PERMISSION_UNSET, perm));
+    		Factoid.getServer().CallEvents().callLandModifyEvent((Land) this, LandModifyReason.PERMISSION_UNSET, perm);
     	}
 
     	return true;
@@ -209,7 +200,7 @@ public class DummyLand {
      * @param pt the pt
      * @return the boolean
      */
-    public boolean checkPermissionAndInherit(Player player, PermissionType pt) {
+    public boolean checkPermissionAndInherit(FPlayer player, PermissionType pt) {
 
         return checkPermissionAndInherit(player, pt, false);
     }
@@ -221,7 +212,7 @@ public class DummyLand {
      * @param pt the pt
      * @return the boolean
      */
-    public boolean checkPermissionNoInherit(Player player, PermissionType pt) {
+    public boolean checkPermissionNoInherit(FPlayer player, PermissionType pt) {
 
         Boolean value = getPermission(player, pt, false);
         
@@ -240,7 +231,7 @@ public class DummyLand {
      * @param onlyInherit the only inherit
      * @return the boolean
      */
-    protected Boolean checkPermissionAndInherit(Player player, PermissionType pt, boolean onlyInherit) {
+    protected Boolean checkPermissionAndInherit(FPlayer player, PermissionType pt, boolean onlyInherit) {
 
         if (this instanceof Land) {
             return ((Land) this).checkLandPermissionAndInherit(player, pt, onlyInherit);
@@ -256,14 +247,14 @@ public class DummyLand {
      * @param onlyInherit the only inherit
      * @return the permission
      */
-    protected Boolean getPermission(Player player, PermissionType pt, boolean onlyInherit) {
+    protected Boolean getPermission(FPlayer player, PermissionType pt, boolean onlyInherit) {
     	
     	return getPermission(player, pt, onlyInherit, null);
     }
     
     // Land parameter is only to paste to default parameters for a land
-    private Boolean getPermission(Player player, 
-    		me.tabinol.factoidapi.parameters.IPermissionType pt, boolean onlyInherit, Land land) {
+    private Boolean getPermission(FPlayer player, 
+    		PermissionType pt, boolean onlyInherit, Land land) {
 
         for (Map.Entry<PlayerContainer, TreeMap<PermissionType, Permission>> permissionEntry : permissions.entrySet()) {
             boolean value;
@@ -305,8 +296,8 @@ public class DummyLand {
 
     	if(this instanceof Land) {
     		// Start Event
-    		Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
-    				new LandModifyEvent((Land) this, LandModifyReason.FLAG_SET, flag));
+    		Factoid.getServer().CallEvents().callLandModifyEvent((Land) this, 
+    				LandModifyReason.FLAG_SET, flag);
     	}
     }
 
@@ -327,8 +318,8 @@ public class DummyLand {
     	
         if(this instanceof Land) {
     		// Start Event
-    		Factoid.getThisPlugin().getServer().getPluginManager().callEvent(
-    				new LandModifyEvent((Land) this, LandModifyReason.FLAG_UNSET, flag));
+        	Factoid.getServer().CallEvents().callLandModifyEvent((Land) this, 
+        			LandModifyReason.FLAG_UNSET, flag);
     	}
 
     	return true;

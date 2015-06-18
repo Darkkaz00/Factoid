@@ -28,18 +28,14 @@ import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.config.BannedWords;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.exceptions.FactoidLandException;
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.lands.areas.ICuboidArea;
-import me.tabinol.factoidapi.lands.types.IType;
+import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.lands.collisions.Collisions.LandAction;
+import me.tabinol.factoid.lands.types.Type;
 import me.tabinol.factoid.parameters.PermissionList;
+import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoid.playercontainer.PlayerContainerNobody;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
 import me.tabinol.factoid.selection.PlayerSelection.SelectionType;
 import me.tabinol.factoid.selection.region.AreaSelection;
-
-import org.bukkit.ChatStyle;
-
 
 /**
  * The Class CommandCreate.
@@ -67,15 +63,15 @@ public class CommandCreate extends CommandExec {
         checkSelections(null, true);
         // checkPermission(false, false, null, null);
 
-        AreaSelection select = (AreaSelection) entity.playerConf.getSelection().getSelection(SelectionType.AREA);
+        AreaSelection select = (AreaSelection) entity.player.getSelection().getSelection(SelectionType.AREA);
 
-        ICuboidArea area = select.getCuboidArea();
-        Double price = entity.playerConf.getSelection().getLandCreatePrice();
-        ILand parent;
+        CuboidArea area = select.getCuboidArea();
+        Double price = entity.player.getSelection().getLandCreatePrice();
+        Land parent;
 
         // Quit select mod
-        // entity.playerConf.setAreaSelection(null);
-        // entity.playerConf.setLandSelected(null);
+        // entity.player.setAreaSelection(null);
+        // entity.player.setLandSelected(null);
         // select.resetSelection();
 
         String curArg = entity.argList.getNext();
@@ -111,31 +107,31 @@ public class CommandCreate extends CommandExec {
 
         // Not complicated! The player must be AdminMod, or access to create (in world) 
         // or access to create in parent if it is a subland.
-        if (!entity.playerConf.isAdminMod()
+        if (!entity.player.isAdminMod()
                 && ((parent == null && !Factoid.getLands().getOutsideArea(area.getWorldName()).checkPermissionAndInherit(entity.player, PermissionList.LAND_CREATE.getPermissionType()))
                 || (parent != null && !parent.checkPermissionAndInherit(entity.player, PermissionList.LAND_CREATE.getPermissionType())))) {
             throw new FactoidCommandException("CommandCreate", entity.player, "GENERAL.MISSINGPERMISSION");
         }
 
         // If the player is adminmod, the owner is nobody, and set type
-        IPlayerContainer owner;
-        IType type;
-        if(entity.playerConf.isAdminMod()) {
+        PlayerContainer owner;
+        Type type;
+        if(entity.player.isAdminMod()) {
             owner = new PlayerContainerNobody();
             type = Factoid.getConf().getTypeAdminMod();
         } else {
-            owner = entity.playerConf.getPlayerContainer();
+            owner = entity.player.getPlayerContainer();
             type = Factoid.getConf().getTypeNoneAdminMod();
         }
 
         // Check for collision
         if (checkCollision(curArg, null, type, LandAction.LAND_ADD, 0, area, parent, owner, price, true)) {
-            new CommandCancel(entity.playerConf, true).commandExecute();
+            new CommandCancel(entity.player, true).commandExecute();
             return;
         }
 
         // Create Land
-        ILand land = null;
+        Land land = null;
         
         try {
             land = Factoid.getLands().createLand(curArg, owner, area, parent, price, type);
@@ -144,10 +140,10 @@ public class CommandCreate extends CommandExec {
         }
 
         entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CREATE.DONE"));
-        Factoid.getLog().write(entity.playerName + " have create a land named " + land.getName() + " at position " + land.getAreas().toString());
+        Factoid.getFactoidLog().write(entity.playerName + " have create a land named " + land.getName() + " at position " + land.getAreas().toString());
         
         // Cancel and select the land
-        new CommandCancel(entity.playerConf, true).commandExecute();
+        new CommandCancel(entity.player, true).commandExecute();
         new CommandSelect(entity.player, new ArgList(new String[] {land.getName()}, 
                 entity.player), null).commandExecute();
     }

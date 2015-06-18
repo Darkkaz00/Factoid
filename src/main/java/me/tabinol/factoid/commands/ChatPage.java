@@ -17,27 +17,18 @@
  */
 package me.tabinol.factoid.commands;
 
-import me.tabinol.factoid.config.players.PlayerConfEntry;
-import me.tabinol.factoid.exceptions.FactoidCommandException;
-import me.tabinol.factoid.utilities.ChatStyle;
-import me.tabinol.factoidapi.FactoidAPI;
 import me.tabinol.factoid.Factoid;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.util.ChatPaginator;
-
+import me.tabinol.factoid.Factoid.ServerType;
+import me.tabinol.factoid.exceptions.FactoidCommandException;
+import me.tabinol.factoid.minecraft.ChatPaginator;
+import me.tabinol.factoid.minecraft.FSenderInterface;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 /**
  * The Class ChatPage.
  */
 public class ChatPage {
 
-    /** The page height. */
-    private final int pageHeight;
-    
-    /** The page width. */
-    private final int pageWidth;
-    
     /** The header. */
     private final String header;
     
@@ -45,7 +36,7 @@ public class ChatPage {
     private final String text;
     
     /** The sender. */
-    private final CommandSender sender;
+    private final FSenderInterface sender;
     
     /** The param. */
     private final String param;
@@ -62,16 +53,27 @@ public class ChatPage {
      * @param param the param
      * @throws FactoidCommandException the factoid command exception
      */
-    public ChatPage(String header, String text, CommandSender sender, String param) throws FactoidCommandException {
+    public ChatPage(String header, String text, FSenderInterface sender, String param) throws FactoidCommandException {
 
-        pageHeight = ChatPaginator.CLOSED_CHAT_PAGE_HEIGHT - 2;
-        pageWidth = ChatPaginator.AVERAGE_CHAT_PAGE_WIDTH;
         this.header = header;
         this.text = text;
         this.sender = sender;
         this.param = param;
     }
 
+    /**
+     * Get the page
+     */
+    public void getPage() throws FactoidCommandException {
+    	
+    	if(Factoid.getServerType() == ServerType.BUKKIT) {
+    		getPage(1);
+    	} else {
+    		// Using Sponge Internal System
+    		Factoid.getServer().getChatPaginator(text, 1).send(sender, header);
+    	}
+    }
+    
     /**
      * Gets the page.
      *
@@ -81,7 +83,7 @@ public class ChatPage {
     public void getPage(int pageNumber) throws FactoidCommandException {
 
         // Create page with Bukkit paginator
-        ChatPaginator.ChatPage page = ChatPaginator.paginate(text, pageNumber, pageWidth, pageHeight);
+        ChatPaginator page = Factoid.getServer().getChatPaginator(text, pageNumber);
         totalPages = page.getTotalPages();
 
         // If the requested page is more than the last age
@@ -104,10 +106,10 @@ public class ChatPage {
         if (totalPages > 1) {
             sender.sendMessage(ChatStyle.GRAY + Factoid.getLanguage().getMessage("COMMAND.PAGE.MULTIPAGE",
                     "" + pageNumber, "" + totalPages));
-            ((PlayerConfEntry)FactoidAPI.iPlayerConf().get(sender)).setChatPage(this);
+            sender.setChatPage(this);
         } else {
             sender.sendMessage(ChatStyle.GRAY + Factoid.getLanguage().getMessage("COMMAND.PAGE.ONEPAGE"));
-            ((PlayerConfEntry)FactoidAPI.iPlayerConf().get(sender)).setChatPage(null);
+            sender.setChatPage(null);
         }
 
     }

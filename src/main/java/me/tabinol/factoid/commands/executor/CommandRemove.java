@@ -24,8 +24,7 @@ import me.tabinol.factoid.commands.ConfirmEntry;
 import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.lands.collisions.Collisions;
-
-import org.bukkit.ChatStyle;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 
 /**
@@ -60,8 +59,8 @@ public class CommandRemove extends CommandExec {
             return;
         }
 
-        new CommandCancel(entity.playerConf, true).commandExecute();
-        entity.playerConf.setConfirm(new ConfirmEntry(ConfirmEntry.ConfirmType.REMOVE_LAND, land, 0));
+        new CommandCancel(entity.player, true).commandExecute();
+        entity.player.setConfirm(new ConfirmEntry(ConfirmEntry.ConfirmType.REMOVE_LAND, land, 0));
         entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CONFIRM"));
     }
 }

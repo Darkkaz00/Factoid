@@ -1,12 +1,9 @@
 package me.tabinol.factoid.playercontainer;
 
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
-
-import org.bukkit.ChatStyle;
-import org.bukkit.entity.Player;
-
+import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.playercontainer.PlayerContainerType;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 /**
  * The Class PlayerContainerPlayerName.
@@ -20,14 +17,14 @@ public class PlayerContainerPlayerName extends PlayerContainer {
      */
     public PlayerContainerPlayerName(String name) {
 
-        super(name, EPlayerContainerType.PLAYERNAME, false);
+        super(name, PlayerContainerType.PLAYERNAME, false);
     }
 
     /* (non-Javadoc)
      * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#equals(me.tabinol.factoid.playercontainer.PlayerContainer)
      */
     @Override
-    public boolean equals(IPlayerContainer container2) {
+    public boolean equals(PlayerContainer container2) {
         
         return container2 instanceof PlayerContainerPlayerName &&
                 name.equals(((PlayerContainerPlayer) container2).name);
@@ -46,13 +43,13 @@ public class PlayerContainerPlayerName extends PlayerContainer {
      * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#hasAccess(org.bukkit.entity.Player)
      */
     @Override
-    public boolean hasAccess(Player player) {
+    public boolean hasAccess(FPlayer player) {
         
          return false;
     }
 
     @Override
-    public boolean hasAccess(Player player, ILand land) {
+    public boolean hasAccess(FPlayer player, Land land) {
         
         return hasAccess(player);
     }
@@ -75,7 +72,7 @@ public class PlayerContainerPlayerName extends PlayerContainer {
      * @see me.tabinol.factoid.playercontainer.PlayerContainerInterface#setLand(me.tabinol.factoid.lands.Land)
      */
     @Override
-    public void setLand(ILand land) {
+    public void setLand(Land land) {
 
     }
 }

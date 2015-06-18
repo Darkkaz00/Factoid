@@ -17,8 +17,6 @@
  */
 package me.tabinol.factoid.parameters;
 
-import me.tabinol.factoidapi.parameters.IFlagType;
-
 
 
 /**

@@ -22,20 +22,17 @@ import me.tabinol.factoid.commands.ArgList;
 import me.tabinol.factoid.commands.CommandEntities;
 import me.tabinol.factoid.commands.CommandExec;
 import me.tabinol.factoid.commands.InfoCommand;
-import me.tabinol.factoid.config.players.PlayerConfEntry;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.lands.areas.ICuboidArea;
+import me.tabinol.factoid.lands.areas.CuboidArea;
+import me.tabinol.factoid.lands.areas.Point;
+import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.parameters.PermissionList;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
+import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoid.selection.PlayerSelection.SelectionType;
 import me.tabinol.factoid.selection.region.ActiveAreaSelection;
 import me.tabinol.factoid.selection.region.AreaSelection;
 import me.tabinol.factoid.selection.region.LandSelection;
-
-import org.bukkit.ChatStyle;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 
 /**
@@ -45,13 +42,10 @@ import org.bukkit.entity.Player;
 public class CommandSelect extends CommandExec {
 
     /** The player. */
-    private final Player player;
+    private final FPlayer player;
     
     /** The location. */
-    private final Location location;
-    
-    /** The player conf. */
-    private final PlayerConfEntry playerConf;
+    private final Point location;
     
     /** The arg list. */
     private final ArgList argList;
@@ -67,7 +61,6 @@ public class CommandSelect extends CommandExec {
         super(entity);
         player = entity.player;
         location = null;
-        playerConf = entity.playerConf;
         argList = entity.argList;
     }
 
@@ -80,12 +73,11 @@ public class CommandSelect extends CommandExec {
      * @param location the location
      * @throws FactoidCommandException the factoid command exception
      */
-    public CommandSelect(Player player, ArgList argList, Location location) throws FactoidCommandException {
+    public CommandSelect(Player player, ArgList argList, Point location) throws FactoidCommandException {
 
         super(null);
         this.player = player;
         this.location = location;
-        playerConf = Factoid.getPlayerConf().get(player);
         this.argList = argList;
     }
 
@@ -100,8 +92,8 @@ public class CommandSelect extends CommandExec {
 
         String curArg;
 
-        if (playerConf.getSelection().getCuboidArea() == null) {
-            Factoid.getLog().write(player.getName() + " join select mode");
+        if (player.getSelection().getCuboidArea() == null) {
+            Factoid.getFactoidLog().write(player.getName() + " join select mode");
 
             if (!argList.isLast()) {
 
@@ -110,7 +102,7 @@ public class CommandSelect extends CommandExec {
                     if (Factoid.getDependPlugin().getWorldEdit() == null) {
                         throw new FactoidCommandException("CommandSelect", player, "COMMAND.SELECT.WORLDEDIT.NOTLOAD");
                     }
-                    new CommandSelectWorldedit(player, playerConf).MakeSelect();
+                    new CommandSelectWorldedit(player).MakeSelect();
 
                 } else {
 
@@ -137,19 +129,19 @@ public class CommandSelect extends CommandExec {
                         throw new FactoidCommandException("CommandSelect", player, "COMMAND.SELECT.NOLAND");
 
                     }
-                    IPlayerContainer owner = landtest.getOwner();
+                    PlayerContainer owner = landtest.getOwner();
 
-                    if (!owner.hasAccess(player) && !playerConf.isAdminMod()
+                    if (!owner.hasAccess(player) && !player.isAdminMod()
                             && !(landtest.checkPermissionAndInherit(player, PermissionList.RESIDENT_MANAGER.getPermissionType())
                             		&& (landtest.isResident(player) || landtest.isOwner(player)))) {
                         throw new FactoidCommandException("CommandSelect", player, "GENERAL.MISSINGPERMISSION");
                     }
-                    if (playerConf.getSelection().getLand() == null) {
+                    if (player.getSelection().getLand() == null) {
 
-                        playerConf.getSelection().addSelection(new LandSelection(player, landtest));
+                        player.getSelection().addSelection(new LandSelection(player, landtest));
 
                         player.sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.DARK_GRAY + Factoid.getLanguage().getMessage("COMMAND.SELECT.SELECTEDLAND", landtest.getName()));
-                        playerConf.setAutoCancelSelect(true);
+                        player.setAutoCancelSelect(true);
                     } else {
 
                         player.sendMessage(ChatStyle.RED + "[Factoid] " + ChatStyle.DARK_GRAY + Factoid.getLanguage().getMessage("COMMAND.SELECT.ALREADY"));
@@ -160,8 +152,8 @@ public class CommandSelect extends CommandExec {
                 player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.JOINMODE"));
                 player.sendMessage(ChatStyle.DARK_GRAY + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.HINT", ChatStyle.ITALIC.toString(), ChatStyle.RESET.toString(), ChatStyle.DARK_GRAY.toString()));
                 ActiveAreaSelection select = new ActiveAreaSelection(player);
-                playerConf.getSelection().addSelection(select);
-                playerConf.setAutoCancelSelect(true);
+                player.getSelection().addSelection(select);
+                player.setAutoCancelSelect(true);
             }
         } else if ((curArg = argList.getNext()) != null && curArg.equalsIgnoreCase("done")) {
 
@@ -191,9 +183,9 @@ public class CommandSelect extends CommandExec {
 
         checkSelections(null, true);
 
-        AreaSelection select = (AreaSelection) playerConf.getSelection().getSelection(SelectionType.AREA);
-        playerConf.getSelection().addSelection(new AreaSelection(player, select.getCuboidArea()));
-        playerConf.setAutoCancelSelect(true);
+        AreaSelection select = (AreaSelection) player.getSelection().getSelection(SelectionType.AREA);
+        player.getSelection().addSelection(new AreaSelection(player, select.getCuboidArea()));
+        player.setAutoCancelSelect(true);
 
         if (!select.getCollision()) {
 
@@ -216,8 +208,8 @@ public class CommandSelect extends CommandExec {
 
         double price;
 
-        AreaSelection select = (AreaSelection) playerConf.getSelection().getSelection(SelectionType.AREA);
-        ICuboidArea area = select.getCuboidArea();
+        AreaSelection select = (AreaSelection) player.getSelection().getSelection(SelectionType.AREA);
+        CuboidArea area = select.getCuboidArea();
 
         player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.INFO.INFO1",
                 area.getPrint()));
@@ -225,12 +217,12 @@ public class CommandSelect extends CommandExec {
                 area.getTotalBlock() + ""));
 
         // Price (economy)
-        price = playerConf.getSelection().getLandCreatePrice();
+        price = player.getSelection().getLandCreatePrice();
         if (price != 0L) {
             player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.INFO.INFO3",
                     Factoid.getPlayerMoney().toFormat(price)));
         }
-        price = playerConf.getSelection().getAreaAddPrice();
+        price = player.getSelection().getAreaAddPrice();
         if (price != 0L) {
             player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.INFO.INFO4",
                     Factoid.getPlayerMoney().toFormat(price)));

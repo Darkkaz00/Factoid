@@ -102,7 +102,7 @@ public class Point implements Comparable<Point> {
 	
 	public FWorld getWorld() {
 		
-		return Factoid.getServer().getWorld(worldName);
+		return Factoid.getServerCache().getWorld(worldName);
 	}
 	
 	public double getX() {
@@ -167,7 +167,7 @@ public class Point implements Comparable<Point> {
     		return null;
     	}
     	
-    	FWorld world = Factoid.getServer().getWorld(strs[0]);
+    	FWorld world = Factoid.getServerCache().getWorld(strs[0]);
     	
     	if(world == null) {
     		return null;

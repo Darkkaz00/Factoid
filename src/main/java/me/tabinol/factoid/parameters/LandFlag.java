@@ -19,7 +19,6 @@ package me.tabinol.factoid.parameters;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.utilities.StringChanges;
-import me.tabinol.factoidapi.parameters.ILandFlag;
 
 
 /**
@@ -69,7 +68,7 @@ public class LandFlag {
      * @param lf2 the lf2
      * @return true, if successful
      */
-    public boolean equals(ILandFlag lf2) {
+    public boolean equals(LandFlag lf2) {
         
         return flagType == lf2.getFlagType();
     }

@@ -18,7 +18,14 @@
 package me.tabinol.factoid.minecraft.sponge;
 
 import java.io.File;
-
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.util.UUID;
+import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.Factoid.ServerType;
+import me.tabinol.factoid.minecraft.CallEvents;
+import me.tabinol.factoid.minecraft.ChatPaginator;
+import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.minecraft.Server;
 import me.tabinol.factoid.minecraft.Task;
 import me.tabinol.factoid.utilities.FactoidRunnable;
@@ -26,13 +33,26 @@ import me.tabinol.factoid.utilities.FactoidRunnable;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.event.Subscribe;
+import org.spongepowered.api.event.state.ServerStartedEvent;
+import org.spongepowered.api.event.state.ServerStoppingEvent;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.config.ConfigDir;
 import org.spongepowered.api.world.World;
 
+import com.google.common.base.Optional;
 import com.google.inject.Inject;
 
-public class ServerSponge extends Server {
+/**
+ * Main class for Sponge
+ * CAUTION : You must edit ServerSponge.java.template. ServerSponge.java is overwrite at compile time!
+ * @author Tabinol
+ *
+ */
+@Plugin(id = "Factoid", name = "Factoid", version = "1.2.1-SNAPSHOT")
+public class ServerSponge implements Server {
 	
 	@Inject
 	private Logger logger;
@@ -41,26 +61,51 @@ public class ServerSponge extends Server {
 	private Game game;
 	
 	@Inject
-	PluginContainer plugin;
+	private PluginContainer plugin;
 	
 	@Inject 
 	@ConfigDir(sharedRoot = false)
-	File configDir;
+	private File configDir;
 
-	public ServerSponge() {
+	private Factoid factoid;
+
+	private CallEvents callEvents;
+
+    @Subscribe
+    public void onServerStart(ServerStartedEvent event) {
+    	
+    	factoid = new Factoid(ServerType.SPONGE);
+
+        // Start Listener
+        new ListenerSponge();
+    }
+    
+    public void initServer() {
 		
-		super();
+		callEvents = new CallEventsSponge(game);
 
         // Add loaded worlds
         for(World world : game.getServer().getWorlds()) {
-        	addWorld(new FWorldSponge(world));
+        	Factoid.getServerCache().addWorld(new FWorldSponge(world));
         }
 
         // Add players (in case of reload)
         for(Player player : game.getServer().getOnlinePlayers()) {
-        	addPlayer(new FPlayerSponge(player));
+        	Factoid.getServerCache().addPlayer(new FPlayerSponge(player));
         }
 	}
+
+    @Subscribe
+    public void onServerStop(ServerStoppingEvent event) {
+    	
+    	factoid.serverStop();
+    }
+
+	@Override
+    public Factoid getFactoid() {
+    	
+    	return factoid;
+    }
 
 	@Override
     public void info(String msg) {
@@ -99,14 +144,74 @@ public class ServerSponge extends Server {
     }
 
 	@Override
+	public void callTaskNow(Runnable runnable) {
+		
+		game.getSyncScheduler().runTask(plugin, runnable);
+	}
+
+	@Override
     public File getDataFolder() {
 
 		return configDir;
     }
+	
+	@Override
+	public InputStream getResource(String path) {
+		
+		return this.getClass().getResourceAsStream(path);
+	}
 
 	@Override
     public String getVersion() {
 	    
 		return plugin.getVersion();
     }
+
+	@Override
+    public CallEvents CallEvents() {
+
+		return callEvents;
+    }
+
+	@Override
+    public String getOfflinePlayerName(UUID uuid) {
+	    
+		Optional<Player> playerOp = game.getServer().getPlayer(uuid);
+		
+		if(playerOp.isPresent()) {
+			return playerOp.get().getName();
+		} else {
+			return null;
+		}
+    }
+
+	@Override
+    public FPlayer getOfflinePlayer(UUID uuid) {
+
+		Optional<Player> playerOp = game.getServer().getPlayer(uuid);
+		
+		if(playerOp.isPresent()) {
+			return new FPlayerSponge(playerOp.get());
+		} else {
+			return null;
+		}
+    }
+
+	@Override
+    public ChatPaginator getChatPaginator(String text, int pageNumber) {
+	    
+		return new ChatPaginatorSponge(text, pageNumber, game);
+    }
+
+	@Override
+    public String[] getMaterials() {
+	    
+		Field[] materials = ItemTypes.class.getDeclaredFields();
+	    String[] names = new String[materials.length];
+	    
+	    for (int i = 0; i < materials.length; i++) {
+	    	names[i] = materials[i].getName();
+		}
+	    return names;
+	}
 }

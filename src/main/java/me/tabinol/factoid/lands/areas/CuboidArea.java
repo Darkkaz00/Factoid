@@ -500,7 +500,7 @@ public class CuboidArea implements Comparable<CuboidArea> {
      */
     public FWorld getWord() {
 
-        return Factoid.getServer().getWorld(worldName);
+        return Factoid.getServerCache().getWorld(worldName);
     }
 
     /**

@@ -24,10 +24,8 @@ import me.tabinol.factoid.commands.CommandExec;
 import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
-import me.tabinol.factoidapi.FactoidAPI;
-import me.tabinol.factoidapi.lands.types.IType;
-
-import org.bukkit.ChatStyle;
+import me.tabinol.factoid.lands.types.Type;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 @InfoCommand(name="type", forceParameter=true)
 public class CommandType extends CommandExec {
@@ -48,7 +46,7 @@ public class CommandType extends CommandExec {
         if (curArg.equalsIgnoreCase("list")) {
             
             StringBuilder stList = new StringBuilder();
-            for (IType type : FactoidAPI.iTypes().getTypes()) {
+            for (Type type : Factoid.getTypes().getTypes()) {
             	if (stList.length() != 0) {
             		stList.append(" ");
                 }
@@ -61,11 +59,11 @@ public class CommandType extends CommandExec {
         	
         	land.setType(null);
             entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.TYPES.REMOVEISDONE", land.getName()));
-            Factoid.getLog().write("Land type removed: " + land.getName());
+            Factoid.getFactoidLog().write("Land type removed: " + land.getName());
         
         } else { // Type change 
         	
-        	IType type = FactoidAPI.iTypes().getType(curArg);
+        	Type type = Factoid.getTypes().getType(curArg);
         	
         	if(type == null) {
         		throw new FactoidCommandException("Land Types", entity.player, "COMMAND.TYPES.INVALID");
@@ -73,7 +71,7 @@ public class CommandType extends CommandExec {
         	
         	land.setType(type);
             entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.TYPES.ISDONE", type.getName(), land.getName()));
-            Factoid.getLog().write("Land type: " + type.getName() + " for land: " + land.getName());
+            Factoid.getFactoidLog().write("Land type: " + type.getName() + " for land: " + land.getName());
         }
     }
 }

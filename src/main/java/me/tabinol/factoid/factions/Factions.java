@@ -22,10 +22,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import me.tabinol.factoid.Factoid;
-import me.tabinol.factoidapi.factions.IFaction;
-import me.tabinol.factoidapi.factions.IFactions;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainerPlayer;
-
+import me.tabinol.factoid.playercontainer.PlayerContainerPlayer;
 
 /**
  * The Class Factions.
@@ -33,18 +30,18 @@ import me.tabinol.factoidapi.playercontainer.IPlayerContainerPlayer;
 public class Factions {
 
     /** The faction list. */
-    private final TreeMap<String, IFaction> factionList;
+    private final TreeMap<String, Faction> factionList;
     
     /** The faction uuid list. */
-    private final TreeMap<UUID, IFaction> factionUUIDList;
+    private final TreeMap<UUID, Faction> factionUUIDList;
 
     /**
      * Instantiates a new factions.
      */
     public Factions() {
 
-        factionList = new TreeMap<String, IFaction>();
-        factionUUIDList = new TreeMap<UUID, IFaction>();
+        factionList = new TreeMap<String, Faction>();
+        factionUUIDList = new TreeMap<UUID, Faction>();
     }
 
     /**
@@ -93,7 +90,7 @@ public class Factions {
      * @param faction the faction
      * @return true, if successful
      */
-    public boolean removeFaction(IFaction faction) {
+    public boolean removeFaction(Faction faction) {
 
         if (!factionList.containsKey(faction.getName())) {
             return false;
@@ -137,9 +134,9 @@ public class Factions {
      * @param player the player
      * @return the player faction
      */
-    public Faction getPlayerFaction(IPlayerContainerPlayer player) {
+    public Faction getPlayerFaction(PlayerContainerPlayer player) {
 
-        for (IFaction faction : factionList.values()) {
+        for (Faction faction : factionList.values()) {
             if (faction.isPlayerInList(player)) {
                 return (Faction) faction;
             }
@@ -153,7 +150,7 @@ public class Factions {
      *
      * @return the factions
      */
-    public Collection<IFaction> getFactions() {
+    public Collection<Faction> getFactions() {
 
         return factionList.values();
     }

@@ -31,8 +31,6 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.bukkit.Location;
-
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.exceptions.FactoidLandException;
 import me.tabinol.factoid.exceptions.FileLoadException;
@@ -45,12 +43,6 @@ import me.tabinol.factoid.parameters.Permission;
 import me.tabinol.factoid.parameters.PermissionType;
 import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoid.playercontainer.PlayerContainerPlayer;
-import me.tabinol.factoid.utilities.StringChanges;
-import me.tabinol.factoidapi.FactoidAPI;
-import me.tabinol.factoidapi.parameters.ILandFlag;
-import me.tabinol.factoidapi.parameters.IPermission;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainerPlayer;
 
 
 /**
@@ -146,7 +138,7 @@ public class StorageFlat extends Storage implements StorageInt {
         int loadedfactions = 0;
 
         if (files.length == 0) {
-            Factoid.getLog().write(loadedfactions + " faction(s) loaded.");
+            Factoid.getFactoidLog().write(loadedfactions + " faction(s) loaded.");
             return;
         }
 
@@ -420,7 +412,7 @@ public class StorageFlat extends Storage implements StorageInt {
 
                     try {
                         land = Factoid.getLands().createLand(landName, owner, entry.getValue(), parent,
-                                entry.getKey(), uuid, FactoidAPI.iTypes().addOrGetType(type));
+                                entry.getKey(), uuid, Factoid.getTypes().addOrGetType(type));
                     } catch (FactoidLandException ex) {
                         Logger.getLogger(StorageFlat.class.getName()).log(Level.SEVERE, "Error on loading land: " + landName, ex);
                         return;
@@ -428,7 +420,7 @@ public class StorageFlat extends Storage implements StorageInt {
                 } else {
                     try {
                         land = Factoid.getLands().createLand(landName, owner, entry.getValue(), 
-                        		null, entry.getKey(), uuid, FactoidAPI.iTypes().addOrGetType(type));
+                        		null, entry.getKey(), uuid, Factoid.getTypes().addOrGetType(type));
                     } catch (FactoidLandException ex) {
                         Logger.getLogger(StorageFlat.class.getName()).log(Level.SEVERE, "Error on loading land: " + landName, ex);
                         return;
@@ -519,22 +511,22 @@ public class StorageFlat extends Storage implements StorageInt {
 
             //Residents
             strs = new ArrayList<String>();
-            for (IPlayerContainer pc : land.getResidents()) {
+            for (PlayerContainer pc : land.getResidents()) {
                 strs.add(pc.toString());
             }
             cb.writeParam("Residents", strs.toArray(new String[0]));
 
             //Banneds
             strs = new ArrayList<String>();
-            for (IPlayerContainer pc : land.getBanneds()) {
+            for (PlayerContainer pc : land.getBanneds()) {
                 strs.add(pc.toString());
             }
             cb.writeParam("Banneds", strs.toArray(new String[0]));
 
             //Permissions
             strs = new ArrayList<String>();
-            for (IPlayerContainer pc : land.getSetPCHavePermission()) {
-                for (IPermission perm : land.getPermissionsForPC(pc)) {
+            for (PlayerContainer pc : land.getSetPCHavePermission()) {
+                for (Permission perm : land.getPermissionsForPC(pc)) {
                     strs.add(pc.toString() + ":" + perm.toString());
                 }
             }
@@ -542,7 +534,7 @@ public class StorageFlat extends Storage implements StorageInt {
 
             //Flags
             strs = new ArrayList<String>();
-            for (ILandFlag flag : land.getFlags()) {
+            for (LandFlag flag : land.getFlags()) {
                 strs.add(flag.toString());
             }
             cb.writeParam("Flags", strs.toArray(new String[0]));
@@ -555,7 +547,7 @@ public class StorageFlat extends Storage implements StorageInt {
 
             // PlayersNotify
             strs = new ArrayList<String>();
-            for (IPlayerContainerPlayer pc : land.getPlayersNotify()) {
+            for (PlayerContainerPlayer pc : land.getPlayersNotify()) {
                 strs.add(pc.toString());
             }
             cb.writeParam("PlayersNotify", strs.toArray(new String[0]));
@@ -614,7 +606,7 @@ public class StorageFlat extends Storage implements StorageInt {
             ConfBuilder cb = new ConfBuilder(faction.getName(), faction.getUUID(), getFactionFile(faction), FACTION_VERSION);
 
             List<String> strs = new ArrayList<String>();
-            for (IPlayerContainerPlayer pc : faction.getPlayers()) {
+            for (PlayerContainerPlayer pc : faction.getPlayers()) {
                 strs.add(pc.toString());
             }
             cb.writeParam("Players", strs.toArray(new String[0]));

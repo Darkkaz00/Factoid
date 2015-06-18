@@ -75,10 +75,10 @@ public class DependPlugin {
 
         if (plugin != null) {
             Factoid.getThisPlugin().getServer().getPluginManager().enablePlugin(plugin);
-            Factoid.getLog().write(pluginName + " detected!");
+            Factoid.getFactoidLog().write(pluginName + " detected!");
             Factoid.getThisPlugin().getLogger().log(Level.INFO, pluginName + " detected!");
         } else {
-            Factoid.getLog().write(pluginName + " NOT detected!");
+            Factoid.getFactoidLog().write(pluginName + " NOT detected!");
             Factoid.getThisPlugin().getLogger().log(Level.INFO, pluginName + " IS NOT Detected!");
         }
 

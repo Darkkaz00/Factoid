@@ -5,7 +5,7 @@
 	<groupId>me.tabinol.factoid</groupId>
 	<artifactId>Factoid</artifactId>
 	<!-- *** Change version here *** -->
-	<version>1.2.1-SNAPSHOT</version>
+	<version>1.3.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Factoid</name>
@@ -67,11 +67,13 @@
 
 	<dependencies>
 
+		<!-- Remove Factoid API
 		<dependency>
 			<groupId>me.tabinol.factoid</groupId>
 			<artifactId>FactoidAPI</artifactId>
 			<version>1.2.1-SNAPSHOT</version>
 		</dependency>
+		-->
 
 		<dependency>
 			<!-- Gson: Java to Json conversion -->

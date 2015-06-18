@@ -45,12 +45,6 @@ public class FPlayerSponge extends FSenderSponge implements FPlayer {
     }
 
 	@Override
-    public String getName() {
-
-		return player.getName();
-    }
-	
-	@Override
 	public UUID getUUID() {
 		
 		return player.getUniqueId();
@@ -66,5 +60,27 @@ public class FPlayerSponge extends FSenderSponge implements FPlayer {
     public boolean isOnline() {
 
 		return player.isOnline();
+    }
+
+	@Override
+    public String getGameMode() {
+	    
+		return player.getGameModeData().getGameMode().getName();
+    }
+
+	@Override
+    public void removeOneItemFromHand() {
+
+		if(player.getItemInHand().get().getQuantity() == 1) {
+			player.setItemInHand(null);
+		} else {
+			player.getItemInHand().get().setQuantity(player.getItemInHand().get().getQuantity() - 1);
+		}
+    }
+
+	@Override
+    public void teleport(Point newLocation) {
+	    
+	    player.transferToWorld(newLocation.getWorldName(), SpongeUtils.toLocationVector(newLocation));
     }
 }

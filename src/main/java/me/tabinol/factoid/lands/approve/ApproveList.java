@@ -27,14 +27,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.tabinol.factoid.Factoid;
-import me.tabinol.factoidapi.FactoidAPI;
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.lands.types.IType;
+import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.lands.collisions.Collisions.LandAction;
+import me.tabinol.factoid.lands.types.Type;
 import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoid.utilities.StringChanges;
-import me.tabinol.factoidapi.playercontainer.EPlayerContainerType;
+import me.tabinol.factoid.playercontainer.PlayerContainerType;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -61,7 +60,7 @@ public class ApproveList {
      */
     public ApproveList() {
 
-        approveFile = new File(Factoid.getThisPlugin().getDataFolder() + "/approvelist.yml");
+        approveFile = new File(Factoid.getServer().getDataFolder() + "/approvelist.yml");
         approveConfig = new YamlConfiguration();
         landNames = new TreeSet<String>();
         loadFile();
@@ -148,23 +147,23 @@ public class ApproveList {
      */
     public Approve getApprove(String landName) {
 
-        Factoid.getLog().write("Get approve for: " + landName);
+        Factoid.getFactoidLog().write("Get approve for: " + landName);
         ConfigurationSection section = approveConfig.getConfigurationSection(landName);
 
         if (section == null) {
-            Factoid.getLog().write("Error Section null");
+            Factoid.getFactoidLog().write("Error Section null");
             return null;
         }
         
         String typeName = section.getString("Type");
-        IType type = null;
+        Type type = null;
         if(typeName != null) {
-        	type = FactoidAPI.iTypes().addOrGetType(typeName);
+        	type = Factoid.getTypes().addOrGetType(typeName);
         }
 
         String[] ownerS = StringChanges.splitAddVoid(section.getString("Owner"), ":");
-        PlayerContainer pc = PlayerContainer.create(null, EPlayerContainerType.getFromString(ownerS[0]), ownerS[1]);
-        ILand parent = null;
+        PlayerContainer pc = PlayerContainer.create(null, PlayerContainerType.getFromString(ownerS[0]), ownerS[1]);
+        Land parent = null;
         CuboidArea newArea = null;
         
         if (section.contains("Parent")) {
@@ -172,7 +171,7 @@ public class ApproveList {
             
             // If the parent does not exist
             if (parent == null) {
-                Factoid.getLog().write("Error, parent not found");
+                Factoid.getFactoidLog().write("Error, parent not found");
                 return null;
             }
         }
@@ -213,7 +212,7 @@ public class ApproveList {
      */
     public void removeApprove(String landName) {
         
-    	Factoid.getLog().write("Remove Approve from list: " + landName);
+    	Factoid.getFactoidLog().write("Remove Approve from list: " + landName);
 
         approveConfig.set(landName, null);
         landNames.remove(landName);
@@ -225,7 +224,7 @@ public class ApproveList {
      */
     public void removeAll() {
 
-        Factoid.getLog().write("Remove all Approves from list.");
+        Factoid.getFactoidLog().write("Remove all Approves from list.");
 
         // Delete file
         if (approveFile.exists()) {
@@ -245,7 +244,7 @@ public class ApproveList {
      */
     private void loadFile() {
 
-        Factoid.getLog().write("Loading Approve list file");
+        Factoid.getFactoidLog().write("Loading Approve list file");
 
         if (!approveFile.exists()) {
             try {
@@ -273,7 +272,7 @@ public class ApproveList {
      */
     private void saveFile() {
 
-        Factoid.getLog().write("Saving Approve list file");
+        Factoid.getFactoidLog().write("Saving Approve list file");
 
         try {
             approveConfig.save(approveFile);

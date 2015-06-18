@@ -29,15 +29,13 @@ import me.tabinol.factoid.commands.CommandExec;
 import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
-import me.tabinol.factoidapi.lands.ILand;
+import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.lands.approve.Approve;
 import me.tabinol.factoid.lands.approve.ApproveList;
-import me.tabinol.factoidapi.lands.areas.ICuboidArea;
+import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.lands.collisions.Collisions;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
-
-import org.bukkit.ChatStyle;
-
+import me.tabinol.factoid.playercontainer.PlayerContainer;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 /**
  * The Class CommandApprove.
@@ -107,7 +105,7 @@ public class CommandApprove extends CommandExec {
             } else {
 
                 // List not empty
-                new ChatPage("COLLISION.SHOW.LISTSTART", stList.toString(), entity.sender, null).getPage(1);
+                new ChatPage("COLLISION.SHOW.LISTSTART", stList.toString(), entity.sender, null).getPage();
             }
         } else if (curArg.equalsIgnoreCase("info") || curArg.equalsIgnoreCase("confirm") || curArg.equalsIgnoreCase("cancel")) {
 
@@ -130,13 +128,13 @@ public class CommandApprove extends CommandExec {
                 throw new FactoidCommandException("Approve", entity.sender, "GENERAL.MISSINGPERMISSION");
             }
 
-            ILand land = Factoid.getLands().getLand(param);
+            Land land = Factoid.getLands().getLand(param);
             Collisions.LandAction action = approve.getAction();
             int removeId = approve.getRemovedAreaId();
-            ICuboidArea newArea = approve.getNewArea();
-            ILand parent = approve.getParent();
+            CuboidArea newArea = approve.getNewArea();
+            Land parent = approve.getParent();
             Double price = approve.getPrice();
-            IPlayerContainer owner = approve.getOwner();
+            PlayerContainer owner = approve.getOwner();
 
             if (curArg.equalsIgnoreCase("info") || curArg.equalsIgnoreCase("confirm")) {
 

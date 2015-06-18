@@ -20,6 +20,7 @@ package me.tabinol.factoid.minecraft.bukkit;
 
 import java.util.UUID;
 
+import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.minecraft.FWorld;
 
 import org.bukkit.World;
@@ -49,5 +50,11 @@ public class FWorldBukkit implements FWorld {
     public int getMaxHeight() {
 
 		return world.getMaxHeight();
+    }
+
+	@Override
+    public Point getSpawnLocation() {
+
+		return BukkitUtils.toPoint(world.getSpawnLocation());
     }
 }

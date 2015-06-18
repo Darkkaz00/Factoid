@@ -17,11 +17,8 @@
  */
 package me.tabinol.factoid.commands;
 
-import me.tabinol.factoid.config.players.PlayerConfEntry;
-import me.tabinol.factoidapi.FactoidAPI;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.minecraft.FSender;
 
 /**
  * Contains general information for commandExecutor.
@@ -35,19 +32,16 @@ public class CommandEntities {
     public final InfoCommand infoCommand;
     
     /** The sender. */
-    public final CommandSender sender;
+    public final FSender sender;
     
     /** The arg list. */
     public final ArgList argList;
     
     /** The player. */
-    public final Player player;
+    public final FPlayer player;
     
     /** The player name. */
     public final String playerName;
-    
-    /** The player conf. */
-    public final PlayerConfEntry playerConf;
     
     /** The on command. */
     public final OnCommand onCommand;
@@ -62,7 +56,7 @@ public class CommandEntities {
      * @param onCommand the on command
      */
     public CommandEntities(MainCommand mainCommand, InfoCommand infoCommand, 
-    		CommandSender sender, ArgList argList, OnCommand onCommand) {
+    		FSender sender, ArgList argList, OnCommand onCommand) {
         
         this.mainCommand = mainCommand;
     	this.infoCommand = infoCommand;
@@ -70,16 +64,12 @@ public class CommandEntities {
         this.argList = argList;
         this.onCommand = onCommand;
 
-        if (sender instanceof Player) {
-            player = (Player) sender;
+        if (sender instanceof FPlayer) {
+            player = (FPlayer) sender;
         } else {
             player = null;
         }
         
         playerName = sender.getName();
-        playerConf = (PlayerConfEntry) FactoidAPI.iPlayerConf().get(sender);
     }
-    
-    
-
 }

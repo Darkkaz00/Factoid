@@ -24,10 +24,9 @@ import me.tabinol.factoid.commands.CommandExec;
 import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
+import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.parameters.PermissionList;
-
-import org.bukkit.ChatStyle;
-import org.bukkit.entity.Player;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 
 /**
@@ -59,7 +58,7 @@ public class CommandWho extends CommandExec {
 
         // Create list
         StringBuilder stList = new StringBuilder();
-        for (Player player : land.getPlayersInLandNoVanish(entity.player)) {
+        for (FPlayer player : land.getPlayersInLandNoVanish(entity.player)) {
             stList.append(player.getDisplayName()).append(Config.NEWLINE);
         }
 
