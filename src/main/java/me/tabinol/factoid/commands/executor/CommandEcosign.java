@@ -23,7 +23,10 @@ import me.tabinol.factoid.economy.EcoSign;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.exceptions.SignException;
 import me.tabinol.factoid.parameters.PermissionList;
+import me.tabinol.factoid.playercontainer.PlayerContainerPlayer;
+import me.tabinol.factoid.utilities.ChatStyle;
 import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.listeners.CommonListener.Click;
 import me.tabinol.factoid.minecraft.FPlayer;
 
 public class CommandEcosign extends CommandExec {
@@ -36,18 +39,17 @@ public class CommandEcosign extends CommandExec {
 	private final FPlayer player;
 
 	/** The player conf. */
-	private final Action action;
+	private final Click click;
 	private final SignType signType;
 
 	// Called from PlayerListener (right or leftclick)
-	public CommandEcosign(PlayerConfEntry entry, Land land, Action action,
+	public CommandEcosign(FPlayer player, Land land, Click click,
 			SignType signType) throws FactoidCommandException {
 
 		super(null);
-		this.player = entry.getPlayer();
-		playerConf = entry;
+		this.player = player;
 		this.land = land;
-		this.action = action;
+		this.click = click;
 		this.signType = signType;
 	}
 
@@ -56,7 +58,7 @@ public class CommandEcosign extends CommandExec {
 	 */
 	public void commandExecute() throws FactoidCommandException {
 
-		if (action == Action.RIGHT_CLICK_BLOCK) {
+		if (click == Click.RIGHT) {
 			if (signType == SignType.SALE) {
 
 				// Buy a land
@@ -70,10 +72,10 @@ public class CommandEcosign extends CommandExec {
 				}
 				Factoid.getPlayerMoney().getFromPlayer(player,
 						land.getWorldName(), land.getSalePrice());
-				if (land.getOwner() instanceof IPlayerContainerPlayer) {
+				if (land.getOwner() instanceof PlayerContainerPlayer) {
 					Factoid.getPlayerMoney()
 							.giveToPlayer(
-									((IPlayerContainerPlayer) land.getOwner())
+									((PlayerContainerPlayer) land.getOwner())
 											.getOfflinePlayer(),
 									land.getWorldName(), land.getSalePrice());
 				}
@@ -84,7 +86,7 @@ public class CommandEcosign extends CommandExec {
 					e.printStackTrace();
 				}
 				((Land) land).setForSale(false, 0, null);
-				land.setOwner(playerConf.getPlayerContainer());
+				land.setOwner(player.getPlayerContainer());
 		        player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.BUYLAND",
 		        		land.getName()));
 		        Factoid.getFactoidLog().write("The land " + land.getName() + " is purchased by : " + player.getName());
@@ -93,7 +95,7 @@ public class CommandEcosign extends CommandExec {
 				// Rent and unrent
 				if (land.isRented()
 						&& (land.getTenant().hasAccess(player) || land.getOwner().hasAccess(player)
-								|| playerConf.isAdminMod())) {
+								|| player.isAdminMod())) {
 
 					// Unrent
 					((Land) land).unSetRented();
@@ -122,15 +124,15 @@ public class CommandEcosign extends CommandExec {
 					}
 					Factoid.getPlayerMoney().getFromPlayer(player,
 							land.getWorldName(), land.getRentPrice());
-					if (land.getOwner() instanceof IPlayerContainerPlayer) {
+					if (land.getOwner() instanceof PlayerContainerPlayer) {
 						Factoid.getPlayerMoney()
 								.giveToPlayer(
-										((IPlayerContainerPlayer) land
+										((PlayerContainerPlayer) land
 												.getOwner()).getOfflinePlayer(),
 										land.getWorldName(),
 										land.getRentPrice());
 					}
-					((Land) land).setRented(playerConf.getPlayerContainer());
+					((Land) land).setRented(player.getPlayerContainer());
 					try {
 						new EcoSign(land, land.getRentSignLoc()).createSignForRent(
 								land.getRentPrice(), land.getRentRenew(),
@@ -147,7 +149,7 @@ public class CommandEcosign extends CommandExec {
 		} else {
 
 			// Left Click, destroy the sign
-			if (land.getOwner().hasAccess(player) || playerConf.isAdminMod()) {
+			if (land.getOwner().hasAccess(player) || player.isAdminMod()) {
 				
 				if (signType == SignType.SALE) {
 

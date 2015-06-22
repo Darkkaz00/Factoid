@@ -18,10 +18,10 @@
 package me.tabinol.factoid.commands;
 
 // Work with command arguments
-import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.lands.Land;
-import me.tabinol.factoid.minecraft.FSender;
+import me.tabinol.factoid.minecraft.FSenderInterface;
 import me.tabinol.factoid.parameters.FlagType;
 import me.tabinol.factoid.parameters.FlagValue;
 import me.tabinol.factoid.parameters.LandFlag;
@@ -42,7 +42,7 @@ public class ArgList {
     private int iterator;
     
     /** The player. */
-    private final FSender player;
+    private final FSenderInterface player;
 
     /**
      * Instantiates a new arg list.
@@ -50,7 +50,7 @@ public class ArgList {
      * @param arg the arg
      * @param player the player
      */
-    public ArgList(String[] arg, FSender player) {
+    public ArgList(String[] arg, FSenderInterface player) {
 
         this.arg = arg;
         this.player = player;

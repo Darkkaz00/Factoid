@@ -14,37 +14,28 @@
 
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
- */ 
-
+ */
 package me.tabinol.factoid.minecraft;
 
-import java.util.UUID;
+import me.tabinol.factoid.Factoid;
 
-import me.tabinol.factoid.lands.areas.Point;
 
 /**
- * This interface represent a Player for Factoid and the setup.
- * @author Tabinol
- *
+ * The Interface Vanish.
+ * If a plugin take in charge vanish, it will be inherited.
  */
-public interface FPlayer extends FSenderInterface {
-	
+public class Vanish {
     
-    public Point getLocation();
-	public UUID getUUID();
-	public String getName();
-	public String getDisplayName();
-	public boolean isOnline();
-	
-	/**
-	 * Get the game mode in STRING format
-	 * @return
-	 */
-	public String getGameMode();
-	
-	public void removeOneItemFromHand();
-	public void teleport(Point newLocation);
-	public void sendBlockChange(Point loc, String blockType, byte by);
-	public Point getTargetBlockLocation();
-	public String getItemInHand();
+    /**
+     * Checks if is vanished.
+     *
+     * @param player the player
+     * @return true, if is vanished
+     */
+    public boolean isVanished(FPlayer player) {
+        
+        return Factoid.getConf().isSpectatorIsVanish() 
+        		&& player.getGameMode().equals("SPECTATOR");
+    }
+    
 }

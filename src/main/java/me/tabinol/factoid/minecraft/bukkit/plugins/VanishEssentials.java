@@ -15,14 +15,16 @@
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.tabinol.factoid.config.vanish;
+package me.tabinol.factoid.minecraft.bukkit.plugins;
+
+import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.minecraft.Vanish;
+import me.tabinol.factoid.minecraft.bukkit.FPlayerBukkit;
+
+import org.bukkit.plugin.Plugin;
 
 import com.earth2me.essentials.Essentials;
-
-import me.tabinol.factoid.BKVersion;
-import me.tabinol.factoid.Factoid;
-
-import org.bukkit.entity.Player;
 
 
 /**
@@ -30,7 +32,7 @@ import org.bukkit.entity.Player;
  *
  * @author Tabinol
  */
-public class VanishEssentials implements Vanish {
+public class VanishEssentials extends Vanish {
     
     /** The essentials. */
     private final Essentials essentials;
@@ -38,19 +40,19 @@ public class VanishEssentials implements Vanish {
     /**
      * Instantiates a new vanish essentials.
      */
-    public VanishEssentials() {
+    public VanishEssentials(Plugin plugin) {
         
-        essentials = (Essentials)Factoid.getDependPlugin().getEssentials();
+        essentials = (Essentials) plugin;
     }
     
     /* (non-Javadoc)
      * @see me.tabinol.factoid.config.vanish.Vanish#isVanished(org.bukkit.entity.Player)
      */
     @Override
-    public boolean isVanished(Player player) {
+    public boolean isVanished(FPlayer player) {
         
         return (Factoid.getConf().isSpectatorIsVanish() 
-        		&& BKVersion.isSpectatorMode(player))
-        		|| essentials.getUser(player).isVanished();
+        		&& player.getGameMode().equals("SPECTATOR"))
+        		|| essentials.getUser(((FPlayerBukkit) player).getPlayer()).isVanished();
     }
 }

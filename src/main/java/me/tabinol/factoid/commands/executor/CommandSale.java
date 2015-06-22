@@ -17,10 +17,6 @@
  */
 package me.tabinol.factoid.commands.executor;
 
-import org.bukkit.ChatStyle;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.CommandEntities;
 import me.tabinol.factoid.commands.CommandExec;
@@ -30,6 +26,7 @@ import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.exceptions.SignException;
 import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.parameters.PermissionList;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 @InfoCommand(name="sale", forceParameter=true)
 public class CommandSale extends CommandExec {
@@ -55,9 +52,10 @@ public class CommandSale extends CommandExec {
         String curArg = entity.argList.getNext();
         double salePrice = 0;
         EcoSign ecoSign = null;
+        String itemInHand = entity.player.getItemInHand();
         
         // Check for sign in hand
-        if(entity.player.getGameMode() != GameMode.CREATIVE && entity.player.getItemInHand().getType() != Material.SIGN) {
+        if(!entity.player.getGameMode().equals("CREATIVE") && (itemInHand == null || !itemInHand.equals("SIGN"))) {
         	throw new FactoidCommandException("Must have a sign in hand", entity.player, "COMMAND.ECONOMY.MUSTHAVEISIGN");
         }
         
@@ -70,7 +68,7 @@ public class CommandSale extends CommandExec {
         		ecoSign = new EcoSign(land, entity.player);
 				ecoSign.createSignForSale(land.getSalePrice());
 				removeSignFromHand();
-				if(!ecoSign.getLocation().getBlock().equals(land.getSaleSignLoc().getBlock())) {
+				if(!ecoSign.getLocation().equals(land.getSaleSignLoc())) {
 					ecoSign.removeSign(land.getSaleSignLoc());
 					((Land) land).setSaleSignLoc(ecoSign.getLocation());
 				}

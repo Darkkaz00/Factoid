@@ -18,8 +18,6 @@
 
 package me.tabinol.factoid.minecraft;
 
-import java.util.UUID;
-
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.ChatPage;
 import me.tabinol.factoid.commands.ConfirmEntry;
@@ -40,6 +38,8 @@ public abstract class FSender implements FSenderInterface, Comparable<FSender> {
     /**************************************************************************
      * Settings for player and Sender
      *************************************************************************/
+	
+	private final FPlayer player;
 	
 	/** The player selection. */
     private final PlayerSelection playerSelection; // Player Lands, areas and visual selections
@@ -79,19 +79,19 @@ public abstract class FSender implements FSenderInterface, Comparable<FSender> {
      * Constructor for a player
      * @param uuid
      */
-    protected FSender(UUID uuid) {
-
-        playerSelection = new PlayerSelection(this);
-        pcp = new PlayerContainerPlayer(uuid);
-    }
-    
-    /**
-     * Constructor for the console
-     */
     protected FSender() {
     	
-        playerSelection = null;
-        pcp = null;
+    	if(this instanceof FPlayer) {
+    		// For real player
+            player = ((FPlayer) this);
+        	playerSelection = new PlayerSelection(player);
+            pcp = new PlayerContainerPlayer(player.getUUID());
+    	} else {
+    		// For console
+            player = null;
+        	playerSelection = null;
+            pcp = null;
+    	}
     }
     
     /**************************************************************************
@@ -260,7 +260,7 @@ public abstract class FSender implements FSenderInterface, Comparable<FSender> {
         }
 
         if (cancelSelect == null && value == true) {
-            cancelSelect = new PlayerAutoCancelSelect(this);
+            cancelSelect = new PlayerAutoCancelSelect(player);
         }
 
         if (cancelSelect == null) {

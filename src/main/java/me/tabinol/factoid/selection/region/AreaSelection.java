@@ -23,27 +23,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import me.tabinol.factoid.Factoid;
-import me.tabinol.factoidapi.lands.IDummyLand;
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.lands.areas.ICuboidArea;
 import me.tabinol.factoid.lands.DummyLand;
+import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.parameters.PermissionList;
 import me.tabinol.factoid.selection.PlayerSelection.SelectionType;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-
 
 /**
  * The Class AreaSelection.
  */
-public class AreaSelection extends RegionSelection implements Listener {
+public class AreaSelection extends RegionSelection {
 
     /** The area. */
     CuboidArea area;
@@ -55,7 +47,7 @@ public class AreaSelection extends RegionSelection implements Listener {
     private final byte by = 0;
     
     /** The block list. */
-    private final Map<Location, Material> blockList = new HashMap<Location, Material>();
+    private final Map<Point, String> blockList = new HashMap<Point, String>();
     
     /** The is from land. */
     private boolean isFromLand = false;
@@ -108,7 +100,6 @@ public class AreaSelection extends RegionSelection implements Listener {
     /**
      * Make visual selection.
      */
-    @SuppressWarnings("deprecation")
 	final void makeVisualSelection() {
 
         // Get the size (x and z) no abs (already ajusted)
@@ -118,7 +109,7 @@ public class AreaSelection extends RegionSelection implements Listener {
         // Do not show a too big select to avoid crash or severe lag
         int maxSize = Factoid.getConf().getMaxVisualSelect();
         int maxDisPlayer = Factoid.getConf().getMaxVisualSelectFromPlayer();
-        Location playerLoc = player.getLocation();
+        Point playerLoc = player.getLocation();
         if (diffX > maxSize || diffZ > maxSize
                 || abs(area.getX1() - playerLoc.getBlockX()) > maxDisPlayer
                 || abs(area.getX2() - playerLoc.getBlockX()) > maxDisPlayer
@@ -161,18 +152,18 @@ public class AreaSelection extends RegionSelection implements Listener {
                 if (posX == area.getX1() || posX == area.getX2()
                         || posZ == area.getZ1() || posZ == area.getZ2()) {
 
-                    Point newloc = new Location(area.getWordName(), posX, this.getYNearPlayer(posX, posZ) - 1, posZ);
-                    blockList.put(newloc, newloc.getBlock().getType());
+                    Point newloc = new Point(area.getWorldName(), posX, this.getYNearPlayer(posX, posZ) - 1, posZ);
+                    blockList.put(newloc, Factoid.getServer().getBlockTypeName(newloc));
 
                     if (!isFromLand) {
 
                         // Active Selection
-                        IDummyLand testCuboidarea = Factoid.getLands().getLandOrOutsideArea(newloc);
+                        DummyLand testCuboidarea = Factoid.getLands().getLandOrOutsideArea(newloc);
                         if (parentDetected == testCuboidarea 
-                        		&& (canCreate == true || Factoid.getPlayerConf().get(player).isAdminMod())) {
-                            this.player.sendBlockChange(newloc, Material.SPONGE, this.by);
+                        		&& (canCreate == true || player.isAdminMod())) {
+                            this.player.sendBlockChange(newloc, "SPONGE", this.by);
                         } else {
-                            this.player.sendBlockChange(newloc, Material.REDSTONE_BLOCK, this.by);
+                            this.player.sendBlockChange(newloc, "REDSTONE_BLOCK", this.by);
                             isCollision = true;
                         }
                     } else {
@@ -188,7 +179,7 @@ public class AreaSelection extends RegionSelection implements Listener {
                                 || (posX == area.getX2() - 1 && posZ == area.getZ2())) {
 
                             // Subcorner
-                            this.player.sendBlockChange(newloc, Material.IRON_BLOCK, this.by);
+                            this.player.sendBlockChange(newloc, "IRON_BLOCK", this.by);
 
                         } else if ((posX == area.getX1() && posZ == area.getZ1())
                                 || (posX == area.getX2() && posZ == area.getZ1())
@@ -196,7 +187,7 @@ public class AreaSelection extends RegionSelection implements Listener {
                                 || (posX == area.getX2() && posZ == area.getZ2())) {
 
                             // Exact corner
-                            this.player.sendBlockChange(newloc, Material.BEACON, this.by);
+                            this.player.sendBlockChange(newloc, "BEACON", this.by);
                         }
                     }
 
@@ -211,11 +202,10 @@ public class AreaSelection extends RegionSelection implements Listener {
     /* (non-Javadoc)
      * @see me.tabinol.factoid.selection.region.RegionSelection#removeSelection()
      */
-    @SuppressWarnings("deprecation")
 	@Override
     public void removeSelection() {
 
-        for (Map.Entry<Location, Material> EntrySet : this.blockList.entrySet()) {
+        for (Map.Entry<Point, String> EntrySet : this.blockList.entrySet()) {
             this.player.sendBlockChange(EntrySet.getKey(), EntrySet.getValue(), this.by);
         }
 
@@ -260,15 +250,14 @@ public class AreaSelection extends RegionSelection implements Listener {
       */
      private int getYNearPlayer(int x, int z) {
 
-        Point loc = new Point(player.getWorldName(), x, player.getLocation().getY() - 1, z);
+        Point loc = new Point(player.getLocation().getWorldName(), x, player.getLocation().getY() - 1, z);
 
-        if (loc.getBlock().getType() == Material.AIR) {
-            while (loc.getBlock().getRelative(BlockFace.DOWN).getType() == Material.AIR
-                    && loc.getBlockY() > 1) {
-                loc.subtract(0, 1, 0);
-            }
+        if (Factoid.getServer().getBlockTypeName(loc).equals("AIR")) {
+            while (Factoid.getServer().getBlockTypeName(loc.add(0, -1, 0)).equals("AIR")
+                    && loc.getBlockY() > 0);
         } else {
-            while (loc.getBlock().getType() != Material.AIR && loc.getBlockY() < player.getWorld().getMaxHeight()) {
+            while (!Factoid.getServer().getBlockTypeName(loc).equals("AIR") 
+            		&& loc.getBlockY() < loc.getWorld().getMaxHeight()) {
                 loc.add(0, 1, 0);
             }
         }

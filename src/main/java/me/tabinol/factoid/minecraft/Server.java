@@ -20,7 +20,12 @@ package me.tabinol.factoid.minecraft;
 import java.io.File;
 import java.io.InputStream;
 import java.util.UUID;
+
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.config.Config;
+import me.tabinol.factoid.exceptions.SignException;
+import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.utilities.FactoidRunnable;
 
 /**
@@ -32,6 +37,9 @@ public interface Server {
 	
 	// init
 	public void initServer();
+	
+	public Config newConfig();
+	public DependPlugin newDependPlugin();
 	
 	public Factoid getFactoid();
 	
@@ -63,4 +71,12 @@ public interface Server {
 	 * @return list of material type
 	 */
 	public String[] getMaterials();
+	
+	public String getBlockTypeName(Point point);
+	public void removeBlockAndDropSign(Point point);
+	public void loadChunk(Point point);
+	
+	public FSign getSign(Point point) throws SignException;
+	public FSign createSign(Point point, float yaw, String[] lines,
+			Land land, boolean isWallSign) throws SignException;
 }

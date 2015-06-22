@@ -23,6 +23,7 @@ import me.tabinol.factoid.commands.CommandEntities;
 import me.tabinol.factoid.commands.CommandExec;
 import me.tabinol.factoid.commands.InfoCommand;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
+import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.minecraft.FPlayer;
@@ -73,7 +74,7 @@ public class CommandSelect extends CommandExec {
      * @param location the location
      * @throws FactoidCommandException the factoid command exception
      */
-    public CommandSelect(Player player, ArgList argList, Point location) throws FactoidCommandException {
+    public CommandSelect(FPlayer player, ArgList argList, Point location) throws FactoidCommandException {
 
         super(null);
         this.player = player;
@@ -99,14 +100,14 @@ public class CommandSelect extends CommandExec {
 
                 curArg = argList.getNext();
                 if (curArg.equalsIgnoreCase("worldedit")) {
-                    if (Factoid.getDependPlugin().getWorldEdit() == null) {
+                    if (!Factoid.getDependPlugin().getEditWorld().isPluginLoaded()) {
                         throw new FactoidCommandException("CommandSelect", player, "COMMAND.SELECT.WORLDEDIT.NOTLOAD");
                     }
-                    new CommandSelectWorldedit(player).MakeSelect();
+                    Factoid.getDependPlugin().getEditWorld().makeSelect(entity.player);
 
                 } else {
 
-                    ILand landtest;
+                    Land landtest;
                     if (curArg.equalsIgnoreCase("here")) {
 
                         // add select Here to select the the cuboid

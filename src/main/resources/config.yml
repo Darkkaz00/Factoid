@@ -2,7 +2,6 @@
 # Author: Kazoo	 & Tabinol                                       #
 # Copyright 2013      	                                         #
 # Website: http://dev.bukkit.org/profiles/darkkazoo/             #
-# Contact: dev.kazoo@gmail.com                	                 #
 ##################################################################
 general:                             # ----General Config----
   debug: false                       # Set to true to show DebugLog 

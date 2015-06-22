@@ -18,18 +18,16 @@
 
 package me.tabinol.factoid.minecraft.bukkit;
 
-import java.util.UUID;
+import me.tabinol.factoid.minecraft.FSender;
 
 import org.bukkit.command.CommandSender;
-
-import me.tabinol.factoid.minecraft.FSender;
 
 public class FSenderBukkit extends FSender {
 	
 	private final CommandSender sender;
 	
 	/**
-	 * Constructor for Console
+	 * Constructor for Console and players
 	 * @param sender
 	 */
 	public FSenderBukkit(CommandSender sender) {
@@ -38,17 +36,6 @@ public class FSenderBukkit extends FSender {
 		this.sender = sender;
 	}
 	
-	/**
-	 * Constructor for Player
-	 * @param sender
-	 * @param uuid
-	 */
-	public FSenderBukkit(CommandSender sender, UUID uuid) {
-		
-		super(uuid);
-		this.sender = sender;
-	}
-
 	@Override
     public String getName() {
 

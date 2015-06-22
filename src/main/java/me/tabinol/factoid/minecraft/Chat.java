@@ -15,31 +15,33 @@
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.tabinol.factoid.config.chat;
-
-import org.bukkit.entity.Player;
+package me.tabinol.factoid.minecraft;
 
 /**
- * The Class ChatFactoid.
+ * The Interface Chat.
+ * Plugin connection has inheritance from this class
  */
-public class ChatFactoid implements Chat {
+public class Chat {
 
-	/* (non-Javadoc)
-	 * @see me.tabinol.factoid.config.chat.Chat#isSpy(org.bukkit.entity.Player)
+	/**
+	 * Checks if is spy.
+	 *
+	 * @param player the player
+	 * @return true, if is spy
 	 */
-	@Override
 	public boolean isSpy(FPlayer player) {
 
 		return player.hasPermission("factoid.socialspy");
 	}
-
-	/* (non-Javadoc)
-	 * @see me.tabinol.factoid.config.chat.Chat#isMuted(org.bukkit.entity.Player)
+	
+	/**
+	 * Checks if is muted.
+	 *
+	 * @param player the player
+	 * @return true, if is muted
 	 */
-	@Override
 	public boolean isMuted(FPlayer player) {
 
 		return false;
 	}
-
 }

@@ -35,7 +35,6 @@ public class CommandParent extends CommandExec {
 	}
 	
 	@Override
-	@SuppressWarnings("deprecation")
 	public void commandExecute() throws FactoidCommandException {
 
         checkSelections(true, null);

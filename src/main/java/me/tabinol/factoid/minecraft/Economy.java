@@ -15,32 +15,18 @@
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.tabinol.factoid.economy;
 
-import org.bukkit.OfflinePlayer;
+package me.tabinol.factoid.minecraft;
 
-import me.tabinol.factoid.Factoid;
-import net.milkbowl.vault.economy.Economy;
 
 
 /**
- * Money from players.
+ * Money from players. This class return zero, but has inheritence for real plugins.
  *
  * @author Tabinol
  */
-public class PlayerMoney {
+public class Economy {
 
-    /** The economy. */
-    private final Economy economy;
-
-    /**
-     * Instantiates a new player money.
-     */
-    public PlayerMoney() {
-
-        economy = Factoid.getDependPlugin().getEconomy();
-    }
-    
     /**
      * Gets the player balance.
      *
@@ -48,9 +34,9 @@ public class PlayerMoney {
      * @param worldName the world name
      * @return the player balance
      */
-    public Double getPlayerBalance(OfflinePlayer offlinePlayer, String worldName) {
+    public Double getPlayerBalance(FPlayer offlinePlayer, String worldName) {
         
-        return economy.getBalance(offlinePlayer, worldName);
+        return 0d;
     }
     
     /**
@@ -61,9 +47,9 @@ public class PlayerMoney {
      * @param amount the amount
      * @return true, if successful
      */
-    public boolean giveToPlayer(OfflinePlayer offlinePlayer, String worldName, Double amount) {
+    public boolean giveToPlayer(FPlayer offlinePlayer, String worldName, Double amount) {
         
-        return economy.depositPlayer(offlinePlayer, worldName, amount).transactionSuccess();
+        return false;
     }
 
     /**
@@ -74,9 +60,9 @@ public class PlayerMoney {
      * @param amount the amount
      * @return the from player
      */
-    public boolean getFromPlayer(OfflinePlayer offlinePlayer, String worldName, Double amount) {
+    public boolean getFromPlayer(FPlayer offlinePlayer, String worldName, Double amount) {
         
-        return economy.withdrawPlayer(offlinePlayer, worldName, amount).transactionSuccess();
+        return false;
     }
     
     /**
@@ -87,6 +73,6 @@ public class PlayerMoney {
      */
     public String toFormat(Double amount) {
         
-        return economy.format(amount);
+        return amount + "";
     }
 }

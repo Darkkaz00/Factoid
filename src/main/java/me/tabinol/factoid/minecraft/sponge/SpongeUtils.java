@@ -25,6 +25,7 @@ import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.extent.Extent;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3i;
 
 public class SpongeUtils {
 
@@ -41,6 +42,11 @@ public class SpongeUtils {
 	public static Vector3d toLocationVector(Point loc) {
 		
 		return new Vector3d(loc.getX(), loc.getY(), loc.getZ());
+	}
+
+	public static Vector3i toLocationVectorI(Point loc) {
+		
+		return new Vector3i(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 	}
 
 	public static Vector3d toRotation(Point loc) {

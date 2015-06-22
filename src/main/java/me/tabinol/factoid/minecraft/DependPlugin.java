@@ -15,28 +15,38 @@
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.tabinol.factoid.config.vanish;
 
-import me.tabinol.factoid.BKVersion;
-import me.tabinol.factoid.Factoid;
+package me.tabinol.factoid.minecraft;
 
-import org.bukkit.entity.Player;
+public abstract class DependPlugin {
 
-
-/**
- * Only return false if there is no Vanish plugin.
- *
- * @author michel
- */
-public class DummyVanish implements Vanish {
-
-    /* (non-Javadoc)
-     * @see me.tabinol.factoid.config.vanish.Vanish#isVanished(org.bukkit.entity.Player)
-     */
-    @Override
-    public boolean isVanished(Player player) {
-        
-        return Factoid.getConf().isSpectatorIsVanish() 
-        		&& BKVersion.isSpectatorMode(player);
+    protected Permission permission;
+	protected Chat chat;
+    protected Economy economy;
+    protected Vanish vanish;
+    protected EditWorld editWorld;
+	
+    public Permission getPermission() {
+    	
+    	return permission;
+    }
+    
+    public Chat getChat() {
+    	
+    	return chat;
+    }
+    public Economy getEconomy() {
+    	
+    	return economy;
+    }
+    
+    public Vanish getVanish() {
+    	
+    	return vanish;
+    }
+    
+    public EditWorld getEditWorld() {
+    	
+    	return editWorld;
     }
 }

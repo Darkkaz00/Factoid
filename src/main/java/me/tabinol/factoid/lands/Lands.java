@@ -99,7 +99,7 @@ public class Lands {
         for (int t = 0; t < areaList.length; t++) {
             areaList[t] = new TreeMap<String, TreeSet<AreaIndex>>();
         }
-        WorldConfig worldConfig = new WorldConfig();
+        WorldConfig worldConfig = Factoid.getConf().newWorldConfig();
 
         // Load World Config
         this.outsideArea = worldConfig.getLandOutsideArea();

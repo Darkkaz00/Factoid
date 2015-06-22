@@ -18,6 +18,7 @@
 
 package me.tabinol.factoid.minecraft.bukkit;
 
+import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -37,14 +38,14 @@ public class FPlayerBukkit extends FSenderBukkit implements FPlayer {
 	
 	protected FPlayerBukkit(Player player) {
 		
-		super(player, player.getUniqueId());
+		super(player);
 		this.player = player;
 		this.offlinePlayer = player;
 	}
 
 	protected FPlayerBukkit(OfflinePlayer player) {
 		
-		super(null, player.getUniqueId());
+		super(null);
 		this.player = null;
 		this.offlinePlayer = player;
 	}
@@ -74,7 +75,7 @@ public class FPlayerBukkit extends FSenderBukkit implements FPlayer {
 
 		return offlinePlayer.isOnline();
     }
-
+	
 	@Override
     public String getGameMode() {
 	    
@@ -95,5 +96,39 @@ public class FPlayerBukkit extends FSenderBukkit implements FPlayer {
     public void teleport(Point newLocation) {
 	    
 		player.teleport(BukkitUtils.toLocation(Bukkit.getWorld(newLocation.getWorldName()), newLocation));
+    }
+	
+	/**************************************************************************
+	 * Bukkit only methods
+	 * ***********************************************************************/
+	
+	public OfflinePlayer getOfflinePlayer() {
+		
+		return offlinePlayer;
+	}
+	
+	public Player getPlayer() {
+		
+		return player;
+	}
+
+	@SuppressWarnings("deprecation")
+    @Override
+    public void sendBlockChange(Point loc, String blockType, byte by) {
+	    
+	    player.sendBlockChange(BukkitUtils.toLocation(((FWorldBukkit) loc.getWorld()).getWorld(), loc), 
+	    		Material.getMaterial(blockType), by);
+    }
+
+	@Override
+    public Point getTargetBlockLocation() {
+	    
+		return BukkitUtils.toPoint(player.getTargetBlock((HashSet<Material>) null, 10).getLocation());
+    }
+
+	@Override
+    public String getItemInHand() {
+
+		return player.getItemInHand().getType().name();
     }
 }

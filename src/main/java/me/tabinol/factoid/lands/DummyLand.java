@@ -127,7 +127,7 @@ public class DummyLand {
         			&& perm.getValue() != perm.getPermType().getDefaultValue()) {
                 
         		// Start Event for kick
-        		Factoid.getServer().CallEvents().callPlayerContainerAddNoEnterEvent((Land) this, pc));
+        		Factoid.getServer().CallEvents().callPlayerContainerAddNoEnterEvent((Land) this, pc);
         	}
 
         	// Start Event
@@ -277,7 +277,7 @@ public class DummyLand {
         // Check in default permissions
         if(!onlyInherit && this instanceof Land) {
 
-            return Factoid.getLands()).getDefaultConf(((Land) this).getType()).getPermission(
+            return Factoid.getLands().getDefaultConf(((Land) this).getType()).getPermission(
             		player, pt, onlyInherit, (Land) this);
         }
         

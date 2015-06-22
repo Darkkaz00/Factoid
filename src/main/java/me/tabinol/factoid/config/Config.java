@@ -15,24 +15,19 @@
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package me.tabinol.factoid.config;
 
 import java.util.TreeSet;
 
-import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.lands.types.Type;
 import me.tabinol.factoid.parameters.FlagType;
 import me.tabinol.factoid.parameters.PermissionType;
-import me.tabinol.factoidapi.FactoidAPI;
-import me.tabinol.factoidapi.lands.types.IType;
 
-import org.bukkit.configuration.file.FileConfiguration;
-
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class Config.
  */
-public class Config {
+public abstract class Config {
 
     // Global
     /** The Constant NEWLINE. */
@@ -42,14 +37,9 @@ public class Config {
     /** The Constant GLOBAL. */
     public static final String GLOBAL = "_global_";
     
-    /** The this plugin. */
-    private final Factoid thisPlugin;
-    
-    /** The config. */
-    private FileConfiguration config;
     // Configuration
     /** The debug. */
-    private boolean debug;
+    protected boolean debug;
     
     /**
      * Checks if is debug.
@@ -59,7 +49,7 @@ public class Config {
     public boolean isDebug() { return debug; }
     
     /** The lang. */
-    private String lang;
+    protected String lang;
     
     /**
      * Gets the lang.
@@ -69,7 +59,7 @@ public class Config {
     public String getLang() { return lang; }
     
     /** The use economy. */
-    private boolean useEconomy;
+    protected boolean useEconomy;
     
     /**
      * Use economy.
@@ -79,7 +69,7 @@ public class Config {
     public boolean useEconomy() { return useEconomy; }
     
     /** The info item. */
-    private String infoItem;
+    protected String infoItem;
     
     /**
      * Gets the info item.
@@ -89,7 +79,7 @@ public class Config {
     public String getInfoItem() { return infoItem; }
     
     /** The select item. */
-    private String selectItem;
+    protected String selectItem;
     
     /**
      * Gets the select item.
@@ -114,7 +104,7 @@ public class Config {
     }
     
     /** The allow collision. */
-    private AllowCollisionType allowCollision;
+    protected AllowCollisionType allowCollision;
     
     /**
      * Gets the allow collision.
@@ -124,7 +114,7 @@ public class Config {
     public AllowCollisionType getAllowCollision() { return allowCollision; }
     
     /** The land chat. */
-    private boolean isLandChat;
+    protected boolean isLandChat;
     
     /**
      * Gets if land chat is activated.
@@ -134,7 +124,7 @@ public class Config {
     public boolean isLandChat() { return isLandChat; }
 
     /** The is spectator is vanish. */
-    private boolean isSpectatorIsVanish;
+    protected boolean isSpectatorIsVanish;
     
     /**
      * Checks if is spectator is vanish.
@@ -144,7 +134,7 @@ public class Config {
     public boolean isSpectatorIsVanish() { return isSpectatorIsVanish; }
     
     /** The approve notify time. */
-    private long approveNotifyTime;
+    protected long approveNotifyTime;
     
     /**
      * Gets the approve notify time.
@@ -154,7 +144,7 @@ public class Config {
     public long getApproveNotifyTime() { return approveNotifyTime; }
     
     /** The select auto cancel. */
-    private long selectAutoCancel;
+    protected long selectAutoCancel;
     
     /**
      * Gets the select auto cancel.
@@ -164,7 +154,7 @@ public class Config {
     public long getSelectAutoCancel() { return selectAutoCancel; }
     
     /** The max visual select. */
-    private int maxVisualSelect;
+    protected int maxVisualSelect;
     
     /**
      * Gets the max visual select.
@@ -174,7 +164,7 @@ public class Config {
     public int getMaxVisualSelect() { return maxVisualSelect; }
     
     /** The max visual select from player. */
-    private int maxVisualSelectFromPlayer;
+    protected int maxVisualSelectFromPlayer;
     
     /**
      * Gets the max visual select from player.
@@ -184,7 +174,7 @@ public class Config {
     public int getMaxVisualSelectFromPlayer() { return maxVisualSelectFromPlayer; }
 
     /** The max area per land. */
-    private int maxAreaPerLand;
+    protected int maxAreaPerLand;
     
     /**
      * Gets the max area per land.
@@ -194,7 +184,7 @@ public class Config {
     public int getMaxAreaPerLand() { return maxAreaPerLand; }
     
     /** The max land per player. */
-    private int maxLandPerPlayer;
+    protected int maxLandPerPlayer;
     
     /**
      * Gets the max land per player.
@@ -204,7 +194,7 @@ public class Config {
     public int getMaxLandPerPlayer() { return maxLandPerPlayer; }
     
     /** The default x size. */
-    private int defaultXSize;
+    protected int defaultXSize;
     
     /**
      * Gets the default x size.
@@ -214,7 +204,7 @@ public class Config {
     public int getDefaultXSize() { return defaultXSize; }
   
     /** The default z size. */
-    private int defaultZSize;
+    protected int defaultZSize;
     
     /**
      * Gets the default z size.
@@ -224,7 +214,7 @@ public class Config {
     public int getDefaultZSize() { return defaultZSize; }
   
     /** The default bottom. */
-    private int defaultBottom;
+    protected int defaultBottom;
     
     /**
      * Gets the default bottom.
@@ -234,7 +224,7 @@ public class Config {
     public int getDefaultBottom() { return defaultBottom; }
   
     /** The default top. */
-    private int defaultTop;
+    protected int defaultTop;
     
     /**
      * Gets the default top.
@@ -245,7 +235,7 @@ public class Config {
 
     
     /** The beacon light. */
-    private boolean beaconLight;
+    protected boolean beaconLight;
     
     /**
      * Checks if is beacon light.
@@ -255,7 +245,7 @@ public class Config {
     public boolean isBeaconLight() { return beaconLight; }
     
     /** The override explosions. */
-    private boolean overrideExplosions;
+    protected boolean overrideExplosions;
     
     /**
      * Checks if is override explosions.
@@ -265,7 +255,7 @@ public class Config {
     public boolean isOverrideExplosions() { return overrideExplosions; }
     
     /** The owner config flag. */
-    private TreeSet<FlagType> ownerConfigFlag; // Flags a owner can set
+    protected TreeSet<FlagType> ownerConfigFlag; // Flags a owner can set
     
     /**
      * Gets the owner config flag.
@@ -275,7 +265,7 @@ public class Config {
     public TreeSet<FlagType> getOwnerConfigFlag() { return ownerConfigFlag; }
     
     /** The owner config perm. */
-    private TreeSet<PermissionType> ownerConfigPerm; // Permissions a owner can set
+    protected TreeSet<PermissionType> ownerConfigPerm; // Permissions a owner can set
     
     /**
      * Gets the owner config perm.
@@ -285,109 +275,33 @@ public class Config {
     public TreeSet<PermissionType> getOwnerConfigPerm() { return ownerConfigPerm; }
 
     /** The type admin mod. */
-    private IType typeAdminMod;
+    protected Type typeAdminMod;
     
     /**
      * Gets the type admin mod.
      *
      * @return the type admin mod
      */
-    public IType getTypeAdminMod() { return typeAdminMod; } 
+    public Type getTypeAdminMod() { return typeAdminMod; } 
     
     /** The type none admin mod. */
-    private IType typeNoneAdminMod;
+    protected Type typeNoneAdminMod;
     
     /**
      * Gets the type none admin mod.
      *
      * @return the type none admin mod
      */
-    public IType getTypeNoneAdminMod() { return typeNoneAdminMod; } 
-
-    /**
-     * Instantiates a new config.
-     */
-    public Config() {
-
-        thisPlugin = Factoid.getThisPlugin();
-        thisPlugin.saveDefaultConfig();
-
-        // Get Bukkit Config for this plugin, not this class!!!
-        config = thisPlugin.getConfig();
-
-        reloadConfig();
-    }
-
-    /**
-     * Reload config.
-     */
-    public final void reloadConfig() {
-
-        thisPlugin.reloadConfig();
-        config = thisPlugin.getConfig();
-        getConfig();
-    }
-
-    /**
-     * Gets the config.
-     *
-     * @return the config
-     */
-    private void getConfig() {
-
-        debug = config.getBoolean("general.debug", false);
-        config.addDefault("general.worlds", new String[] {"world", "world_nether", "world_the_end"});
-        lang = config.getString("general.lang", "english");
-        useEconomy = config.getBoolean("general.UseEconomy", false);
-        infoItem = config.getString("general.InfoItem", "BONE");
-        selectItem = config.getString("general.SelectItem", "ROTTEN_FLESH");
-        // Remove error if the parameter is not here (AllowCollision)
-        try {
-            allowCollision = AllowCollisionType.valueOf(config.getString("land.AllowCollision", "approve").toUpperCase());
-        } catch (NullPointerException ex) {
-            allowCollision = AllowCollisionType.APPROVE;
-        }
-        isLandChat = config.getBoolean("land.LandChat", true);
-        isSpectatorIsVanish = config.getBoolean("land.SpectatorIsVanish", true);
-        approveNotifyTime = config.getLong("land.ApproveNotifyTime", 24002);
-        selectAutoCancel = config.getLong("land.SelectAutoCancel", 12000);
-        maxVisualSelect = config.getInt("land.MaxVisualSelect", 256);
-        maxVisualSelectFromPlayer = config.getInt("land.MaxVisualSelectFromPlayer", 128);
-        defaultXSize = config.getInt("land.defaultXSize", 10);
-        defaultZSize = config.getInt("land.defaultZSize", 10);
-        defaultBottom = config.getInt("land.defaultBottom", 0);
-        defaultTop = config.getInt("land.defaultTop", 255);
-        maxAreaPerLand = config.getInt("land.area.MaxAreaPerLand", 3);
-        maxLandPerPlayer = config.getInt("land.MaxLandPerPlayer", 5);
-        beaconLight = config.getBoolean("land.BeaconLight", false);
-        overrideExplosions = config.getBoolean("general.OverrideExplosions", true);
-
-        config.addDefault("land.OwnerCanSet.Flags", new String[] {"MESSAGE_JOIN", "MESSAGE_QUIT"});
-        ownerConfigFlag = new TreeSet<FlagType>();
-        for (String value : config.getStringList("land.OwnerCanSet.Flags")) {
-            ownerConfigFlag.add(Factoid.getParameters().getFlagTypeNoValid(value.toUpperCase()));
-        }
-        config.addDefault("land.OwnerCanSet.Permissions", new String[] {"BUILD", "OPEN", "USE"});
-        ownerConfigPerm = new TreeSet<PermissionType>();
-        for (String value : config.getStringList("land.OwnerCanSet.Permissions")) {
-            ownerConfigPerm.add(Factoid.getParameters().getPermissionTypeNoValid(value.toUpperCase()));
-        }
-        
-        // Add types
-        for(String typeName : config.getStringList("land.Types.List")) {
-        	FactoidAPI.iTypes().addOrGetType(typeName);
-        }
-        typeAdminMod = FactoidAPI.iTypes().addOrGetType(getStringOrNull("land.Types.OnCreate.AdminMod", "admin"));
-        typeNoneAdminMod = FactoidAPI.iTypes().addOrGetType(getStringOrNull("land.Types.OnCreate.NoneAdminMod", "player"));
-    }
+    public Type getTypeNoneAdminMod() { return typeNoneAdminMod; }
     
-    private String getStringOrNull(String path, String defaultSt) {
-    	
-    	String result = config.getString(path, defaultSt);
-    	if(result.equalsIgnoreCase("-null-")) {
-    		result = null;
-    	}
-    	
-    	return result;
-    }
+    /**
+     * Load or reload the general configuration
+     */
+    public abstract void reloadConfig();
+    
+    /**
+     * Create a new world config for Lands
+     * @return WorldConfig
+     */
+    public abstract WorldConfig newWorldConfig();
 }

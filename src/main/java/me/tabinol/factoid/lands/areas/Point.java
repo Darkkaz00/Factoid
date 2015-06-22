@@ -29,9 +29,9 @@ import me.tabinol.factoid.minecraft.FWorld;
 public class Point implements Comparable<Point> {
 	
 	private final String worldName;
-	private final double x;
-	private final double y;
-	private final double z;
+	private double x;
+	private double y;
+	private double z;
 	private final float yaw;
 	private final float pitch;
 	
@@ -153,7 +153,21 @@ public class Point implements Comparable<Point> {
 
 	    return Math.sqrt(dx * dx + dy * dy + dz * dz);
 	}
+	
+	public Point add(double addX, double addY, double addZ) {
+		
+		x += addX;
+		y += addY;
+		z += addZ;
+		
+		return this;
+	}
 
+	public Point getNearPoint(double addX, double addY, double addZ) {
+		
+		return new Point(worldName, x + addX, y + addY, z + addZ);
+	}
+	
 	/**************************************************************************
 	 * Static conversion
 	 *************************************************************************/

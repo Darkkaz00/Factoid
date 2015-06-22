@@ -21,8 +21,8 @@ import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.CommandEntities;
 import me.tabinol.factoid.commands.CommandExec;
 import me.tabinol.factoid.commands.InfoCommand;
-import me.tabinol.factoid.economy.PlayerMoney;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
+import me.tabinol.factoid.minecraft.Economy;
 import me.tabinol.factoid.parameters.PermissionList;
 import me.tabinol.factoid.utilities.ChatStyle;
 
@@ -34,7 +34,7 @@ import me.tabinol.factoid.utilities.ChatStyle;
 public class CommandMoney extends CommandExec {
 
     /** The player money. */
-    private final PlayerMoney playerMoney;
+    private final Economy playerMoney;
 
     /**
      * Instantiates a new command money.

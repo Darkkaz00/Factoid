@@ -20,7 +20,6 @@ package me.tabinol.factoid.lands;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -234,7 +233,7 @@ public class Land extends DummyLand {
         doSave();
         
         // Start Event
-        Factoid.getServer().CallEvents().callLandModifyEvent(this, LandModifyReason.AREA_ADD, area));
+        Factoid.getServer().CallEvents().callLandModifyEvent(this, LandModifyReason.AREA_ADD, area);
     }
 
     /**
@@ -252,7 +251,7 @@ public class Land extends DummyLand {
             doSave();
             
             // Start Event
-            Factoid.getServer().CallEvents().callLandModifyEvent(this, LandModifyReason.AREA_REMOVE, area));
+            Factoid.getServer().CallEvents().callLandModifyEvent(this, LandModifyReason.AREA_REMOVE, area);
 
             return true;
         }
@@ -313,7 +312,7 @@ public class Land extends DummyLand {
             doSave();
 
             // Start Event
-            Factoid.getServer().CallEvents().callLandModifyEvent(this, LandModifyReason.AREA_REPLACE, area));
+            Factoid.getServer().CallEvents().callLandModifyEvent(this, LandModifyReason.AREA_REPLACE, area);
 
             return true;
         }
@@ -470,7 +469,7 @@ public class Land extends DummyLand {
         doSave();
 
         // Start Event
-        Factoid.getServer().CallEvents().callLandModifyEvent(this, LandModifyReason.RENAME, name));
+        Factoid.getServer().CallEvents().callLandModifyEvent(this, LandModifyReason.RENAME, name);
     }
 
     /**
@@ -519,7 +518,7 @@ public class Land extends DummyLand {
 
         // Start Event
         Factoid.getServer().CallEvents().callLandModifyEvent(this, 
-        		LandModifyReason.FACTION_TERRITORY_CHANGE, faction));
+        		LandModifyReason.FACTION_TERRITORY_CHANGE, faction);
     }
 
     /**
@@ -533,7 +532,7 @@ public class Land extends DummyLand {
         doSave();
 
         // Start Event
-        Factoid.getServer().CallEvents().callLandModifyEvent(this, LandModifyReason.OWNER_CHANGE, owner));
+        Factoid.getServer().CallEvents().callLandModifyEvent(this, LandModifyReason.OWNER_CHANGE, owner);
     }
 
     /**
@@ -548,7 +547,7 @@ public class Land extends DummyLand {
         doSave();
 
         // Start Event
-        Factoid.getServer().CallEvents().callLandModifyEvent(this, LandModifyReason.RESIDENT_ADD, resident));
+        Factoid.getServer().CallEvents().callLandModifyEvent(this, LandModifyReason.RESIDENT_ADD, resident);
     }
 
     /**
@@ -564,7 +563,7 @@ public class Land extends DummyLand {
 
             // Start Event
             Factoid.getServer().CallEvents().callLandModifyEvent(this, 
-            		LandModifyReason.RESIDENT_REMOVE, resident));
+            		LandModifyReason.RESIDENT_REMOVE, resident);
             
             return true;
         }
@@ -603,7 +602,6 @@ public class Land extends DummyLand {
      *
      * @param banned the banned
      */
-    @SuppressWarnings("deprecation")
 	public void addBanned(PlayerContainer banned) {
 
         ((PlayerContainer) banned).setLand(this);
@@ -611,7 +609,7 @@ public class Land extends DummyLand {
         doSave();
 
         // Start Event
-        Factoid.getServer().CallEvents().callPlayerContainerLandBanEvent(this, banned));
+        Factoid.getServer().CallEvents().callPlayerContainerLandBanEvent(this, banned);
     }
 
     /**
@@ -1041,8 +1039,8 @@ public class Land extends DummyLand {
     public boolean isPlayerinLandNoVanish(FPlayer player, FPlayer fromPlayer) {
 
         if (playersInLand.contains(player)
-                && (!Factoid.getPlayerConf().isVanished(player) 
-                		|| Factoid.getPlayerConf().get(fromPlayer).isAdminMod())) {
+                && (!Factoid.getDependPlugin().getVanish().isVanished(player) 
+                		|| fromPlayer.isAdminMod())) {
             return true;
         }
 
@@ -1095,7 +1093,7 @@ public class Land extends DummyLand {
         Set<FPlayer> playerList = new TreeSet<FPlayer>();
 
         for (FPlayer player : playersInLand) {
-            if (!FactoidAPI.iPlayerConf().isVanished(player) || FactoidAPI.iPlayerConf().get(fromPlayer).isAdminMod()) {
+            if (!Factoid.getDependPlugin().getVanish().isVanished(player) || fromPlayer.isAdminMod()) {
                 playerList.add(player);
             }
         }

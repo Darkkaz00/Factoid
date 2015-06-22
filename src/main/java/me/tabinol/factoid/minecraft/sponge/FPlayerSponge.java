@@ -32,7 +32,7 @@ public class FPlayerSponge extends FSenderSponge implements FPlayer {
 	
 	protected FPlayerSponge(Player player) {
 		
-		super(player, player.getUniqueId());
+		super(player);
 		this.player = player;
 	}
 
@@ -82,5 +82,28 @@ public class FPlayerSponge extends FSenderSponge implements FPlayer {
     public void teleport(Point newLocation) {
 	    
 	    player.transferToWorld(newLocation.getWorldName(), SpongeUtils.toLocationVector(newLocation));
+    }
+
+	@Override
+    public void sendBlockChange(Point loc, String blockType, byte by) {
+	    
+		// TODO Visual selection in Sponge
+    }
+
+	@Override
+    public Point getTargetBlockLocation() {
+		
+		// TODO Get target item
+		return SpongeUtils.toPoint(player.getLocation());
+	}
+
+	@Override
+    public String getItemInHand() {
+
+		if(player.getItemInHand().isPresent()) {
+			return player.getItemInHand().get().getItem().getName();
+		} else {
+			return null;
+		}
     }
 }

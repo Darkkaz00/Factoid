@@ -23,8 +23,8 @@
 		<!-- *** Change players cache .conf version here here *** -->
 		<playersCacheVersion>1</playersCacheVersion>
 		<!-- *** For Sponge plugin version *** -->
-		<version.template.file>src/main/java/me/tabinol/factoid/FactoidSponge.java.template</version.template.file>
-		<version.file>src/main/java/me/tabinol/factoid/FactoidSponge.java</version.file>
+		<version.template.file>src/main/java/me/tabinol/factoid/minecraft/sponge/ServerSponge.java.template</version.template.file>
+		<version.file>src/main/java/me/tabinol/factoid/minecraft/sponge/ServerSponge.java</version.file>
 	</properties>
 
 	<repositories>
@@ -295,7 +295,6 @@
 							<artifactSet>
 								<includes>
 									<include>com.google.code.gson:gson</include>
-									<include>me.tabinol.factoid:FactoidAPI</include>
 									<include>org.reflections:reflections</include>
 									<include>org.javassist:javassist</include>
 									<include>com.google.code.findbugs:annotations</include>

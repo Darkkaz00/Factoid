@@ -17,8 +17,8 @@
  */
 package me.tabinol.factoid.selection.region;
 
+import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.selection.PlayerSelection.SelectionType;
-import org.bukkit.entity.Player;
 
 
 /**
@@ -30,7 +30,7 @@ public abstract class RegionSelection {
     final SelectionType selectionType;
     
     /** The player. */
-    final Player player;
+    final FPlayer player;
 
     /**
      * Instantiates a new region selection.
@@ -38,7 +38,7 @@ public abstract class RegionSelection {
      * @param selectionType the selection type
      * @param player the player
      */
-    RegionSelection(SelectionType selectionType, Player player) {
+    RegionSelection(SelectionType selectionType, FPlayer player) {
 
         this.selectionType = selectionType;
         this.player = player;

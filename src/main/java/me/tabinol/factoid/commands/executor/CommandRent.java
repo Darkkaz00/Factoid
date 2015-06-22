@@ -17,9 +17,6 @@
  */
 package me.tabinol.factoid.commands.executor;
 
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.CommandEntities;
 import me.tabinol.factoid.commands.CommandExec;
@@ -29,6 +26,7 @@ import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.exceptions.SignException;
 import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.parameters.PermissionList;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 @InfoCommand(name="rent", forceParameter=true)
 public class CommandRent extends CommandExec {
@@ -56,9 +54,10 @@ public class CommandRent extends CommandExec {
         int rentRenew = 0;
         boolean rentAutoRenew = true;
         EcoSign ecoSign = null;
+        String itemInHand = entity.player.getItemInHand();
         
         // Check for sign in hand
-        if(entity.player.getGameMode() != GameMode.CREATIVE && entity.player.getItemInHand().getType() != Material.SIGN) {
+        if(!entity.player.getGameMode().equals("CREATIVE") && (itemInHand == null || !itemInHand.equals("SIGN"))) {
         	throw new FactoidCommandException("Must have a sign in hand", entity.player, "COMMAND.ECONOMY.MUSTHAVEISIGN");
         }
         
@@ -72,7 +71,7 @@ public class CommandRent extends CommandExec {
 				ecoSign.createSignForRent(land.getRentPrice(), land.getRentRenew(), land.getRentAutoRenew(),
 						land.isRented() ? land.getTenant().getPlayerName() : null); // Tenant name if the land is rented
 				removeSignFromHand();
-				if(!ecoSign.getLocation().getBlock().equals(land.getRentSignLoc().getBlock())) {
+				if(!ecoSign.getLocation().equals(land.getRentSignLoc())) {
 					ecoSign.removeSign(land.getRentSignLoc());
 					((Land) land).setRentSignLoc(ecoSign.getLocation());
 				}

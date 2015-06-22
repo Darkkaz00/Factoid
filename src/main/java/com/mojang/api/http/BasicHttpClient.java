@@ -10,7 +10,7 @@ import java.net.URL;
 import java.util.List;
 
 /*
-    TODO: refactor so unit tests can be written :)
+    TODO refactor so unit tests can be written :)
  */
 public class BasicHttpClient implements HttpClient {
 

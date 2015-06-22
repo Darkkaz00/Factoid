@@ -14,37 +14,21 @@
 
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
- */ 
+ */
 
 package me.tabinol.factoid.minecraft;
 
-import java.util.UUID;
-
-import me.tabinol.factoid.lands.areas.Point;
 
 /**
- * This interface represent a Player for Factoid and the setup.
+ * Represent a permission system (for groups). Can be inherited.
  * @author Tabinol
  *
  */
-public interface FPlayer extends FSenderInterface {
-	
-    
-    public Point getLocation();
-	public UUID getUUID();
-	public String getName();
-	public String getDisplayName();
-	public boolean isOnline();
-	
-	/**
-	 * Get the game mode in STRING format
-	 * @return
-	 */
-	public String getGameMode();
-	
-	public void removeOneItemFromHand();
-	public void teleport(Point newLocation);
-	public void sendBlockChange(Point loc, String blockType, byte by);
-	public Point getTargetBlockLocation();
-	public String getItemInHand();
+public class Permission {
+
+	public boolean playerInGroup(FPlayer player, String groupName) {
+
+		return false;
+    }
+
 }

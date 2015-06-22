@@ -21,13 +21,11 @@ import java.util.Collection;
 import java.util.EnumMap;
 
 import me.tabinol.factoid.Factoid;
-import me.tabinol.factoidapi.config.players.IPlayerConfEntry;
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.lands.areas.ICuboidArea;
-import me.tabinol.factoid.config.players.PlayerConfEntry;
-import me.tabinol.factoid.minecraft.FSender;
+import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.lands.areas.CuboidArea;
+import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.parameters.FlagList;
-import me.tabinol.factoidapi.parameters.IFlagType;
+import me.tabinol.factoid.parameters.FlagType;
 import me.tabinol.factoid.selection.region.AreaSelection;
 import me.tabinol.factoid.selection.region.LandSelection;
 import me.tabinol.factoid.selection.region.RegionSelection;
@@ -51,20 +49,20 @@ public class PlayerSelection {
     }
 
     /** The player conf entry. */
-    private final FSender playerConfEntry;
+    private final FPlayer playerConfEntry;
     
     /** The selection list. */
     private final EnumMap<SelectionType, RegionSelection> selectionList; // SelectionList for the player
     
     /** The area to replace. */
-    ICuboidArea areaToReplace; // If it is an areaToReplace with an expand
+    CuboidArea areaToReplace; // If it is an areaToReplace with an expand
 
     /**
      * Instantiates a new player selection.
      *
      * @param playerConfEntry the player conf entry
      */
-    public PlayerSelection(FSender playerConfEntry) {
+    public PlayerSelection(FPlayer playerConfEntry) {
 
         this.playerConfEntry = playerConfEntry;
         selectionList = new EnumMap<SelectionType, RegionSelection>(SelectionType.class);
@@ -138,11 +136,11 @@ public class PlayerSelection {
      */
     public void refreshLand() {
     	
-    	ILand land = getLand();
+    	Land land = getLand();
     	
     	if(land !=null) {
     		removeSelection(SelectionType.LAND);
-    		addSelection(new LandSelection(playerConfEntry.getPlayer(), land));
+    		addSelection(new LandSelection(playerConfEntry, land));
     	}
     }
 
@@ -151,7 +149,7 @@ public class PlayerSelection {
      *
      * @return the land
      */
-    public ILand getLand() {
+    public Land getLand() {
 
         LandSelection sel = (LandSelection) selectionList.get(SelectionType.LAND);
         if (sel != null) {
@@ -166,7 +164,7 @@ public class PlayerSelection {
      *
      * @return the cuboid area
      */
-    public ICuboidArea getCuboidArea() {
+    public CuboidArea getCuboidArea() {
 
         AreaSelection sel = (AreaSelection) selectionList.get(SelectionType.AREA);
         if (sel != null) {
@@ -181,7 +179,7 @@ public class PlayerSelection {
      *
      * @param areaToReplace the new area to replace
      */
-    public void setAreaToReplace(ICuboidArea areaToReplace) {
+    public void setAreaToReplace(CuboidArea areaToReplace) {
 
         this.areaToReplace = areaToReplace;
     }
@@ -191,7 +189,7 @@ public class PlayerSelection {
      *
      * @return the area to replace
      */
-    public ICuboidArea getAreaToReplace() {
+    public CuboidArea getAreaToReplace() {
 
         return areaToReplace;
     }
@@ -207,10 +205,10 @@ public class PlayerSelection {
             return 0;
         }
 
-        ILand land = getLand();
-        ICuboidArea area = getCuboidArea();
+        Land land = getLand();
+        CuboidArea area = getCuboidArea();
         Double priceFlag;
-        IFlagType flagType = FlagList.ECO_BLOCK_PRICE.getFlagType();
+        FlagType flagType = FlagList.ECO_BLOCK_PRICE.getFlagType();
         
         // Get land price
         if (land == null) {
@@ -240,10 +238,10 @@ public class PlayerSelection {
             return 0;
         }
 
-        ILand land = getLand();
-        ICuboidArea area = getCuboidArea();
+        Land land = getLand();
+        CuboidArea area = getCuboidArea();
         double priceFlag;
-        IFlagType flagType = FlagList.ECO_BLOCK_PRICE.getFlagType();
+        FlagType flagType = FlagList.ECO_BLOCK_PRICE.getFlagType();
 
         if(land == null) {
             return 0;

@@ -72,7 +72,7 @@ import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-// TODO: Put Citizens bugfix
+// TODO Put Citizens bugfix
 
 public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 

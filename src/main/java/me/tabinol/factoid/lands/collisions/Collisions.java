@@ -26,7 +26,6 @@ import java.util.List;
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.lands.Land;
-import me.tabinol.factoid.lands.Lands;
 import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoid.playercontainer.PlayerContainerPlayer;

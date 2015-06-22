@@ -18,10 +18,8 @@
 package me.tabinol.factoid.selection.region;
 
 import me.tabinol.factoid.lands.areas.CuboidArea;
-import me.tabinol.factoidapi.lands.areas.ICuboidArea;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-
+import me.tabinol.factoid.lands.areas.Point;
+import me.tabinol.factoid.minecraft.FPlayer;
 
 /**
  * The Class ExpandAreaSelection.
@@ -33,7 +31,7 @@ public class ExpandAreaSelection extends ActiveAreaSelection implements PlayerMo
      *
      * @param player the player
      */
-    public ExpandAreaSelection(Player player) {
+    public ExpandAreaSelection(FPlayer player) {
 
         super(player);
     }
@@ -45,7 +43,7 @@ public class ExpandAreaSelection extends ActiveAreaSelection implements PlayerMo
      * @param player the player
      * @param area the area
      */
-    public ExpandAreaSelection(Player player, ICuboidArea area) {
+    public ExpandAreaSelection(FPlayer player, CuboidArea area) {
 
         super(player, area);
     }
@@ -58,7 +56,7 @@ public class ExpandAreaSelection extends ActiveAreaSelection implements PlayerMo
     public void playerMove() {
 
         removeSelection();
-        Location playerLoc = player.getLocation();
+        Point playerLoc = player.getLocation();
         
         // Check where the player is outside the land
         if(playerLoc.getBlockX() - 1 < area.getX1()) {

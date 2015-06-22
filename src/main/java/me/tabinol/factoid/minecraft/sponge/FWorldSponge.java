@@ -57,4 +57,13 @@ public class FWorldSponge implements FWorld {
 	    
 		return SpongeUtils.toPoint(world.getSpawnLocation());
     }
+
+	/**************************************************************************
+	 * Sponge only methods
+	 *************************************************************************/
+	
+	public World getWorld() {
+		
+		return world;
+	}
 }

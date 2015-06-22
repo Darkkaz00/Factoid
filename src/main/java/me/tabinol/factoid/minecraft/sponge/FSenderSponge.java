@@ -18,36 +18,23 @@
 
 package me.tabinol.factoid.minecraft.sponge;
 
-import java.util.UUID;
+import me.tabinol.factoid.minecraft.FSender;
 
 import org.spongepowered.api.text.TextBuilder;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.util.command.CommandSource;
-
-import me.tabinol.factoid.minecraft.FSender;
 
 public class FSenderSponge extends FSender {
 	
 	private final CommandSource sender;
 	
 	/**
-	 * Constructor for Console
+	 * Constructor for Console and players
 	 * @param sender
 	 */
 	public FSenderSponge(CommandSource sender) {
 		
 		super();
-		this.sender = sender;
-	}
-
-	/**
-	 * Constructor for Player
-	 * @param sender
-	 * @param uuid
-	 */
-	public FSenderSponge(CommandSource sender, UUID uuid) {
-		
-		super(uuid);
 		this.sender = sender;
 	}
 

@@ -15,22 +15,29 @@
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.tabinol.factoid.config.vanish;
 
-import org.bukkit.entity.Player;
+package me.tabinol.factoid.minecraft.sponge;
 
+import org.spongepowered.api.Game;
 
-/**
- * The Interface Vanish.
- */
-public interface Vanish {
-    
-    /**
-     * Checks if is vanished.
-     *
-     * @param player the player
-     * @return true, if is vanished
-     */
-    public boolean isVanished(Player player);
-    
+import me.tabinol.factoid.minecraft.DependPlugin;
+import me.tabinol.factoid.minecraft.EditWorld;
+import me.tabinol.factoid.minecraft.Vanish;
+
+public class DependPluginSponge extends DependPlugin {
+	
+    @SuppressWarnings("unused")
+    private final Game game;
+
+	public DependPluginSponge(Game game) {
+        
+    	this.game = game;
+    	
+    	// TODO Sponge plugins compatibility
+   		chat = new me.tabinol.factoid.minecraft.Chat();
+   		editWorld = new EditWorld();
+       	vanish = new Vanish();
+   		permission = new me.tabinol.factoid.minecraft.Permission();
+   		economy = new me.tabinol.factoid.minecraft.Economy();
+    }
 }

@@ -26,7 +26,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Scanner;
 
-// TODO: Auto-generated Javadoc
+// TODO Auto-generated Javadoc
 /**
  * The Class FileCopy.
  */

@@ -24,18 +24,28 @@ import java.util.logging.Logger;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.Factoid.ServerType;
+import me.tabinol.factoid.config.Config;
+import me.tabinol.factoid.config.bukkit.ConfigBukkit;
+import me.tabinol.factoid.exceptions.SignException;
+import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.minecraft.CallEvents;
 import me.tabinol.factoid.minecraft.ChatPaginator;
+import me.tabinol.factoid.minecraft.DependPlugin;
 import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.minecraft.FSign;
 import me.tabinol.factoid.minecraft.Server;
 import me.tabinol.factoid.minecraft.Task;
 import me.tabinol.factoid.utilities.FactoidRunnable;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.mcstats.MetricsLite;
@@ -85,6 +95,18 @@ public class ServerBukkit extends JavaPlugin implements Server {
         	Factoid.getServerCache().addPlayer(new FPlayerBukkit(player));
         }
 	}
+    
+    @Override
+    public Config newConfig() {
+    	
+    	return new ConfigBukkit(plugin);
+    }
+    
+    @Override
+	public DependPlugin newDependPlugin() {
+    	
+    	return new DependPluginBukkit();
+    }
     
 	@Override
     public Factoid getFactoid() {
@@ -193,4 +215,52 @@ public class ServerBukkit extends JavaPlugin implements Server {
 		}
 	    return names;
 	}
+
+	@Override
+    public String getBlockTypeName(Point point) {
+	    
+		World world = ((FWorldBukkit) point.getWorld()).getWorld();
+		
+		return world.getBlockAt(BukkitUtils.toLocation(world, point)).getType().name();
+    }
+
+	
+	public void removeBlockAndDropSign(Point point) {
+		
+		World world = ((FWorldBukkit) point.getWorld()).getWorld();
+		Location location = BukkitUtils.toLocation(world, point);
+		Block block = world.getBlockAt(location);
+		
+		block.setType(Material.AIR);
+		world.dropItem(location, new ItemStack(Material.SIGN, 1));
+	}
+
+	@Override
+    public void loadChunk(Point point) {
+
+		World world = ((FWorldBukkit) point.getWorld()).getWorld();
+
+		BukkitUtils.toLocation(world, point).getChunk().load();
+	}
+
+	@Override
+    public FSign getSign(Point point) throws SignException {
+	    
+		World world = ((FWorldBukkit) point.getWorld()).getWorld();
+		Location loc = BukkitUtils.toLocation(world, point);
+		Block block = loc.getBlock();
+		
+		if(block.getType() != Material.WALL_SIGN && block.getType() != Material.SIGN_POST) {
+			throw new SignException();
+		}
+
+		return new FSignBukkit(block);
+    }
+
+	@Override
+    public FSign createSign(Point point, float yaw, String[] lines, Land land,
+            boolean isWallSign) throws SignException {
+
+		return new FSignBukkit(point, yaw, lines, land, isWallSign);
+    }
 }

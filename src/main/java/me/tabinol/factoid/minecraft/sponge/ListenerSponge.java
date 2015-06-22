@@ -130,7 +130,7 @@ public class ListenerSponge implements Listener {
 		}
 
 		if(playerListener.onPlayerTeleport(player, SpongeUtils.toPoint(event.getNewLocation()),
-				false /* TODO: Support Ender pearl TP */ )) {
+				false /* TODO Support Ender pearl TP */ )) {
 			event.setCancelled(true);
 		}
 	}
@@ -300,7 +300,7 @@ public class ListenerSponge implements Listener {
 	}
 	
 	@Subscribe
-	// TODO: Hanging is not take in charge for now
+	// TODO Hanging is not take in charge for now
 	public void onLivingChangeHealth(LivingChangeHealthEvent event) {
 		
 		// Get the source player
@@ -314,7 +314,7 @@ public class ListenerSponge implements Listener {
 		Living entity = event.getEntity();
 		boolean isAnimal = entity instanceof Animal;
 		boolean isMonster = entity instanceof Monster;
-		boolean isTamedAndNotOwner = false; // TODO: Check if animal is tamed
+		boolean isTamedAndNotOwner = false; // TODO Check if animal is tamed
 		
 		FPlayer player = Factoid.getServerCache().getPlayer(mplayer.getUniqueId());
 
@@ -329,9 +329,9 @@ public class ListenerSponge implements Listener {
 		}
 	}
 	
-	// TODO: Bucket fill event
+	// TODO Bucket fill event
 
-	// TODO: Bucket empty event
+	// TODO Bucket empty event
 	
 	@Subscribe
 	public void onPlayerChangeBlock(PlayerChangeBlockEvent event) {
@@ -362,7 +362,7 @@ public class ListenerSponge implements Listener {
     	Point newLoc = playerListener.onPlayerRespawn(player, SpongeUtils.toPoint(event.getRespawnLocation()));
 		
     	if(newLoc != null) {
-    		// TODO: Yaw and Pitch
+    		// TODO Yaw and Pitch
     		event.setRespawnLocation(SpongeUtils.toLocation(event.getGame().getServer().getWorld(newLoc.getWorldName()).get(), 
     				newLoc));
     	}
@@ -396,11 +396,11 @@ public class ListenerSponge implements Listener {
 		}
 
 		if(playerListener.onBlockIgnite(player, SpongeUtils.toPoint(event.getBlock()))) {
-			// event.setCancelled(true); TODO: Block Ignite not cancellable?
+			// event.setCancelled(true); TODO Block Ignite not cancellable?
 		}
 	}
 	
-	// TODO: PotionSplash
+	// TODO PotionSplash
 	
 	@Subscribe
 	public void onPlayerChangeHealth(PlayerChangeHealthEvent event) {
@@ -419,7 +419,7 @@ public class ListenerSponge implements Listener {
 			}
 		}
 		
-		// TODO: Get the reason of gain change heal
+		// TODO Get the reason of gain change heal
 	}
 	
 	@Subscribe

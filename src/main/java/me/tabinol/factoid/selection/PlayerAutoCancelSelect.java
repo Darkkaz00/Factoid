@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 
 import me.tabinol.factoid.commands.executor.CommandCancel;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
-import me.tabinol.factoid.minecraft.FSender;
+import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.utilities.FactoidRunnable;
 
 
@@ -33,14 +33,14 @@ import me.tabinol.factoid.utilities.FactoidRunnable;
 public class PlayerAutoCancelSelect extends FactoidRunnable {
 
     /** The entry. */
-    private final FSender entry;
+    private final FPlayer entry;
 
     /**
      * Instantiates a new player auto cancel select.
      *
      * @param entry the entry
      */
-    public PlayerAutoCancelSelect(FSender entry) {
+    public PlayerAutoCancelSelect(FPlayer entry) {
 
         super();
         this.entry = entry;

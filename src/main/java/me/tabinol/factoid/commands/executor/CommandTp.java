@@ -17,8 +17,6 @@
  */
 package me.tabinol.factoid.commands.executor;
 
-import org.bukkit.Location;
-
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.CommandEntities;
 import me.tabinol.factoid.commands.CommandExec;
@@ -28,7 +26,6 @@ import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.parameters.FlagList;
 import me.tabinol.factoid.parameters.FlagValue;
 import me.tabinol.factoid.parameters.PermissionList;
-import me.tabinol.factoid.utilities.StringChanges;
 
 
 /**

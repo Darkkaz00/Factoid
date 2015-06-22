@@ -57,4 +57,13 @@ public class FWorldBukkit implements FWorld {
 
 		return BukkitUtils.toPoint(world.getSpawnLocation());
     }
+	
+	/**************************************************************************
+	 * Bukkit only methods
+	 *************************************************************************/
+	
+	public World getWorld() {
+		
+		return world;
+	}
 }

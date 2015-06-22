@@ -17,21 +17,13 @@
  */
 package me.tabinol.factoid.economy;
 
-import java.util.HashSet;
-
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.exceptions.SignException;
+import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.lands.areas.Point;
+import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.minecraft.FSign;
 import me.tabinol.factoid.utilities.ChatStyle;
-import me.tabinol.factoidapi.FactoidAPI;
-import me.tabinol.factoidapi.lands.ILand;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 
 /**
@@ -42,13 +34,13 @@ import org.bukkit.inventory.ItemStack;
 public class EcoSign {
 
 	/** The land. */
-	private final ILand land;
+	private final Land land;
 
 	/** The location. */
-	private final Location location;
+	private final Point location;
 	
 	/** The facing. */
-	private final BlockFace facing;
+	private final float yaw;
 	
 	/** The is wall sign. */
 	private final boolean isWallSign;
@@ -61,35 +53,34 @@ public class EcoSign {
 	 * @param player            the player
 	 * @throws SignException the sign exception
 	 */
-	public EcoSign(ILand land, Player player) throws SignException {
+	public EcoSign(Land land, FPlayer player) throws SignException {
 
-		@SuppressWarnings("deprecation")
-		Block targetBlock = player.getTargetBlock((HashSet<Byte>) null, 10);
-		Block testBlock;
+		Point targetBlock = player.getTargetBlockLocation();
+		Point testBlock;
 		this.land = land;
 
 		if(targetBlock == null) {
 			throw new SignException();
 		}
 		
-		testBlock = targetBlock.getRelative(BlockFace.UP);
-		if (testBlock.getType() == Material.AIR && land.isLocationInside(testBlock.getLocation())) {
+		testBlock = targetBlock.getNearPoint(0, 1, 0);
+		if (Factoid.getServer().getBlockTypeName(testBlock).equals("AIR") && land.isLocationInside(testBlock)) {
 
 			// If the block as air upside, put the block on top of it
-			location = testBlock.getLocation();
-			facing = signFacing(player.getLocation().getYaw());
+			location = testBlock;
+			yaw = player.getLocation().getYaw();
 			isWallSign = false;
 		
 		} else {
 			
 			// A Wall Sign
-			facing  = wallFacing(player.getLocation().getYaw());
-			testBlock = targetBlock.getRelative(facing);
-			if(testBlock.getType() != Material.AIR) {
+			yaw = player.getLocation().getYaw();
+			testBlock = targetBlock.getNearPoint(wallXDiff(yaw), 0, wallZDiff(yaw));
+			if(!Factoid.getServer().getBlockTypeName(testBlock).equals("AIR")) {
 				// Error no place to put the wall sign
 				throw new SignException();
 			}
-			location = testBlock.getLocation();
+			location = testBlock;
 			isWallSign = true;
 		}
 		
@@ -99,7 +90,7 @@ public class EcoSign {
 		}
 		
 		Factoid.getFactoidLog().write("SignToCreate: PlayerYaw: " + player.getLocation().getYaw() +
-				", Location: " + location.toString() + ", Facing: " + facing.name() +
+				", Location: " + location.toString() + ", Facing (yaw): " + yaw +
 				", isWallSign: " + isWallSign);
 	}
 	
@@ -110,26 +101,20 @@ public class EcoSign {
 	 * @param location the location
 	 * @throws SignException the sign exception
 	 */
-	public EcoSign(ILand land, Location location) throws SignException {
+	public EcoSign(Land land, Point location) throws SignException {
 		
 		this.land = land;
 		this.location = location;
 		
 		// Load chunk
-		location.getChunk().load();
+		Factoid.getServer().loadChunk(location);
 		
 		// Get Sign parameter
-		Block blockPlace = location.getBlock();
+		FSign sign = Factoid.getServer().getSign(location);
 		
-		if(blockPlace.getType() == Material.WALL_SIGN) {
-			isWallSign = true;
-		} else if(blockPlace.getType() == Material.SIGN_POST) {
-			isWallSign = false;
-		} else {
-			throw new SignException();
-		}
+		isWallSign = sign.isWallSign();
 		
-		this.facing = ((org.bukkit.material.Sign)((Sign) blockPlace.getState()).getData()).getFacing();
+		yaw = sign.getYaw();
 	}
 
 	/**
@@ -137,7 +122,7 @@ public class EcoSign {
 	 *
 	 * @return the location
 	 */
-	public Location getLocation() {
+	public Point getLocation() {
 
 		return location;
 	}
@@ -157,7 +142,7 @@ public class EcoSign {
 		lines[2] = "";
 		lines[3] = ChatStyle.BLUE + Factoid.getPlayerMoney().toFormat(price);
 
-		createSign(lines);
+		Factoid.getServer().createSign(location, yaw, lines, land, isWallSign);
 	}
 
 	/**
@@ -194,59 +179,9 @@ public class EcoSign {
 		lines[3] = ChatStyle.BLUE + Factoid.getPlayerMoney().toFormat(price)
 				+ "/" + renew;
 
-		createSign(lines);
+		Factoid.getServer().createSign(location, yaw, lines, land, isWallSign);
 	}
 
-	/**
-	 * Creates the sign.
-	 *
-	 * @param lines            the lines
-	 * @throws SignException the sign exception
-	 */
-	public void createSign(String[] lines) throws SignException {
-
-		Block blockPlace = location.getBlock();
-
-		// Impossible to create the sign here
-		if (FactoidAPI.iLands().getLand(location) != land) {
-			throw new SignException();
-		}
-
-		// Check if the facing block is solid
-		if (isWallSign) {
-			if(!blockPlace.getRelative(facing.getOppositeFace()).getType().isSolid()) {
-				throw new SignException();
-			}
-		} else {
-			if(!blockPlace.getRelative(BlockFace.DOWN).getType().isSolid()) {
-				throw new SignException();
-			}
-		}
-		
-		// Determinate material
-		Material mat;
-		if (isWallSign) {
-
-			mat = Material.WALL_SIGN;
-		} else {
-			mat = Material.SIGN_POST;
-		}
-
-		// Create sign
-		blockPlace.setType(mat);
-
-		Sign sign = (Sign) blockPlace.getState();
-
-		// Add lines
-		for (int t = 0; t <= 3; t++) {
-			sign.setLine(t, lines[t]);
-		}
-
-		// Set facing
-		((org.bukkit.material.Sign) sign.getData()).setFacingDirection(facing);
-		
-		sign.update();
-	}
 
 	/**
 	 * Removes the sign.
@@ -261,98 +196,48 @@ public class EcoSign {
 	 *
 	 * @param oldSignLocation the old sign location
 	 */
-	public void removeSign(Location oldSignLocation) {
+	public void removeSign(Point oldSignLocation) {
 
-		Block block = oldSignLocation.getBlock();
-		
-		block.getChunk().load();
+		Factoid.getServer().loadChunk(oldSignLocation);
 
 		// Remove only if it is a sign;
-		if (block.getType() == Material.SIGN_POST
-				|| block.getType() == Material.WALL_SIGN) {
-			block.setType(Material.AIR);
-			
-			//Drop item
-			oldSignLocation.getWorld().dropItem(oldSignLocation, new ItemStack(Material.SIGN, 1));
+		if (Factoid.getServer().getBlockTypeName(oldSignLocation).contains("SIGN")) {
+			Factoid.getServer().removeBlockAndDropSign(oldSignLocation);
 		}
 	}
 
-	/**
-	 * Sign facing.
-	 *
-	 * @param yaw the yaw
-	 * @return the block face
-	 */
-	private BlockFace signFacing(float yaw) {
-
-		BlockFace facing;
-
-		if(yaw < 0) {
-			yaw += 360;
-		}
-
-		if (yaw > 360 -11.25 || yaw <= 11.25) {
-			facing = BlockFace.NORTH;
-		} else if (yaw <= (360/16*2) - 11.25) {
-			facing = BlockFace.NORTH_NORTH_EAST;
-		} else if (yaw <= (360/16*3) - 11.25) {
-			facing = BlockFace.NORTH_EAST;
-		} else if (yaw <= (360/16*4) - 11.25) {
-			facing = BlockFace.EAST_NORTH_EAST;
-		} else if (yaw <= (360/16*5) - 11.25) {
-			facing = BlockFace.EAST;
-		} else if (yaw <= (360/16*6) - 11.25) {
-			facing = BlockFace.EAST_SOUTH_EAST;
-		} else if (yaw <= (360/16*7) - 11.25) {
-			facing = BlockFace.SOUTH_EAST;
-		} else if (yaw <= (360/16*8) - 11.25) {
-			facing = BlockFace.SOUTH_SOUTH_EAST;
-		} else if (yaw <= (360/16*9) - 11.25) {
-			facing = BlockFace.SOUTH;
-		} else if (yaw <= (360/16*10) - 11.25) {
-			facing = BlockFace.SOUTH_SOUTH_WEST;
-		} else if (yaw <= (360/16*11) - 11.25) {
-			facing = BlockFace.SOUTH_WEST;
-		} else if (yaw <= (360/16*12) - 11.25) {
-			facing = BlockFace.WEST_SOUTH_WEST;
-		} else if (yaw <= (360/16*13) - 11.25) {
-			facing = BlockFace.WEST;
-		} else if (yaw <= (360/16*14) - 11.25) {
-			facing = BlockFace.WEST_NORTH_WEST;
-		} else if (yaw <= (360/16*15) - 11.25) {
-			facing = BlockFace.NORTH_WEST;
-		} else {
-			facing = BlockFace.NORTH_NORTH_WEST;
-		}
-		
-		return facing;
-	}
 	
-	/**
-	 * Wall facing.
-	 *
-	 * @param yaw the yaw
-	 * @return the block face
-	 */
-	private BlockFace wallFacing(float yaw) {
-		
-		BlockFace facing;
+	private int wallXDiff(float yaw) {
 		
 		if(yaw < 0) {
 			yaw += 360;
 		}
-		
+
 		if(yaw > 315 || yaw <= 45) {
-			facing = BlockFace.NORTH;
+			return 0;
 		} else if(yaw <= 135) {
-			facing = BlockFace.EAST;
+			return 1;
 		} else if(yaw <= 225) {
-			facing = BlockFace.SOUTH;
+			return 0;
 		} else {
-			facing = BlockFace.WEST;
+			return -1;
 		}
-		
-		return facing;
 	}
 
+	private int wallZDiff(float yaw) {
+		
+		if(yaw < 0) {
+			yaw += 360;
+		}
+
+		if(yaw > 315 || yaw <= 45) {
+			return -1;
+		} else if(yaw <= 135) {
+			return 0;
+		} else if(yaw <= 225) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
 }

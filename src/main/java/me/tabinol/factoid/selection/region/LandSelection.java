@@ -18,10 +18,11 @@
 package me.tabinol.factoid.selection.region;
 
 import java.util.TreeMap;
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.lands.areas.ICuboidArea;
+
+import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.lands.areas.CuboidArea;
+import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.selection.PlayerSelection.SelectionType;
-import org.bukkit.entity.Player;
 
 
 /**
@@ -30,10 +31,10 @@ import org.bukkit.entity.Player;
 public class LandSelection extends RegionSelection {
 
     /** The land. */
-    private final ILand land;
+    private final Land land;
     
     /** The visual areas. */
-    private final TreeMap<ICuboidArea, AreaSelection> visualAreas; // Visuals arealist
+    private final TreeMap<CuboidArea, AreaSelection> visualAreas; // Visuals arealist
     
     /**
      * Instantiates a new land selection.
@@ -41,14 +42,14 @@ public class LandSelection extends RegionSelection {
      * @param player the player
      * @param land the land
      */
-    public LandSelection(Player player, ILand land) {
+    public LandSelection(FPlayer player, Land land) {
         
         super(SelectionType.LAND, player);
         this.land = land;
-        visualAreas = new TreeMap<ICuboidArea, AreaSelection>();
+        visualAreas = new TreeMap<CuboidArea, AreaSelection>();
         
         // Add visual areas
-        for(ICuboidArea area : land.getAreas()) {
+        for(CuboidArea area : land.getAreas()) {
             visualAreas.put(area, new AreaSelection(player, area, true));
         }
     }
@@ -58,7 +59,7 @@ public class LandSelection extends RegionSelection {
      *
      * @return the land
      */
-    public ILand getLand() {
+    public Land getLand() {
         
         return land;
     }

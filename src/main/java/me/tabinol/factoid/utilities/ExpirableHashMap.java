@@ -21,7 +21,7 @@ import java.util.HashMap;
 
 import me.tabinol.factoid.Factoid;
 
-// TODO: Auto-generated Javadoc
+// TODO Auto-generated Javadoc
 /**
  * The Class ExpirableTreeMap.
  *

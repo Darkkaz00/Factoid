@@ -15,12 +15,13 @@
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.tabinol.factoid.config.vanish;
+package me.tabinol.factoid.minecraft.bukkit.plugins;
 
-import me.tabinol.factoid.BKVersion;
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.minecraft.Vanish;
+import me.tabinol.factoid.minecraft.bukkit.FPlayerBukkit;
 
-import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 
 // import org.kitteh.vanish.VanishPlugin;
@@ -30,31 +31,21 @@ import org.bukkit.metadata.MetadataValue;
  *
  * @author michel
  */
-public class VanishNoPacket implements Vanish {
-
-    // private final VanishPlugin vanishNoPacket;
-
-    /**
-     * Instantiates a new vanish no packet.
-     */
-    public VanishNoPacket() {
-
-        // vanishNoPacket = (VanishPlugin) Factoid.getDependPlugin().getVanishNoPacket();
-    }
+public class VanishNoPacket extends Vanish {
 
     /* (non-Javadoc)
      * @see me.tabinol.factoid.config.vanish.Vanish#isVanished(org.bukkit.entity.Player)
      */
     @Override
-    public boolean isVanished(Player player) {
+    public boolean isVanished(FPlayer player) {
 
-        if((Factoid.getConf().isSpectatorIsVanish() 
-        		&& BKVersion.isSpectatorMode(player))) {
+        if(Factoid.getConf().isSpectatorIsVanish() 
+        		&& player.getGameMode().equals("SPECTATOR")) {
         	return true;
         }
     	
     	// return vanishNoPacket.getManager().isVanished(player);
-        for(MetadataValue value : player.getMetadata("vanished")) {
+        for(MetadataValue value : ((FPlayerBukkit) player).getPlayer().getMetadata("vanished")) {
             return value.asBoolean();
         }
         

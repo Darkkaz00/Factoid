@@ -26,8 +26,6 @@ import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.playercontainer.PlayerContainerPlayer;
 import me.tabinol.factoid.utilities.FactoidRunnable;
 
-import org.bukkit.scheduler.BukkitRunnable;
-
 public class EcoScheduler extends FactoidRunnable {
 
     /* (non-Javadoc)

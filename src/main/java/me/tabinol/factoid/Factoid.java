@@ -20,25 +20,20 @@ package me.tabinol.factoid;
 
 import me.tabinol.factoid.cache.ServerCache;
 import me.tabinol.factoid.config.Config;
-import me.tabinol.factoid.config.DependPlugin;
 import me.tabinol.factoid.economy.EcoScheduler;
-import me.tabinol.factoid.economy.PlayerMoney;
 import me.tabinol.factoid.factions.Factions;
-import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.lands.Lands;
 import me.tabinol.factoid.lands.approve.ApproveNotif;
-import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.lands.types.Types;
+import me.tabinol.factoid.minecraft.DependPlugin;
+import me.tabinol.factoid.minecraft.Economy;
 import me.tabinol.factoid.minecraft.Server;
 import me.tabinol.factoid.parameters.Parameters;
-import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoid.playerscache.PlayersCache;
-import me.tabinol.factoid.scoreboard.ScoreBoard;
 import me.tabinol.factoid.storage.StorageThread;
 import me.tabinol.factoid.utilities.Lang;
 import me.tabinol.factoid.utilities.Log;
 import me.tabinol.factoid.utilities.MavenAppProperties;
-import me.tabinol.factoid.playercontainer.PlayerContainerType;
 
 /**
  * Main class for both (Bukkit and Sponge).
@@ -74,7 +69,7 @@ public class Factoid {
     protected static Parameters parameters;
     
     /** The player money. */
-    private static PlayerMoney playerMoney;
+    private static Economy playerMoney;
     
     /** The language. */
     private static Lang language;
@@ -94,17 +89,14 @@ public class Factoid {
     /** The approve notif. */
     private static ApproveNotif approveNotif;
     
+    /** The depend plugin. */
+    private static DependPlugin dependPlugin;
+
     /**  The economy scheduler. */
     private EcoScheduler ecoScheduler;
     
     /** The conf. */
     private static Config conf;
-    
-    /** The depend plugin. */
-    private DependPlugin dependPlugin;
-    
-    /** The Scoreboard. */
-    private ScoreBoard Scoreboard;
     
     /**************************************************************************
      * Static methods (gets)
@@ -140,7 +132,7 @@ public class Factoid {
         return language;
     }
     
-    public static PlayerMoney getPlayerMoney() {
+    public static Economy getPlayerMoney() {
 
         return playerMoney;
     }
@@ -190,6 +182,11 @@ public class Factoid {
     	return approveNotif;
     }
     
+    public static DependPlugin getDependPlugin() {
+    	
+    	return dependPlugin;
+    }
+    
     /**************************************************************************
      * Server init, start and stop
      *************************************************************************/
@@ -206,20 +203,20 @@ public class Factoid {
         mavenAppProperties.loadProperties();
         
         // Init Server access (Minecraft/Sponge)
-        Factoid.getServer().initServer();
+        minecraftServer.initServer();
         
         // Init API
-        // TODO: FactoidAPI Re-Enable FactoidAPI.initFactoidPluginAccess();
+        // TODO FactoidAPI Re-Enable FactoidAPI.initFactoidPluginAccess();
         
         // Init Factoid
         serverCache = new ServerCache();
         parameters = new Parameters();
         types = new Types();
-        conf = new Config();
+        conf = minecraftServer.newConfig();
         log = new Log();
-        dependPlugin = new DependPlugin();
+        dependPlugin = minecraftServer.newDependPlugin();
         if (conf.useEconomy() == true && dependPlugin.getEconomy() != null) {
-            playerMoney = new PlayerMoney();
+            playerMoney = new Economy();
         } else {
             playerMoney = null;
         }
@@ -228,7 +225,6 @@ public class Factoid {
         factions = new Factions();
         lands = new Lands();
         storageThread.loadAllAndStart();
-        Scoreboard = new ScoreBoard();
         approveNotif = new ApproveNotif();
         approveNotif.runApproveNotifLater();
         ecoScheduler = new EcoScheduler();
@@ -247,7 +243,7 @@ public class Factoid {
         // No reload of Parameters to avoid Deregistering external parameters
         conf.reloadConfig();
         if (conf.useEconomy() == true && dependPlugin.getEconomy() != null) {
-            playerMoney = new PlayerMoney();
+            playerMoney = new Economy();
         } else {
             playerMoney = null;
         }
@@ -269,90 +265,4 @@ public class Factoid {
         approveNotif.stopNextRun();
         storageThread.stopNextRun();
     }
-
-    /**************************************************************************
-     * Non-Static methods (gets)
-     *************************************************************************/
-
-    /**
-     * I scoreboard.
-     *
-     * @return the score board
-     */
-    public ScoreBoard iScoreboard() {
-
-        return Scoreboard;
-    }
-
-    /* (non-Javadoc)
-     * @see me.tabinol.factoidapi.IFactoid#iFactions()
-     */
-    public Factions iFactions() {
-    	
-    	return factions;
-    }
-    
-    /* (non-Javadoc)
-     * @see me.tabinol.factoidapi.IFactoid#iParameters()
-     */
-    public Parameters iParameters() {
-    	
-    	return parameters;
-    }
-    
-    /* (non-Javadoc)
-     * @see me.tabinol.factoidapi.IFactoid#iLands()
-     */
-    public Lands iLands() {
-    	
-    	return lands;
-    }
-    
-    public Types iTypes() {
-    	
-    	return types;
-    }
-
-    /**
-     * I depend plugin.
-     *
-     * @return the depend plugin
-     */
-    public DependPlugin iDependPlugin() {
-
-        return dependPlugin;
-    }
-
-    /**
-     * I approve notif.
-     *
-     * @return the approve notif
-     */
-    public ApproveNotif iApproveNotif() {
-
-        return approveNotif;
-    }
-
-    /*
-     * Creators to forward
-     */
-    
-    /* (non-Javadoc)
-     * @see me.tabinol.factoidapi.IFactoid#createPlayerContainer(me.tabinol.factoidapi.lands.ILand, me.tabinol.factoid.playercontainer.PlayerContainerType, java.lang.String)
-     */
-    public PlayerContainer createPlayerContainer(Land land, 
-    		PlayerContainerType pct, String name) {
-    	
-    	return PlayerContainer.create(land, pct, name);
-    }
-
-    /* (non-Javadoc)
-     * @see me.tabinol.factoidapi.IFactoid#createCuboidArea(java.lang.String, int, int, int, int, int, int)
-     */
-    public CuboidArea createCuboidArea(String worldName, int x1, int y1, 
-    		int z1, int x2, int y2, int z2) {
-    	
-    	return new CuboidArea(worldName, x1, y1, z1, x2, y2, z2);
-    }
-    
 }

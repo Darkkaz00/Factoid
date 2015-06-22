@@ -15,18 +15,20 @@
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.tabinol.factoid.config.chat;
+package me.tabinol.factoid.minecraft.bukkit.plugins;
 
-import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.minecraft.Chat;
+import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.minecraft.bukkit.FPlayerBukkit;
 
-import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import com.earth2me.essentials.Essentials;
 
 /**
  * The Class ChatEssentials.
  */
-public class ChatEssentials implements Chat {
+public class ChatEssentials extends Chat {
 
     /** The essentials. */
     private final Essentials essentials;
@@ -34,27 +36,27 @@ public class ChatEssentials implements Chat {
     /**
      * Instantiates a new chat essentials.
      */
-    public ChatEssentials() {
+    public ChatEssentials(Plugin plugin) {
         
-        essentials = (Essentials)Factoid.getDependPlugin().getEssentials();
+        essentials = (Essentials) plugin;
     }
 
     /* (non-Javadoc)
      * @see me.tabinol.factoid.config.chat.Chat#isSpy(org.bukkit.entity.Player)
      */
     @Override
-	public boolean isSpy(Player player) {
+	public boolean isSpy(FPlayer player) {
 		
-    	return essentials.getUser(player).isSocialSpyEnabled();
+    	return essentials.getUser(((FPlayerBukkit) player).getPlayer()).isSocialSpyEnabled();
 	}
 
 	/* (non-Javadoc)
 	 * @see me.tabinol.factoid.config.chat.Chat#isMuted(org.bukkit.entity.Player)
 	 */
 	@Override
-	public boolean isMuted(Player player) {
+	public boolean isMuted(FPlayer player) {
 		
-		return essentials.getUser(player).isMuted();
+		return essentials.getUser(((FPlayerBukkit) player).getPlayer()).isMuted();
 	}
 
 }

@@ -29,6 +29,7 @@ import me.tabinol.factoid.config.BannedWords;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.exceptions.FactoidLandException;
 import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.lands.collisions.Collisions.LandAction;
 import me.tabinol.factoid.lands.types.Type;
 import me.tabinol.factoid.parameters.PermissionList;
@@ -36,6 +37,7 @@ import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoid.playercontainer.PlayerContainerNobody;
 import me.tabinol.factoid.selection.PlayerSelection.SelectionType;
 import me.tabinol.factoid.selection.region.AreaSelection;
+import me.tabinol.factoid.utilities.ChatStyle;
 
 /**
  * The Class CommandCreate.
@@ -145,6 +147,6 @@ public class CommandCreate extends CommandExec {
         // Cancel and select the land
         new CommandCancel(entity.player, true).commandExecute();
         new CommandSelect(entity.player, new ArgList(new String[] {land.getName()}, 
-                entity.player), null).commandExecute();
+                entity.sender), null).commandExecute();
     }
 }
