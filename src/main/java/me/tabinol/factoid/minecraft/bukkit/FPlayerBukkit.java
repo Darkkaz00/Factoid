@@ -98,20 +98,6 @@ public class FPlayerBukkit extends FSenderBukkit implements FPlayer {
 		player.teleport(BukkitUtils.toLocation(Bukkit.getWorld(newLocation.getWorldName()), newLocation));
     }
 	
-	/**************************************************************************
-	 * Bukkit only methods
-	 * ***********************************************************************/
-	
-	public OfflinePlayer getOfflinePlayer() {
-		
-		return offlinePlayer;
-	}
-	
-	public Player getPlayer() {
-		
-		return player;
-	}
-
 	@SuppressWarnings("deprecation")
     @Override
     public void sendBlockChange(Point loc, String blockType, byte by) {
@@ -131,4 +117,54 @@ public class FPlayerBukkit extends FSenderBukkit implements FPlayer {
 
 		return player.getItemInHand().getType().name();
     }
+
+	@Override
+    public int getFoodLevel() {
+
+		return player.getFoodLevel();
+    }
+
+	@Override
+    public void setFoodLevel(int level) {
+
+		player.setFoodLevel(level);
+    }
+
+	@Override
+    public double getMaxHealth() {
+
+		return player.getMaxHealth();
+    }
+
+	@Override
+    public double getHealth() {
+
+		return player.getHealth();
+    }
+
+	@Override
+    public void setHealth(double health) {
+
+		player.setHealth(health);
+    }
+
+	@Override
+    public boolean isDead() {
+	    
+	    return player.isDead();
+    }
+
+	/**************************************************************************
+	 * Bukkit only methods
+	 * ***********************************************************************/
+	
+	public OfflinePlayer getOfflinePlayer() {
+		
+		return offlinePlayer;
+	}
+	
+	public Player getPlayer() {
+		
+		return player;
+	}
 }

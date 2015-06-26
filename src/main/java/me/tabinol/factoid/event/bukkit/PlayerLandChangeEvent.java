@@ -21,7 +21,9 @@ import me.tabinol.factoid.lands.DummyLand;
 import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.minecraft.bukkit.FPlayerBukkit;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
@@ -120,13 +122,23 @@ public class PlayerLandChangeEvent extends LandEvent implements Cancellable {
     }
     
     /**
-     * Gets the player.
+     * Gets the Factoid player.
      *
      * @return the player
      */
-    public FPlayer getPlayer() {
+    public FPlayer getFPlayer() {
         
         return player;
+    }
+    
+    /**
+     * Gets the Bukkit player.
+     *
+     * @return the player
+     */
+    public Player getPlayer() {
+        
+        return ((FPlayerBukkit) player).getPlayer();
     }
     
     /**

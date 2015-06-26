@@ -20,43 +20,24 @@ package me.tabinol.factoid.listeners;
 import java.util.Map;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.factions.Faction;
+import me.tabinol.factoid.lands.DummyLand;
+import me.tabinol.factoid.lands.areas.Point;
+import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.parameters.FlagList;
+import me.tabinol.factoid.playercontainer.PlayerContainerPlayer;
 import me.tabinol.factoid.utilities.ExpirableHashMap;
-import me.tabinol.factoidapi.config.players.IPlayerConfEntry;
-import me.tabinol.factoidapi.config.players.IPlayerStaticConfig;
-import me.tabinol.factoidapi.factions.IFaction;
-import me.tabinol.factoidapi.lands.IDummyLand;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainerPlayer;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.BlockSpreadEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 /**
  * PVP Listener
  */
-public class PvpListener extends CommonListener implements Listener {
+public class PvpListener extends CommonListener {
 
 	/** The Constant FIRE_EXPIRE. */
 	public final static long FIRE_EXPIRE = 20 * 30;
 
-	/** The player conf. */
-	private IPlayerStaticConfig playerConf;
-
 	/** The player fire location. */
-	private ExpirableHashMap<Location, IPlayerContainerPlayer> playerFireLocation;
+	private ExpirableHashMap<Point, PlayerContainerPlayer> playerFireLocation;
 
 	/**
 	 * Instantiates a new pvp listener.
@@ -64,151 +45,89 @@ public class PvpListener extends CommonListener implements Listener {
 	public PvpListener() {
 
 		super();
-		playerConf = Factoid.getPlayerConf();
-		playerFireLocation = new ExpirableHashMap<Location, IPlayerContainerPlayer>(FIRE_EXPIRE);
+		playerFireLocation = new ExpirableHashMap<Point, PlayerContainerPlayer>(FIRE_EXPIRE);
 	}
 
-	/**
-	 * On entity damage by entity.
-	 *
-	 * @param event the event
-	 */
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+	public boolean onPlayerDamageByPlayer(FPlayer player, FPlayer victime, Point locPlayer, Point locVictime) {
 
-		IPlayerConfEntry entry;
-		IPlayerConfEntry entryVictim;
+		DummyLand land = Factoid.getLands().getLandOrOutsideArea(locVictime);
+		DummyLand landSource = Factoid.getLands().getLandOrOutsideArea(locPlayer);
 
-		// Check if a player break a ItemFrame
-		Player player = getSourcePlayer(event.getDamager());
-
-		if (player != null) {
-			IDummyLand land = Factoid.getLands().getLandOrOutsideArea(
-					event.getEntity().getLocation());
-			Entity entity = event.getEntity();
-
-			// For PVP
-			if (entity instanceof Player &&  (entry = playerConf.get(player)) != null
-					&& (entryVictim = playerConf.get((Player) entity)) != null
-					&& !isPvpValid(land, entry.getPlayerContainer(),
-							entryVictim.getPlayerContainer())) {
-				event.setCancelled(true);
-			}
+		// For PVP
+		if (!isPvpValid(land, landSource, player.getPlayerContainer(), victime.getPlayerContainer())) {
+			return true;
 		}
+		
+		return false;
 	}
 
-	/**
-	 * On block place.
-	 *
-	 * @param event the event
-	 */
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onBlockPlace(BlockPlaceEvent event) {
+	public void onBlockPlaceMonitor(FPlayer player, String blockType, Point loc) {
 		
-		if(event.getBlockPlaced().getType() == Material.FIRE) {
+		if(blockType.equals("FIRE")) {
 			
-			Player player = event.getPlayer();
-			checkForPvpFire(event, player);
+			checkForPvpFire(loc, player);
 		}
-		
 	}
 
-	/**
-	 * On block ignite.
-	 * 
-	 * @param event
-	 *            the event
-	 */
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onBlockIgnite(BlockIgniteEvent event) {
+	public void onBlockIgniteMonitor(FPlayer player, Point point) {
 
-		Player player = event.getPlayer();
-		checkForPvpFire(event, player);
+		checkForPvpFire(point, player);
 	}
 	
-	/**
-	 * On block spread.
-	 *
-	 * @param event the event
-	 */
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onBlockSpread(BlockSpreadEvent event) {
+	public void onBlockSpreadMonitor(Point source, Point location) {
 		
-		Block blockSource = event.getSource();
-		IPlayerContainerPlayer pc = playerFireLocation.get(blockSource.getLocation());
+		PlayerContainerPlayer pc = playerFireLocation.get(source);
 		
 		if(pc != null) {
 			
 			// Add fire for pvp listen
-			playerFireLocation.put(event.getBlock().getLocation(), pc);
+			playerFireLocation.put(location, pc);
 		}
 	}
 	
-	/**
-	 * On entity damage.
-	 *
-	 * @param event the event
-	 */
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onEntityDamage(EntityDamageEvent event) {
+	public boolean onPlayerDamage(FPlayer player, Point loc, String cause, String blockType) {
 		
 		// Check for fire cancel
-		if(event.getEntity() instanceof Player && 
-				(event.getCause() == DamageCause.FIRE
-				|| event.getCause() == DamageCause.FIRE_TICK)) {
+		if(cause.contains("FIRE")) {
 			
-			Player player = (Player) event.getEntity();
-			IPlayerConfEntry entry = playerConf.get(player);
+			DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 			
-			if(entry != null) {
-				Location loc = player.getLocation();
-				IDummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
+			// Check for fire near the player
+			for(Map.Entry<Point, PlayerContainerPlayer> fireEntry : playerFireLocation.entrySet()) {
 				
-				// Check for fire near the player
-				for(Map.Entry<Location, IPlayerContainerPlayer> fireEntry : playerFireLocation.entrySet()) {
-					
-					if(loc.getWorld() == fireEntry.getKey().getWorld() 
-							&& loc.distanceSquared(fireEntry.getKey()) < 5) {
-						Block block = loc.getBlock();
-						if((block.getType() == Material.FIRE || block.getType() == Material.AIR) 
-								&& !isPvpValid(land, fireEntry.getValue(), entry.getPlayerContainer())) {
-							
-							// remove fire
-							Factoid.getFactoidLog().write("Anti-pvp from " 
-									+ entry.getPlayerContainer().getPlayer().getName()
-									+ " to " + player.getName());
-							block.setType(Material.AIR);
-							player.setFireTicks(0);
-							event.setDamage(0);
-							event.setCancelled(true);
-						}
+				if(loc.getWorld() == fireEntry.getKey().getWorld() 
+						&& loc.distance(fireEntry.getKey()) < 5) {
+					if((blockType.equals("FIRE") || blockType.equals("AIR")) 
+							&& !isPvpValid(land, land, fireEntry.getValue(), player.getPlayerContainer())) {
+						
+						// remove fire
+						Factoid.getFactoidLog().write("Anti-pvp from " 
+								+ player.getPlayerContainer().getPlayer().getName()
+								+ " to " + player.getName());
+						return true;
 					}
 				}
 			}
 		}
+		
+		return false;
 	}
 	
 	/**
 	 * Check when a player deposits fire and add it to list
 	 *
-	 * @param event the event
+	 * @param point the bloc location
 	 * @param player the player
 	 */
-	private void checkForPvpFire(BlockEvent event, Player player) {
+	private void checkForPvpFire(Point point, FPlayer player) {
 		
-		IPlayerConfEntry entry;
-		
-		if (player != null && (entry = playerConf.get(player)) != null) {
+		DummyLand land = Factoid.getLands().getLandOrOutsideArea(point);
 
-			Location loc = event.getBlock().getLocation();
-			IDummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
-
-			if (land.getFlagAndInherit(FlagList.FULL_PVP.getFlagType()).getValueBoolean() == false
-					|| land.getFlagAndInherit(FlagList.FULL_PVP.getFlagType()).getValueBoolean() == false) {
+		if (land.getFlagAndInherit(FlagList.FULL_PVP.getFlagType()).getValueBoolean() == false
+				|| land.getFlagAndInherit(FlagList.FULL_PVP.getFlagType()).getValueBoolean() == false) {
 				
-				// Add fire for pvp listen
-				playerFireLocation.put(loc, entry.getPlayerContainer());
-			}
+			// Add fire for pvp listen
+			playerFireLocation.put(point, player.getPlayerContainer());
 		}
 	}
 	
@@ -216,17 +135,45 @@ public class PvpListener extends CommonListener implements Listener {
 	 * Checks if pvp is valid.
 	 *
 	 * @param land the land
+	 * @param land the land of the attacker
 	 * @param attacker the attacker
 	 * @param victim the victim
 	 * @return true, if is pvp valid
 	 */
-	private boolean isPvpValid(IDummyLand land, IPlayerContainerPlayer attacker, 
-			IPlayerContainerPlayer victim) {
+	private boolean isPvpValid(DummyLand land, DummyLand landSource, PlayerContainerPlayer attacker, 
+			PlayerContainerPlayer victim) {
 		
-		IFaction faction = Factoid.getFactions().getPlayerFaction(attacker);
-		IFaction factionVictime = Factoid.getFactions().getPlayerFaction(victim);
+		Faction faction = Factoid.getFactions().getPlayerFaction(attacker);
+		Faction factionVictim = Factoid.getFactions().getPlayerFaction(victim);
 
-		if (faction != null && faction == factionVictime
+		boolean result = isPvpValid(land, faction, factionVictim);
+		
+		if(result) {
+			
+			// Check if the atacker is in the land
+			if(land == landSource) {
+				return true;
+			} else {
+				return isPvpValid(landSource, faction, factionVictim);
+			}
+		}
+		
+		return false;
+	}
+		
+	/**
+	 * Checks if pvp is valid.
+	 *
+	 * @param land the land
+	 * @param faction the attacker faction
+	 * @param factionVictim the victim faction
+	 * @return true, if is pvp valid
+	 */
+	private boolean isPvpValid(DummyLand land, Faction faction, 
+			Faction factionVictim) {
+
+
+		if (faction != null && faction == factionVictim
 				&& land.getFlagAndInherit(FlagList.FACTION_PVP.getFlagType()).getValueBoolean() == false) {
 				
 			return false;

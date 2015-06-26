@@ -23,6 +23,7 @@ import java.util.UUID;
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.minecraft.FPlayer;
 
+import org.spongepowered.api.data.manipulator.entity.FoodData;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.world.Location;
 
@@ -106,4 +107,49 @@ public class FPlayerSponge extends FSenderSponge implements FPlayer {
 			return null;
 		}
     }
+
+	@Override
+    public int getFoodLevel() {
+	    
+		return (int) player.getData(FoodData.class).get().getFoodLevel();
+    }
+
+	@Override
+    public void setFoodLevel(int level) {
+
+		player.getData(FoodData.class).get().setFoodLevel(level);
+    }
+
+	@Override
+    public double getMaxHealth() {
+
+		return player.getHealthData().getMaxHealth();
+    }
+
+	@Override
+    public double getHealth() {
+
+		return player.getHealthData().getHealth();
+    }
+
+	@Override
+    public void setHealth(double health) {
+
+		player.getHealthData().setHealth(health);
+    }
+
+	@Override
+    public boolean isDead() {
+	    
+	    return player.getHealthData().getHealth() <= 0;
+    }
+
+	/**************************************************************************
+	 * Sponge only methods
+	 * ***********************************************************************/
+
+	public Player getPlayer() {
+		
+		return player;
+	}
 }

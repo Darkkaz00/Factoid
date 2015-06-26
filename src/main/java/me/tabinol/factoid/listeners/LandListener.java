@@ -20,45 +20,33 @@ package me.tabinol.factoid.listeners;
 import java.util.ArrayList;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.lands.DummyLand;
+import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.lands.areas.Point;
+import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.parameters.FlagList;
 import me.tabinol.factoid.parameters.PermissionList;
 import me.tabinol.factoid.parameters.PermissionType;
-import me.tabinol.factoidapi.config.players.IPlayerStaticConfig;
-import me.tabinol.factoidapi.event.PlayerContainerAddNoEnterEvent;
-import me.tabinol.factoidapi.event.PlayerContainerLandBanEvent;
-import me.tabinol.factoidapi.event.PlayerLandChangeEvent;
-import me.tabinol.factoidapi.lands.IDummyLand;
-import me.tabinol.factoidapi.lands.ILand;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainer;
-import me.tabinol.factoidapi.playercontainer.IPlayerContainerPlayer;
-
-import org.bukkit.ChatStyle;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scheduler.BukkitRunnable;
-
+import me.tabinol.factoid.playercontainer.PlayerContainer;
+import me.tabinol.factoid.playercontainer.PlayerContainerPlayer;
+import me.tabinol.factoid.utilities.ChatStyle;
+import me.tabinol.factoid.utilities.FactoidRunnable;
 
 /**
  * Land listener
  */
-public class LandListener extends CommonListener implements Listener {
+public class LandListener extends CommonListener {
 
     /** The player heal. */
-    private final ArrayList<Player> playerHeal;
+    private final ArrayList<FPlayer> playerHeal;
     
     /** The land heal. */
     private final LandHeal landHeal;
     
-    /** The player conf. */
-    private final IPlayerStaticConfig playerConf;
-
     /**
      * The Class LandHeal.
      */
-    private class LandHeal extends BukkitRunnable {
+    private class LandHeal extends FactoidRunnable {
 
         /* (non-Javadoc)
          * @see java.lang.Runnable#run()
@@ -70,7 +58,7 @@ public class LandListener extends CommonListener implements Listener {
             double health;
             double maxHealth;
 
-            for (Player player : playerHeal) {
+            for (FPlayer player : playerHeal) {
                 if (!player.isDead()) {
                     Factoid.getFactoidLog().write("Healing: " + player.getName());
                     foodLevel = player.getFoodLevel();
@@ -101,30 +89,20 @@ public class LandListener extends CommonListener implements Listener {
     public LandListener() {
 
         super();
-        playerConf = Factoid.getPlayerConf();
-        playerHeal = new ArrayList<Player>();
+        playerHeal = new ArrayList<FPlayer>();
         landHeal = new LandHeal();
-        landHeal.runTaskTimer(Factoid.getThisPlugin(), 20, 20);
-
+        Factoid.getServer().createTask(landHeal, 20l, true);
     }
 
     // Must be running before PlayerListener
-    /**
-     * On player quit.
-     *
-     * @param event the event
-     */
-    @EventHandler(priority = EventPriority.LOW)
-    public void onPlayerQuit(PlayerQuitEvent event) {
+    public void onPlayerQuitMonitor(FPlayer player) {
 
-        Player player = event.getPlayer();
-
-        IDummyLand land = playerConf.get(player).getLastLand();
+        DummyLand land = player.getLastLand();
 
         // Notify for quit
-        while (land instanceof ILand) {
-            notifyPlayers((ILand)land, "ACTION.PLAYEREXIT", player);
-            land = ((ILand)land).getParent();
+        while (land instanceof Land) {
+            notifyPlayers((Land)land, "ACTION.PLAYEREXIT", player);
+            land = ((Land)land).getParent();
         }
 
         if (playerHeal.contains(player)) {
@@ -132,17 +110,9 @@ public class LandListener extends CommonListener implements Listener {
         }
     }
 
-    /**
-     * On player land change.
-     *
-     * @param event the event
-     */
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPlayerLandChange(PlayerLandChangeEvent event) {
-        Player player = event.getPlayer();
-        ILand lastLand = event.getLastLand();
-        ILand land = event.getLand();
-        IDummyLand dummyLand;
+    public boolean onPlayerLandChange(FPlayer player, Land lastLand, Land land, Point toLoc) {
+        
+    	DummyLand dummyLand;
         String value;
 
         if (lastLand != null) {
@@ -167,7 +137,7 @@ public class LandListener extends CommonListener implements Listener {
         if (land != null) {
             dummyLand = land;
 
-            if (!playerConf.get(player).isAdminMod()) {
+            if (!player.isAdminMod()) {
                 // is banned or can enter
                 PermissionType permissionType = PermissionList.LAND_ENTER.getPermissionType();
                 if ((land.isBanned(player)
@@ -181,11 +151,10 @@ public class LandListener extends CommonListener implements Listener {
                     }
                     if (land == lastLand || lastLand == null) {
                         tpSpawn(player, land, message);
-                        return;
+                        return false;
                     } else {
                         player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getLanguage().getMessage(message, land.getName()));
-                        event.setCancelled(true);
-                        return;
+                        return true;
                     }
                 }
             }
@@ -193,7 +162,7 @@ public class LandListener extends CommonListener implements Listener {
             if (!(lastLand != null && land.isDescendants(lastLand))) {
 
                 //Notify players for Enter
-                ILand landTest = land;
+                Land landTest = land;
                 while (landTest != null && landTest != lastLand) {
                     notifyPlayers(landTest, "ACTION.PLAYERENTER", player);
                     landTest = landTest.getParent();
@@ -211,8 +180,8 @@ public class LandListener extends CommonListener implements Listener {
              }
              Factoid.getScoreboard().sendScoreboard(land.getPlayersInLand(), player, land.getName());*/
         } else {
-            dummyLand = Factoid.getLands().getOutsideArea(event.getToLoc());
-            Factoid.getScoreboard().resetScoreboard(player);
+            dummyLand = Factoid.getLands().getOutsideArea(toLoc);
+            // Factoid.getScoreboard().resetScoreboard(player);
         }
 
         //Check for Healing
@@ -231,32 +200,12 @@ public class LandListener extends CommonListener implements Listener {
         //Death land
         permissionType = PermissionList.LAND_DEATH.getPermissionType();
         
-        if (!playerConf.get(player).isAdminMod() 
+        if (player.isAdminMod() 
         		&& dummyLand.checkPermissionAndInherit(player, permissionType) != permissionType.getDefaultValue()) {
         	player.setHealth(0);
         }
-    }
-
-    /**
-     * On player container land ban.
-     *
-     * @param event the event
-     */
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerContainerLandBan(PlayerContainerLandBanEvent event) {
-
-        checkForBannedPlayers(event.getLand(), event.getPlayerContainer(), "ACTION.BANNED");
-    }
-
-    /**
-     * On player container add no enter.
-     *
-     * @param event the event
-     */
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerContainerAddNoEnter(PlayerContainerAddNoEnterEvent event) {
-
-        checkForBannedPlayers(event.getLand(), event.getPlayerContainer(), "ACTION.NOENTRY");
+        
+        return false;
     }
 
     /**
@@ -266,9 +215,9 @@ public class LandListener extends CommonListener implements Listener {
      * @param pc the pc
      * @param message the message
      */
-    private void checkForBannedPlayers(ILand land, IPlayerContainer pc, String message) {
+    public void checkForBannedPlayers(Land land, PlayerContainer pc, String message) {
     	
-    	checkForBannedPlayers(land, pc, message, new ArrayList<Player>());
+    	checkForBannedPlayers(land, pc, message, new ArrayList<FPlayer>());
     }
 
     /**
@@ -279,14 +228,14 @@ public class LandListener extends CommonListener implements Listener {
      * @param message the message
      * @param kickPlayers the kicked players list
      */
-    private void checkForBannedPlayers(ILand land, IPlayerContainer pc, String message, ArrayList<Player> kickPlayers) {
+    private void checkForBannedPlayers(Land land, PlayerContainer pc, String message, ArrayList<FPlayer> kickPlayers) {
 
-    	Player[] playersArray = land.getPlayersInLand().toArray(new Player[0]); // Fix ConcurrentModificationException
+    	FPlayer[] playersArray = land.getPlayersInLand().toArray(new FPlayer[0]); // Fix ConcurrentModificationException
     	
-    	for (Player players : playersArray) {
+    	for (FPlayer players : playersArray) {
             if (pc.hasAccess(players)
                     && !land.isOwner(players)
-                    && !playerConf.get(players).isAdminMod()
+                    && !players.isAdminMod()
                     && !players.hasPermission("factoid.bypassban")
                     && (land.checkPermissionAndInherit(players, PermissionList.LAND_ENTER.getPermissionType()) == false
                     || land.isBanned(players))
@@ -297,7 +246,7 @@ public class LandListener extends CommonListener implements Listener {
         }
     	
     	// check for children
-    	for (ILand children : land.getChildren()) {
+    	for (Land children : land.getChildren()) {
     		checkForBannedPlayers(children, pc, message);
     	}
     }
@@ -310,17 +259,17 @@ public class LandListener extends CommonListener implements Listener {
      * @param message the message
      * @param playerIn the player in
      */
-    private void notifyPlayers(ILand land, String message, Player playerIn) {
+    private void notifyPlayers(Land land, String message, FPlayer playerIn) {
 
-        Player player;
+        FPlayer player;
         
-        for (IPlayerContainerPlayer playerC : land.getPlayersNotify()) {
+        for (PlayerContainerPlayer playerC : land.getPlayersNotify()) {
             
             player = playerC.getPlayer();
             
             if (player != null && player != playerIn
                     // Only adminmod can see vanish
-                    && (!playerConf.isVanished(playerIn) || playerConf.get(player).isAdminMod())) {
+                    && (!Factoid.getDependPlugin().getVanish().isVanished(playerIn) || player.isAdminMod())) {
                 player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getLanguage().getMessage(
                         message, playerIn.getDisplayName(), land.getName() + ChatStyle.GRAY));
             }
@@ -334,9 +283,9 @@ public class LandListener extends CommonListener implements Listener {
      * @param land the land
      * @param message the message
      */
-    private void tpSpawn(Player player, ILand land, String message) {
+    private void tpSpawn(FPlayer player, Land land, String message) {
 
-        player.teleport(player.getWorld().getSpawnLocation());
+        player.teleport(player.getLocation().getWorld().getSpawnLocation());
         player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getLanguage().getMessage(message, land.getName()));
     }
 }

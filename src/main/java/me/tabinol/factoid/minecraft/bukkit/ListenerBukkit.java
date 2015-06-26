@@ -19,6 +19,9 @@
 package me.tabinol.factoid.minecraft.bukkit;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.event.bukkit.PlayerContainerAddNoEnterEvent;
+import me.tabinol.factoid.event.bukkit.PlayerContainerLandBanEvent;
+import me.tabinol.factoid.event.bukkit.PlayerLandChangeEvent;
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.listeners.ChatListener;
 import me.tabinol.factoid.listeners.CommonListener.Click;
@@ -30,6 +33,7 @@ import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.minecraft.Listener;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Animals;
@@ -45,6 +49,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -93,7 +98,11 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
     	plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 	
-	@EventHandler(priority = EventPriority.MONITOR)
+	/**************************************************************************
+	 * Bukkit events
+	 *************************************************************************/
+    
+    @EventHandler(priority = EventPriority.MONITOR)
 	public void onWorldLoadMonitor(WorldLoadEvent event) {
 		
 		// Add world to list
@@ -120,7 +129,8 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	public void onPlayerQuitMonitor(PlayerQuitEvent event) {
 
 		FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
-		
+
+		landListener.onPlayerQuitMonitor(player);
 		Factoid.getServerCache().removePlayer(player); // Remove player from the list
 		playerListener.onPlayerQuitMonitor(player);
 	}
@@ -206,6 +216,20 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		}
 	}
 	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onBlockPlaceMonitor(BlockPlaceEvent event) {
+		
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
+		
+		// Real player?
+		if(player == null) {
+			return;
+		}
+
+		pvpListener.onBlockPlaceMonitor(player, event.getBlockPlaced().getType().name(),
+				BukkitUtils.toPoint(event.getBlockPlaced().getLocation()));
+	}
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		
@@ -287,6 +311,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		}
 		
 		Entity entity = event.getEntity();
+		boolean isPlayer = entity instanceof Player;
 		boolean isAnimal = entity instanceof Animals;
 		boolean isMonster = entity instanceof Monster;
 		boolean isTamedAndNotOwner = false;
@@ -298,11 +323,27 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		}
 		
 		FPlayer player = Factoid.getServerCache().getPlayer(mplayer.getUniqueId());
+		Point locPlayer = BukkitUtils.toPoint(mplayer.getLocation());
+		Point locVictime = BukkitUtils.toPoint(entity.getLocation());
+
+		// Real player?
+		if(player == null) {
+			return;
+		}
 
 		if(playerListener.onEntityDamageByEntity(player, entity.getType().name(),
-				BukkitUtils.toPoint(event.getEntity().getLocation()),
+				locVictime,
 				isAnimal, isMonster, isTamedAndNotOwner)) {
 			event.setCancelled(true);
+		
+		} else if(isPlayer) { 
+			
+			// PVP
+			FPlayer victime = Factoid.getServerCache().getPlayer(entity.getUniqueId());
+			
+			if(victime != null && pvpListener.onPlayerDamageByPlayer(player, victime, locPlayer, locVictime)) {
+				event.setCancelled(true);
+			}
 		}
 	}
 	
@@ -409,6 +450,23 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		}
 	}
 
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onBlockIgniteMonitor(BlockIgniteEvent event) {
+		
+		if(event.getPlayer() == null) {
+			return;
+		}
+		
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
+		
+		// Real player?
+		if(player == null) {
+			return;
+		}
+
+		pvpListener.onBlockIgniteMonitor(player, BukkitUtils.toPoint(event.getBlock().getLocation()));
+	}
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPotionSplash(PotionSplashEvent event) {
 		
@@ -495,8 +553,20 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 
-		if(playerListener.onPlayerDamage(player, BukkitUtils.toPoint(event.getEntity().getLocation()))) {
+		Point loc = BukkitUtils.toPoint(event.getEntity().getLocation());
+		
+		if(playerListener.onPlayerDamage(player, loc)) {
 			event.setCancelled(true);
+		} else {
+			
+			Block block = event.getEntity().getLocation().getBlock();
+			
+			if(pvpListener.onPlayerDamage(player, loc, event.getCause().name(), block.getType().name())) {
+				block.setType(Material.AIR);
+				event.getEntity().setFireTicks(0);
+				event.setDamage(0);
+				event.setCancelled(true);
+			}
 		}
 	}
 	
@@ -516,7 +586,41 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			event.setCancelled(true);
 		}
 	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onBlockSpreadMonitor(BlockSpreadEvent event) {
+		
+		pvpListener.onBlockSpreadMonitor(BukkitUtils.toPoint(event.getSource().getLocation()),
+				BukkitUtils.toPoint(event.getBlock().getLocation()));
+	}
 
+
+	/**************************************************************************
+	 * Factoid events
+	 *************************************************************************/
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPlayerLandChange(PlayerLandChangeEvent event) {
+    	
+		if(landListener.onPlayerLandChange(event.getFPlayer(), event.getLastLand(), event.getLand(),
+				event.getToLoc())) {
+			event.setCancelled(true);
+		}
+    }
+	
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerContainerLandBan(PlayerContainerLandBanEvent event) {
+
+        landListener.checkForBannedPlayers(event.getLand(), 
+        		event.getPlayerContainer(), "ACTION.BANNED");
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerContainerAddNoEnter(PlayerContainerAddNoEnterEvent event) {
+
+    	landListener.checkForBannedPlayers(event.getLand(), 
+    			event.getPlayerContainer(), "ACTION.NOENTRY");
+    }
 
 	/**************************************************************************
 	 * Private methods

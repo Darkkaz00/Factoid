@@ -17,12 +17,14 @@
  */
 package me.tabinol.factoid.event.sponge;
 
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.Cancellable;
 
 import me.tabinol.factoid.lands.DummyLand;
 import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.minecraft.sponge.FPlayerSponge;
 
 /**
  * The Class PlayerLandChangeEvent. This event is called every time a player
@@ -96,13 +98,23 @@ public class PlayerLandChangeEvent extends LandEvent implements Cancellable {
     }
     
     /**
-     * Gets the player.
+     * Gets the Factoid player.
      *
      * @return the player
      */
-    public FPlayer getPlayer() {
+    public FPlayer getFPlayer() {
         
         return player;
+    }
+    
+    /**
+     * Gets the Sponge player.
+     *
+     * @return the player
+     */
+    public Player getPlayer() {
+        
+        return ((FPlayerSponge) player).getPlayer();
     }
     
     /**

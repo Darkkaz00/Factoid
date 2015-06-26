@@ -47,4 +47,12 @@ public interface FPlayer extends FSenderInterface {
 	public void sendBlockChange(Point loc, String blockType, byte by);
 	public Point getTargetBlockLocation();
 	public String getItemInHand();
+	
+	// Heal
+	public int getFoodLevel();
+	public void setFoodLevel(int level);
+	public double getMaxHealth();
+	public double getHealth();
+	public void setHealth(double health);
+	public boolean isDead();
 }

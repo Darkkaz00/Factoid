@@ -19,6 +19,9 @@
 package me.tabinol.factoid.minecraft.sponge;
 
 import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.event.sponge.PlayerContainerAddNoEnterEvent;
+import me.tabinol.factoid.event.sponge.PlayerContainerLandBanEvent;
+import me.tabinol.factoid.event.sponge.PlayerLandChangeEvent;
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.listeners.ChatListener;
 import me.tabinol.factoid.listeners.CommonListener.Click;
@@ -82,7 +85,11 @@ public class ListenerSponge implements Listener {
     	worldListener = new WorldListener();
     }
     
-	@Subscribe(order = Order.BEFORE_POST)
+	/**************************************************************************
+	 * Sponge events
+	 *************************************************************************/
+
+    @Subscribe(order = Order.BEFORE_POST)
 	public void onWorldLoadMonitor(WorldLoadEvent event) {
 		
 		// Add world to list
@@ -110,6 +117,7 @@ public class ListenerSponge implements Listener {
 
 		FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
 
+		landListener.onPlayerQuitMonitor(player);
 		Factoid.getServerCache().removePlayer(player); // Remove player from the list
 		playerListener.onPlayerQuitMonitor(player);
 	}
@@ -210,6 +218,20 @@ public class ListenerSponge implements Listener {
     	}
 	}
 	
+	@Subscribe(order = Order.BEFORE_POST)
+	public void onPlayerPlaceBlockMonitor(PlayerPlaceBlockEvent event) {
+		
+    	FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
+		
+		// Real player?
+		if(player == null) {
+			return;
+		}
+
+		pvpListener.onBlockPlaceMonitor(player, event.getBlock().getType().getName(),
+				SpongeUtils.toPoint(event.getBlock()));
+	}
+
 	@Subscribe
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		
@@ -312,11 +334,14 @@ public class ListenerSponge implements Listener {
 		}
 		
 		Living entity = event.getEntity();
+		boolean isPlayer = entity instanceof Player;
 		boolean isAnimal = entity instanceof Animal;
 		boolean isMonster = entity instanceof Monster;
 		boolean isTamedAndNotOwner = false; // TODO Check if animal is tamed
 		
 		FPlayer player = Factoid.getServerCache().getPlayer(mplayer.getUniqueId());
+		Point locPlayer = SpongeUtils.toPoint(mplayer.getLocation());
+		Point locVictime = SpongeUtils.toPoint(entity.getLocation());
 
 		// Real player?
 		if(player == null) {
@@ -326,6 +351,15 @@ public class ListenerSponge implements Listener {
 		if(playerListener.onEntityDamageByEntity(player, entity.getType().getName(),
 				SpongeUtils.toPoint(entity.getLocation()), isAnimal, isMonster, isTamedAndNotOwner)) {
 			event.setCancelled(true);
+
+		} else if(isPlayer) { 
+			
+			// PVP
+			FPlayer victime = Factoid.getServerCache().getPlayer(entity.getUniqueId());
+			
+			if(victime != null && pvpListener.onPlayerDamageByPlayer(player, victime, locPlayer, locVictime)) {
+				event.setCancelled(true);
+			}
 		}
 	}
 	
@@ -400,6 +434,25 @@ public class ListenerSponge implements Listener {
 		}
 	}
 	
+	@Subscribe(order = Order.BEFORE_POST)
+	public void onBlockIgniteMonitor(BlockIgniteEvent event) {
+		
+		if(!event.getCause().isPresent() || !(event.getCause().get() instanceof Player)) {
+			return;
+		}
+		
+		FPlayer player = Factoid.getServerCache().getPlayer(((Player) event.getCause().get()).getUniqueId());
+		
+		// Real player?
+		if(player == null) {
+			return;
+		}
+
+		pvpListener.onBlockIgniteMonitor(player, SpongeUtils.toPoint(event.getBlock()));
+	}
+
+	// TODO Fire Spread
+	
 	// TODO PotionSplash
 	
 	@Subscribe
@@ -420,6 +473,8 @@ public class ListenerSponge implements Listener {
 		}
 		
 		// TODO Get the reason of gain change heal
+		
+		// TODO Get when the player burn
 	}
 	
 	@Subscribe
@@ -456,6 +511,33 @@ public class ListenerSponge implements Listener {
 	}
 	
 	/**************************************************************************
+	 * Factoid events
+	 *************************************************************************/
+
+	@Subscribe(order = Order.LAST)
+	public void onPlayerLandChange(PlayerLandChangeEvent event) {
+    	
+		if(landListener.onPlayerLandChange(event.getFPlayer(), event.getLastLand(), event.getLand(),
+				event.getToLoc())) {
+			event.setCancelled(true);
+		}
+    }
+
+	@Subscribe(order = Order.EARLY)
+    public void onPlayerContainerLandBan(PlayerContainerLandBanEvent event) {
+
+        landListener.checkForBannedPlayers(event.getLand(), 
+        		event.getPlayerContainer(), "ACTION.BANNED");
+    }
+
+	@Subscribe(order = Order.EARLY)
+    public void onPlayerContainerAddNoEnter(PlayerContainerAddNoEnterEvent event) {
+
+    	landListener.checkForBannedPlayers(event.getLand(), 
+    			event.getPlayerContainer(), "ACTION.NOENTRY");
+    }
+
+    /**************************************************************************
 	 * Private methods
 	 *************************************************************************/
 	

@@ -1,17 +1,14 @@
 package me.tabinol.factoid.listeners;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.config.Config;
-import me.tabinol.factoid.config.players.PlayerStaticConfig;
 import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.utilities.ChatStyle;
 import me.tabinol.factoid.utilities.ColoredConsole;
-import me.tabinol.factoidapi.FactoidAPI;
-import me.tabinol.factoidapi.lands.ILand;
 
 /**
  * 
@@ -23,9 +20,6 @@ public class ChatListener extends CommonListener {
     /** The conf. */
     private final Config conf;
 
-	/** The player conf. */
-	private final PlayerStaticConfig playerConf;
-
 	/**
      * Instantiates a new chat listener.
      */
@@ -33,7 +27,6 @@ public class ChatListener extends CommonListener {
 
         super();
         conf = Factoid.getConf();
-		playerConf = (PlayerStaticConfig) FactoidAPI.iPlayerConf();
     }
     
     public boolean onAsyncPlayerChat(FPlayer player, String message) {
@@ -47,7 +40,7 @@ public class ChatListener extends CommonListener {
     	// Chat in a land
     	if(firstChar.equals("=") || firstChar.equals(">") || firstChar.equals("<")) {
 			
-			ILand land = FactoidAPI.iLands().getLand(player.getLocation());
+			Land land = Factoid.getLands().getLand(player.getLocation());
     		
     		// The player is not in a land
     		if(land == null) {
@@ -57,7 +50,7 @@ public class ChatListener extends CommonListener {
     		}
     		
     		// Return if the player is muted
-    		if(playerConf.getChat().isMuted(player)) {
+    		if(Factoid.getDependPlugin().getChat().isMuted(player)) {
     			return true;
     		}
     		
@@ -97,8 +90,8 @@ public class ChatListener extends CommonListener {
     	for(FPlayer player : a) {
     		listSet.add(player);
     	}
-    	for(FPlayer player : Factoid.getServer().getOnlinePlayers()) {
-    		if(playerConf.getChat().isSpy(player)) {
+    	for(FPlayer player : Factoid.getServerCache().getPlayers()) {
+    		if(Factoid.getDependPlugin().getChat().isSpy(player)) {
     			listSet.add(player);
     		}
     	}
