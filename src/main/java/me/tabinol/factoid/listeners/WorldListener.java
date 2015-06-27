@@ -17,52 +17,16 @@
  */
 package me.tabinol.factoid.listeners;
 
-import java.util.Iterator;
-import java.util.List;
-
 import me.tabinol.factoid.Factoid;
-import me.tabinol.factoid.config.Config;
+import me.tabinol.factoid.lands.DummyLand;
+import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.parameters.FlagList;
-import me.tabinol.factoidapi.lands.IDummyLand;
-import me.tabinol.factoidapi.parameters.IFlagType;
-import me.tabinol.factoidapi.parameters.IFlagValue;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.Creeper;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Flying;
-import org.bukkit.entity.Hanging;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Slime;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
-import org.bukkit.event.block.LeavesDecayEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.ExplosionPrimeEvent;
-import org.bukkit.event.hanging.HangingBreakEvent;
-import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 
 
 /**
  * World listener
  */
-public class WorldListener extends CommonListener implements Listener {
-
-    /** The conf. */
-    private Config conf;
+public class WorldListener extends CommonListener {
 
     /**
      * Instantiates a new world listener.
@@ -70,279 +34,129 @@ public class WorldListener extends CommonListener implements Listener {
     public WorldListener() {
 
         super();
-        conf = Factoid.getConf();
     }
 
-    /**
-     * On explosion prime.
-     *
-     * @param event the event
-     */
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onExplosionPrime(ExplosionPrimeEvent event) {
+    public boolean onExplosionPrime(Point loc, String entityType) {
 
-        if (event.getEntity() == null) {
-            return;
-        }
-
-        Location loc = event.getEntity().getLocation();
-        IDummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
-        EntityType entityType = event.getEntityType();
+        DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 
         // Check for Explosion cancel 
-        if ((entityType == EntityType.CREEPER
+        if ((entityType.equals("CREEPER")
                 && land.getFlagAndInherit(FlagList.CREEPER_EXPLOSION.getFlagType()).getValueBoolean() == false)
-                || ((entityType == EntityType.PRIMED_TNT || entityType == EntityType.MINECART_TNT)
+                || (entityType.contains("TNT")
                 && land.getFlagAndInherit(FlagList.TNT_EXPLOSION.getFlagType()).getValueBoolean() == false)
                 || land.getFlagAndInherit(FlagList.EXPLOSION.getFlagType()).getValueBoolean() == false) {
-            event.setCancelled(true);
-            if (entityType == EntityType.CREEPER) {
-                event.getEntity().remove();
-            }
+            return true;
+
         }
+    
+        return false;
     }
 
-    /**
-     * On entity explode.
-     *
-     * @param event the event
-     */
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onEntityExplode(EntityExplodeEvent event) {
+    public boolean onHangingBreakExplosion(Point loc) {
 
-        if (event.getEntity() == null) {
-            return;
-        }
-
-        if (conf.isOverrideExplosions()) {
-
-            float power;
-
-            // Creeper Explosion
-            if (event.getEntityType() == EntityType.CREEPER) {
-                if (((Creeper) event.getEntity()).isPowered()) {
-                    // bugfix : droped item destroyed
-                	power = 0L;
-                } else {
-                    // bugfix : droped item destroyed
-                	power = 0L;
-                }
-                ExplodeBlocks(event, event.blockList(), FlagList.CREEPER_DAMAGE.getFlagType(), event.getLocation(),
-                        event.getYield(), power, false, true);
-
-                //  Wither
-            } else if (event.getEntityType() == EntityType.WITHER_SKULL) {
-                ExplodeBlocks(event, event.blockList(), FlagList.WITHER_DAMAGE.getFlagType(), event.getLocation(),
-                        event.getYield(), 1L, false, true);
-            } else if (event.getEntityType() == EntityType.WITHER) {
-                ExplodeBlocks(event, event.blockList(), FlagList.WITHER_DAMAGE.getFlagType(), event.getLocation(),
-                        event.getYield(), 7L, false, true);
-
-                // Ghast
-            } else if (event.getEntityType() == EntityType.FIREBALL) {
-                ExplodeBlocks(event, event.blockList(), FlagList.GHAST_DAMAGE.getFlagType(), event.getLocation(),
-                        event.getYield(), 1L, true, true);
-
-                // TNT
-            } else if (event.getEntityType() == EntityType.MINECART_TNT
-                    || event.getEntityType() == EntityType.PRIMED_TNT) {
-                ExplodeBlocks(event, event.blockList(), FlagList.TNT_DAMAGE.getFlagType(), event.getLocation(),
-                        event.getYield(), 4L, false, true);
-            } else if (event.getEntityType() == EntityType.ENDER_DRAGON) {
-                ExplodeBlocks(event, event.blockList(), FlagList.ENDERDRAGON_DAMAGE.getFlagType(), event.getLocation(),
-                        event.getYield(), 4L, false, false);
-            }
-        }
-    }
-
-    /**
-     * On hanging break.
-     *
-     * @param event the event
-     */
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onHangingBreak(HangingBreakEvent event) {
-
-        if (conf.isOverrideExplosions()) {
+        if (Factoid.getConf().isOverrideExplosions()) {
             // Check for painting
-            if (event.getCause() == RemoveCause.EXPLOSION) {
-                Factoid.getFactoidLog().write("Cancel HangingBreak : " + event.getEntity() + ", Cause: " + event.getCause());
-                event.setCancelled(true);
-            }
-        }
-    }
-
-    /**
-     * Explode blocks.
-     *
-     * @param event The cancellable event
-     * @param blocks the blocks
-     * @param ft the ft
-     * @param loc the loc
-     * @param yield the yield
-     * @param power the power
-     * @param setFire the set fire
-     * @param doExplosion the do explosion
-     */
-    private void ExplodeBlocks(Cancellable event, List<Block> blocks, IFlagType ft, Location loc,
-            float yield, float power, boolean setFire, boolean doExplosion) {
-
-        IFlagValue value;
-        boolean cancelEvent = false;
-        Iterator<Block> itBlock = blocks.iterator();
-        Block block;
-
-        Factoid.getFactoidLog().write("Explosion : " + ", Yield: " + yield + ", power: " + power);
-
-        // Check if 1 block or more is in a protected place
-        while(itBlock.hasNext() && !cancelEvent) {
-        	block = itBlock.next();
-        	value = Factoid.getLands().getLandOrOutsideArea(block.getLocation()).getFlagAndInherit(ft);
-            if (value.getValueBoolean() == false) {
-                cancelEvent = true;
-            }
+            Factoid.getFactoidLog().write("Cancel HangingBreak in : " + loc.toString());
+            return true;
         }
         
-        if(cancelEvent) {
-        	// Cancel Event and do a false explosion
-        	event.setCancelled(true);
-            loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(),
-                    power, setFire, false);
-        }
-        
-        // If not the event will be executed has is
+        return false;
     }
 
-    /**
-     * On entity change block.
-     *
-     * @param event the event
-     */
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onEntityChangeBlock(EntityChangeBlockEvent event) {
+    public boolean onEntityChangeBlock(Point loc, String entityType, String fromType, String toType) {
 
-        IDummyLand land = Factoid.getLands().getLandOrOutsideArea(event.getBlock().getLocation());
-        Material matFrom = event.getBlock().getType();
-        Material matTo = event.getTo();
+        DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 
         // Enderman removeblock
-        if ((event.getEntityType() == EntityType.ENDERMAN
+        if ((entityType.equals("ENDERMAN")
                 && land.getFlagAndInherit(FlagList.ENDERMAN_DAMAGE.getFlagType()).getValueBoolean() == false)
-                || (event.getEntityType() == EntityType.WITHER
+                || (entityType.equals("WITHER")
                 && land.getFlagAndInherit(FlagList.WITHER_DAMAGE.getFlagType()).getValueBoolean() == false)) {
-            event.setCancelled(true);
+            return true;
         
         // Crop trample
-        } else if (matFrom == Material.SOIL
-        		&& matTo == Material.DIRT
+        } else if ((fromType.equals("SOIL") /* BUKKIT */ || fromType.equals("FARMLAND")) /* SPONGE */ 
+				&& toType.equals("DIRT")
                 && land.getFlagAndInherit(FlagList.CROP_TRAMPLE.getFlagType()).getValueBoolean() == false) {
-        	event.setCancelled(true);
+        	return true;
         }
+        
+        return false;
     }
 
-    /**
-     * On block ignite.
-     *
-     * @param event the event
-     */
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onBlockIgnite(BlockIgniteEvent event) {
+    public boolean onBlockIgniteNatural(Point loc) {
 
-        IDummyLand land = Factoid.getLands().getLandOrOutsideArea(event.getBlock().getLocation());
+        DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 
-        if (((event.getCause() == IgniteCause.SPREAD || event.getCause() == IgniteCause.LAVA)
-                && land.getFlagAndInherit(FlagList.FIRESPREAD.getFlagType()).getValueBoolean() == false)
+        if (land.getFlagAndInherit(FlagList.FIRESPREAD.getFlagType()).getValueBoolean() == false
                 || land.getFlagAndInherit(FlagList.FIRE.getFlagType()).getValueBoolean() == false) {
-            event.setCancelled(true);
+            return true;
         }
+        
+        return false;
     }
 
-    /**
-     * On block burn.
-     *
-     * @param event the event
-     */
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onBlockBurn(BlockBurnEvent event) {
+    public boolean onBlockBurn(Point loc) {
 
-        IDummyLand land = Factoid.getLands().getLandOrOutsideArea(event.getBlock().getLocation());
+        DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 
         if ((land.getFlagAndInherit(FlagList.FIRESPREAD.getFlagType()).getValueBoolean() == false)
                 || (land.getFlagAndInherit(FlagList.FIRE.getFlagType()).getValueBoolean() == false)) {
-            event.setCancelled(true);
+        return true;
         }
+        
+        return false;
     }
 
-    /**
-     * On creature spawn.
-     *
-     * @param event the event
-     */
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onCreatureSpawn(CreatureSpawnEvent event) {
+    public boolean onCreatureSpawn(Point loc, boolean isAnimal, boolean isMob) {
 
-        IDummyLand land = Factoid.getLands().getLandOrOutsideArea(event.getEntity().getLocation());
+        DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 
-        if ((event.getEntity() instanceof Animals
+        if ((isAnimal
                 && land.getFlagAndInherit(FlagList.ANIMAL_SPAWN.getFlagType()).getValueBoolean() == false)
-                || ((event.getEntity() instanceof Monster
-                || event.getEntity() instanceof Slime
-                || event.getEntity() instanceof Flying)
+                || (isMob
                 && land.getFlagAndInherit(FlagList.MOB_SPAWN.getFlagType()).getValueBoolean() == false)) {
-            event.setCancelled(true);
+            return true;
         }
+        
+        return false;
     }
 
-    /**
-     * On leaves decay.
-     *
-     * @param event the event
-     */
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onLeavesDecay(LeavesDecayEvent event) {
+    public boolean onLeavesDecay(Point loc) {
 
-        IDummyLand land = Factoid.getLands().getLandOrOutsideArea(event.getBlock().getLocation());
+        DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 
         if (land.getFlagAndInherit(FlagList.LEAF_DECAY.getFlagType()).getValueBoolean() == false) {
-            event.setCancelled(true);
+            return true;
         }
+        
+        return false;
     }
 
-    /**
-     * On block from to.
-     *
-     * @param event the event
-     */
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onBlockFromTo(BlockFromToEvent event) {
+    public boolean onBlockFromTo(Point loc, String blockType) {
 
-        IDummyLand land = Factoid.getLands().getLandOrOutsideArea(event.getBlock().getLocation());
-        Material ml = event.getBlock().getType();
+        DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 
         // Liquid flow
-        if (((ml == Material.LAVA || ml == Material.STATIONARY_LAVA)
+        if ((blockType.contains("LAVA")
         		&& land.getFlagAndInherit(FlagList.LAVA_FLOW.getFlagType()).getValueBoolean() == false)
-        		|| ((ml == Material.WATER || ml == Material.STATIONARY_WATER)
+        		|| (blockType.contains("WATER")
                 		&& land.getFlagAndInherit(FlagList.WATER_FLOW.getFlagType()).getValueBoolean() == false)) {
-            event.setCancelled(true);
+            return true;
         }
+        
+        return false;
     }
 
-    /**
-     * On entity damage.
-     *
-     * @param event the event
-     */
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onEntityDamage(EntityDamageEvent event) {
+    public boolean onEntityDamageHangingNonPlayer(Point loc) {
 
-        if (conf.isOverrideExplosions()
-                && event.getEntity() instanceof Hanging
-                && (event.getCause() == DamageCause.BLOCK_EXPLOSION || event.getCause() == DamageCause.ENTITY_EXPLOSION
-                || event.getCause() == DamageCause.PROJECTILE)) {
+        if (Factoid.getConf().isOverrideExplosions()) {
             // Check for ItemFrame
-            Factoid.getFactoidLog().write("Cancel HangingBreak : " + event.getEntity() + ", Cause: " + event.getCause());
-            event.setCancelled(true);
+            Factoid.getFactoidLog().write("Cancel HangingBreak : " + loc.toString());
+            return true;
         }
+        
+        return false;
     }
 }

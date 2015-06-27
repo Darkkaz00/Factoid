@@ -543,7 +543,8 @@ public class PlayerListener extends CommonListener {
 		DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 		
 		if(((land instanceof Land && ((Land) land).isBanned(player))
-				|| (toType.equals("DIRT")
+				|| ((fromType.equals("SOIL") /* BUKKIT */ || fromType.equals("FARMLAND")) /* SPONGE */ 
+						&& toType.equals("DIRT")
 				&& !checkPermission(land, player,
 						PermissionList.CROP_TRAMPLE.getPermissionType())))) {
 			return true;

@@ -18,6 +18,9 @@
 
 package me.tabinol.factoid.minecraft.sponge;
 
+import java.util.Iterator;
+import java.util.List;
+
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.event.sponge.PlayerContainerAddNoEnterEvent;
 import me.tabinol.factoid.event.sponge.PlayerContainerLandBanEvent;
@@ -31,8 +34,14 @@ import me.tabinol.factoid.listeners.PvpListener;
 import me.tabinol.factoid.listeners.WorldListener;
 import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.minecraft.Listener;
+import me.tabinol.factoid.parameters.FlagList;
+import me.tabinol.factoid.parameters.FlagType;
+import me.tabinol.factoid.parameters.FlagValue;
 
+import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityInteractionTypes;
+import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.living.Living;
@@ -42,9 +51,16 @@ import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.entity.projectile.Projectile;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.Subscribe;
+import org.spongepowered.api.event.block.BlockBurnEvent;
+import org.spongepowered.api.event.block.BlockChangeEvent;
 import org.spongepowered.api.event.block.BlockIgniteEvent;
+import org.spongepowered.api.event.block.LeafDecayEvent;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.entity.EntityChangeBlockEvent;
+import org.spongepowered.api.event.entity.EntityExplosionEvent;
+import org.spongepowered.api.event.entity.EntitySpawnEvent;
 import org.spongepowered.api.event.entity.EntityTeleportEvent;
+import org.spongepowered.api.event.entity.ExplosionPrimeEvent;
 import org.spongepowered.api.event.entity.living.LivingChangeHealthEvent;
 import org.spongepowered.api.event.entity.player.PlayerBreakBlockEvent;
 import org.spongepowered.api.event.entity.player.PlayerChangeBlockEvent;
@@ -65,6 +81,7 @@ import org.spongepowered.api.event.message.CommandEvent;
 import org.spongepowered.api.event.world.WorldLoadEvent;
 import org.spongepowered.api.event.world.WorldUnloadEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.world.Location;
 
 import com.google.common.base.Optional;
 
@@ -418,7 +435,19 @@ public class ListenerSponge implements Listener {
 	@Subscribe
 	public void onBlockIgnite(BlockIgniteEvent event) {
 		
-		if(event.getCause() != null && !(event.getCause().get() instanceof Player)) {
+		Point loc = SpongeUtils.toPoint(event.getBlock());
+		
+		// Natural cause
+		if(event.getCause().isPresent() && event.getCause().get() instanceof BlockState
+				&& worldListener.onBlockIgniteNatural(loc)) {
+			// event.setCancelled(true); TODO Block Ignite not cancellable?
+			// return;
+		}
+		
+		
+		
+		// Player only
+		if(event.getCause().isPresent() && !(event.getCause().get() instanceof Player)) {
 			return;
 		}
 		
@@ -429,7 +458,7 @@ public class ListenerSponge implements Listener {
 			return;
 		}
 
-		if(playerListener.onBlockIgnite(player, SpongeUtils.toPoint(event.getBlock()))) {
+		if(playerListener.onBlockIgnite(player, loc)) {
 			// event.setCancelled(true); TODO Block Ignite not cancellable?
 		}
 	}
@@ -511,6 +540,124 @@ public class ListenerSponge implements Listener {
 	}
 	
 	/**************************************************************************
+	 * World events
+	 *************************************************************************/
+
+	@Subscribe
+	public void onExplosionPrime(ExplosionPrimeEvent event) {
+    	
+		Entity entity = event.getEntity();
+		
+		if(worldListener.onExplosionPrime(SpongeUtils.toPoint(entity.getLocation()), 
+				entity.getType().getName())) {
+			event.setCancelled(true);
+            if (entity.getType() == EntityTypes.CREEPER) {
+                event.getEntity().remove();
+            }
+		}
+    }
+
+	@Subscribe
+	public void EntityExplosion(EntityExplosionEvent event) {
+    	
+        if (event.getEntity() == null) {
+            return;
+        }
+
+        if (Factoid.getConf().isOverrideExplosions()) {
+
+            EntityType entityType = event.getEntity().getType();
+            Location loc = event.getEntity().getLocation();
+
+            // Creeper Explosion
+            if (entityType == EntityTypes.CREEPER) {
+                ExplodeBlocks(event, event.getBlocks(), FlagList.CREEPER_DAMAGE.getFlagType(), loc);
+
+                //  Wither
+            } else if (entityType == EntityTypes.WITHER_SKULL) {
+                ExplodeBlocks(event, event.getBlocks(), FlagList.WITHER_DAMAGE.getFlagType(), loc);
+            } else if (entityType == EntityTypes.WITHER) {
+                ExplodeBlocks(event, event.getBlocks(), FlagList.WITHER_DAMAGE.getFlagType(), loc);
+
+                // Ghast
+            } else if (entityType == EntityTypes.FIREBALL) {
+                ExplodeBlocks(event, event.getBlocks(), FlagList.GHAST_DAMAGE.getFlagType(), loc);
+
+                // TNT
+            } else if (entityType == EntityTypes.TNT_MINECART
+                    || entityType == EntityTypes.PRIMED_TNT) {
+                ExplodeBlocks(event, event.getBlocks(), FlagList.TNT_DAMAGE.getFlagType(), loc);
+            } else if (entityType == EntityTypes.ENDER_DRAGON) {
+                ExplodeBlocks(event, event.getBlocks(), FlagList.ENDERDRAGON_DAMAGE.getFlagType(), loc);
+            }
+        }
+    }
+	
+	// TODO HangingBreakEvent
+
+	@Subscribe
+	public void onEntityChangeBlock(EntityChangeBlockEvent event) {
+		
+		
+		// All entities section
+		if(worldListener.onEntityChangeBlock(SpongeUtils.toPoint(event.getBlock()), 
+				event.getEntity().getType().getName(),
+				event.getBlock().getType().getName(), 
+				event.getReplacementBlock().getState().getType().getName())) {
+			event.setCancelled(true);
+			return;
+		}
+	}
+	
+	@Subscribe
+	public void onBlockBurn(BlockBurnEvent event) {
+		
+		if(worldListener.onBlockBurn(SpongeUtils.toPoint(event.getBlock()))) {
+			event.setCancelled(true);
+		}
+	}
+	
+	@Subscribe
+    public void onEntitySpawn(EntitySpawnEvent event) {
+    	
+    	Entity entity = event.getEntity();
+    	boolean isAnimal = false;
+    	boolean isMob = false;
+    	
+    	if(entity instanceof Animal) {
+    		isAnimal = true;
+    	}
+    	
+    	if(event.getEntity() instanceof Monster) {
+    		isMob = true;
+    	}
+    	
+    	if(worldListener.onCreatureSpawn(SpongeUtils.toPoint(event.getLocation()), 
+    			isAnimal, isMob)) {
+    		event.setCancelled(true);
+    	}
+    }
+
+	@Subscribe
+    public void onLeafDecay(LeafDecayEvent event) {
+    	
+    	if(worldListener.onLeavesDecay(SpongeUtils.toPoint(event.getBlock()))) {
+    		event.setCancelled(true);
+    	}
+    }
+	
+	@Subscribe
+	public void onBlockChange(BlockChangeEvent event) {
+		
+		if(worldListener.onBlockFromTo(SpongeUtils.toPoint(event.getBlock()), 
+				event.getBlock().getType().getName())) {
+			event.setCancelled(true);
+		}
+	}
+
+	// TODO Hanging Damage
+	
+    /**************************************************************************
 	 * Factoid events
 	 *************************************************************************/
 
@@ -573,4 +720,38 @@ public class ListenerSponge implements Listener {
 		return null;
 	}
 
+    /**
+     * Explode blocks.
+     *
+     * @param event The  event
+     * @param blocks the blocks
+     * @param ft the flag type
+     * @param loc the location
+     */
+    private void ExplodeBlocks(EntityExplosionEvent event, List<Location> blocks, FlagType ft, Location loc) {
+
+        FlagValue value;
+        boolean cancelEvent = false;
+        Iterator<Location> itBlock = blocks.iterator();
+        Location block;
+
+        Factoid.getFactoidLog().write("Explosion!");
+
+        // Check if 1 block or more is in a protected place
+        while(itBlock.hasNext() && !cancelEvent) {
+        	block = itBlock.next();
+        	value = Factoid.getLands().getLandOrOutsideArea(
+        			SpongeUtils.toPoint(block)).getFlagAndInherit(ft);
+            if (value.getValueBoolean() == false) {
+                cancelEvent = true;
+            }
+        }
+        
+        if(cancelEvent) {
+        	// Cancel Event and do a false explosion
+        	event.setYield(0);
+        }
+        
+        // If not the event will be executed has is
+    }
 }

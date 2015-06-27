@@ -24,6 +24,7 @@ import java.util.UUID;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.Factoid.ServerType;
+import me.tabinol.factoid.commands.OnCommand;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.config.sponge.ConfigSponge;
 import me.tabinol.factoid.exceptions.SignException;
@@ -54,6 +55,8 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.config.ConfigDir;
+import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.util.command.spec.CommandSpec;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -66,236 +69,254 @@ import com.google.inject.Inject;
  * @author Tabinol
  *
  */
-@Plugin(id = "Factoid", name = "Factoid", version = "1.2.1-SNAPSHOT")
+@Plugin(id = "Factoid", name = "Factoid", version = "1.3.0-SNAPSHOT")
 public class ServerSponge implements Server {
-	
-	@Inject
-	private Logger logger;
-	
-	@Inject 
-	private Game game;
-	
-	@Inject
-	private PluginContainer plugin;
-	
-	@Inject 
-	@ConfigDir(sharedRoot = false)
-	private File configDir;
+    
+    @Inject
+    private Logger logger;
+    
+    @Inject 
+    private Game game;
+    
+    @Inject
+    private PluginContainer plugin;
+    
+    @Inject 
+    @ConfigDir(sharedRoot = false)
+    private File configDir;
 
-	private Factoid factoid;
+    private Factoid factoid;
 
-	private CallEvents callEvents;
+    private CallEvents callEvents;
 
     @Subscribe
     public void onServerStart(ServerStartedEvent event) {
-    	
-    	factoid = new Factoid(ServerType.SPONGE);
+        
+        factoid = new Factoid(ServerType.SPONGE);
 
         // Start Listener
         new ListenerSponge();
     }
     
     public void initServer() {
-		
-		callEvents = new CallEventsSponge(game);
+        
+        callEvents = new CallEventsSponge(game);
+
+        // Register commands
+        OnCommand onCommand = new OnCommand();
+        CommandsSpongeFactoid commandsFactoid = new CommandsSpongeFactoid(onCommand);
+        CommandSpec commandFactoid = CommandSpec.builder()
+                .description(Texts.of("Factoid Command. Use \"/fd help\" for details"))
+                .permission("factoid.use")
+                .executor(commandsFactoid)
+                .build();
+        game.getCommandDispatcher().register(plugin, commandFactoid, "factoid", "fd", "claim", "faction", "fn");
+
+        CommandsSpongeFaction commandsFaction = new CommandsSpongeFaction(onCommand);
+        CommandSpec commandFaction = CommandSpec.builder()
+                .description(Texts.of("Factions Command. Use \"/fn help\" for details"))
+                .permission("factoid.faction.use")
+                .executor(commandsFaction)
+                .build();
+        game.getCommandDispatcher().register(plugin, commandFaction, "faction", "fn");
 
         // Add loaded worlds
         for(World world : game.getServer().getWorlds()) {
-        	Factoid.getServerCache().addWorld(new FWorldSponge(world));
+            Factoid.getServerCache().addWorld(new FWorldSponge(world));
         }
 
         // Add players (in case of reload)
         for(Player player : game.getServer().getOnlinePlayers()) {
-        	Factoid.getServerCache().addPlayer(new FPlayerSponge(player));
+            Factoid.getServerCache().addPlayer(new FPlayerSponge(player));
         }
-	}
+    }
     
     @Subscribe
     public Config newConfig() {
-    	
-    	return new ConfigSponge();
+        
+        return new ConfigSponge();
     }
     
     @Subscribe
     public DependPlugin newDependPlugin() {
-    	
-    	return new DependPluginSponge(game);
+        
+        return new DependPluginSponge(game);
     }
 
     @Subscribe
     public void onServerStop(ServerStoppingEvent event) {
-    	
-    	factoid.serverStop();
+        
+        factoid.serverStop();
     }
 
-	@Override
+    @Override
     public Factoid getFactoid() {
-    	
-    	return factoid;
+        
+        return factoid;
     }
 
-	@Override
+    @Override
     public void info(String msg) {
-	    logger.info(msg);
+        logger.info(msg);
     }
 
-	@Override
+    @Override
     public void debug(String msg) {
-	    logger.debug(msg);
+        logger.debug(msg);
     }
 
-	@Override
+    @Override
     public void warn(String msg) {
-	    logger.warn(msg);
+        logger.warn(msg);
     }
 
-	@Override
+    @Override
     public void error(String msg) {
-	    logger.error(msg);
+        logger.error(msg);
     }
 
-	@Override
+    @Override
     public Task createTask(FactoidRunnable runnable, Long tick, boolean multiple) {
-		
-		org.spongepowered.api.service.scheduler.Task task;
-		
-		runnable.stopNextRun();
-		
-		if(multiple) {
-			task = game.getSyncScheduler().runRepeatingTask(plugin, runnable, tick).get();
-		} else {
-			task = game.getSyncScheduler().runTaskAfter(plugin, runnable, tick).get();
-		}
-		
-		return new TaskSponge(task);
+        
+        org.spongepowered.api.service.scheduler.Task task;
+        
+        runnable.stopNextRun();
+        
+        if(multiple) {
+            task = game.getSyncScheduler().runRepeatingTask(plugin, runnable, tick).get();
+        } else {
+            task = game.getSyncScheduler().runTaskAfter(plugin, runnable, tick).get();
+        }
+        
+        return new TaskSponge(task);
     }
 
-	@Override
-	public void callTaskNow(Runnable runnable) {
-		
-		game.getSyncScheduler().runTask(plugin, runnable);
-	}
+    @Override
+    public void callTaskNow(Runnable runnable) {
+        
+        game.getSyncScheduler().runTask(plugin, runnable);
+    }
 
-	@Override
+    @Override
     public File getDataFolder() {
 
-		return configDir;
+        return configDir;
     }
-	
-	@Override
-	public InputStream getResource(String path) {
-		
-		return this.getClass().getResourceAsStream(path);
-	}
+    
+    @Override
+    public InputStream getResource(String path) {
+        
+        return this.getClass().getResourceAsStream(path);
+    }
 
-	@Override
+    @Override
     public String getVersion() {
-	    
-		return plugin.getVersion();
+        
+        return plugin.getVersion();
     }
 
-	@Override
+    @Override
     public CallEvents CallEvents() {
 
-		return callEvents;
+        return callEvents;
     }
 
-	@Override
+    @Override
     public String getOfflinePlayerName(UUID uuid) {
-	    
-		Optional<Player> playerOp = game.getServer().getPlayer(uuid);
-		
-		if(playerOp.isPresent()) {
-			return playerOp.get().getName();
-		} else {
-			return null;
-		}
+        
+        Optional<Player> playerOp = game.getServer().getPlayer(uuid);
+        
+        if(playerOp.isPresent()) {
+            return playerOp.get().getName();
+        } else {
+            return null;
+        }
     }
 
-	@Override
+    @Override
     public FPlayer getOfflinePlayer(UUID uuid) {
 
-		Optional<Player> playerOp = game.getServer().getPlayer(uuid);
-		
-		if(playerOp.isPresent()) {
-			return new FPlayerSponge(playerOp.get());
-		} else {
-			return null;
-		}
+        Optional<Player> playerOp = game.getServer().getPlayer(uuid);
+        
+        if(playerOp.isPresent()) {
+            return new FPlayerSponge(playerOp.get());
+        } else {
+            return null;
+        }
     }
 
-	@Override
+    @Override
     public ChatPaginator getChatPaginator(String text, int pageNumber) {
-	    
-		return new ChatPaginatorSponge(text, pageNumber, game);
+        
+        return new ChatPaginatorSponge(text, pageNumber, game);
     }
 
-	@Override
+    @Override
     public String[] getMaterials() {
-	    
-		Field[] materials = ItemTypes.class.getDeclaredFields();
-	    String[] names = new String[materials.length];
-	    
-	    for (int i = 0; i < materials.length; i++) {
-	    	names[i] = materials[i].getName();
-		}
-	    return names;
-	}
+        
+        Field[] materials = ItemTypes.class.getDeclaredFields();
+        String[] names = new String[materials.length];
+        
+        for (int i = 0; i < materials.length; i++) {
+            names[i] = materials[i].getName();
+        }
+        return names;
+    }
 
-	@Override
+    @Override
     public String getBlockTypeName(Point point) {
-	    
-		World world = ((FWorldSponge) point.getWorld()).getWorld();
-		
-		return world.getBlock(SpongeUtils.toLocationVectorI(point)).getType().getName();
+        
+        World world = ((FWorldSponge) point.getWorld()).getWorld();
+        
+        return world.getBlock(SpongeUtils.toLocationVectorI(point)).getType().getName();
     }
 
-	@Override
+    @Override
     public void removeBlockAndDropSign(Point point) {
-	    
-		World world = ((FWorldSponge) point.getWorld()).getWorld();
-		Location loc = SpongeUtils.toLocation(world, point);
-		
-		// Remove block
-		BlockState state = BlockTypes.AIR.getDefaultState();
-	    loc.replaceWith(state);
-	    
-	    // Create entity (item drop)
-	    Optional<Entity> optional = world.createEntity(EntityTypes.DROPPED_ITEM, loc.getPosition());
-	    if (optional.isPresent()) {
-	    	ItemStack itemStack = game.getRegistry()
+        
+        World world = ((FWorldSponge) point.getWorld()).getWorld();
+        Location loc = SpongeUtils.toLocation(world, point);
+        
+        // Remove block
+        BlockState state = BlockTypes.AIR.getDefaultState();
+        loc.replaceWith(state);
+        
+        // Create entity (item drop)
+        Optional<Entity> optional = world.createEntity(EntityTypes.DROPPED_ITEM, loc.getPosition());
+        if (optional.isPresent()) {
+            ItemStack itemStack = game.getRegistry()
                     .getItemBuilder().itemType(ItemTypes.SIGN).build();
-	        Item item = (Item) optional.get();
-	        item.getItemData().setValue(itemStack);
-	    	world.spawnEntity(item);
-	    }
-	}
-
-	@Override
-    public void loadChunk(Point point) {
-	    
-		World world = ((FWorldSponge) point.getWorld()).getWorld();
-		
-		world.loadChunk(SpongeUtils.toLocationVectorI(point), false);
-	}
-
-	@Override
-    public FSign getSign(Point point) throws SignException {
-		
-		World world = ((FWorldSponge) point.getWorld()).getWorld();
-		Location loc = SpongeUtils.toLocation(world, point);
-		
-		if(loc.getType() != BlockTypes.WALL_SIGN && loc.getType() != BlockTypes.STANDING_SIGN) {
-			throw new SignException();
-		}
-
-		return new FSignSponge(loc);
+            Item item = (Item) optional.get();
+            item.getItemData().setValue(itemStack);
+            world.spawnEntity(item);
+        }
     }
 
-	@Override
+    @Override
+    public void loadChunk(Point point) {
+        
+        World world = ((FWorldSponge) point.getWorld()).getWorld();
+        
+        world.loadChunk(SpongeUtils.toLocationVectorI(point), false);
+    }
+
+    @Override
+    public FSign getSign(Point point) throws SignException {
+        
+        World world = ((FWorldSponge) point.getWorld()).getWorld();
+        Location loc = SpongeUtils.toLocation(world, point);
+        
+        if(loc.getType() != BlockTypes.WALL_SIGN && loc.getType() != BlockTypes.STANDING_SIGN) {
+            throw new SignException();
+        }
+
+        return new FSignSponge(loc);
+    }
+
+    @Override
     public FSign createSign(Point point, float yaw, String[] lines, Land land,
             boolean isWallSign) throws SignException {
-	
-		return new FSignSponge(game, point, yaw, lines, land, isWallSign);
+    
+        return new FSignSponge(game, point, yaw, lines, land, isWallSign);
     }
 }

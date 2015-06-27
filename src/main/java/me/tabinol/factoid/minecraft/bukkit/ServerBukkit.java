@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.Factoid.ServerType;
+import me.tabinol.factoid.commands.OnCommand;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.config.bukkit.ConfigBukkit;
 import me.tabinol.factoid.exceptions.SignException;
@@ -81,7 +82,8 @@ public class ServerBukkit extends JavaPlugin implements Server {
 		callEvents = new CallEventsBukkit(plugin);
 		
         // Register commands
-		CommandsBukkit commands = new CommandsBukkit();
+		OnCommand onCommand = new OnCommand();
+		CommandsBukkit commands = new CommandsBukkit(onCommand);
 		plugin.getCommand("factoid").setExecutor(commands);
         plugin.getCommand("faction").setExecutor(commands);
         

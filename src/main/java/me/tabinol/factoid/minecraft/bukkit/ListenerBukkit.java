@@ -18,6 +18,9 @@
 
 package me.tabinol.factoid.minecraft.bukkit;
 
+import java.util.Iterator;
+import java.util.List;
+
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.event.bukkit.PlayerContainerAddNoEnterEvent;
 import me.tabinol.factoid.event.bukkit.PlayerContainerLandBanEvent;
@@ -31,6 +34,9 @@ import me.tabinol.factoid.listeners.PvpListener;
 import me.tabinol.factoid.listeners.WorldListener;
 import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.minecraft.Listener;
+import me.tabinol.factoid.parameters.FlagList;
+import me.tabinol.factoid.parameters.FlagType;
+import me.tabinol.factoid.parameters.FlagValue;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -39,23 +45,37 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Flying;
+import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Slime;
 import org.bukkit.entity.Tameable;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
+import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
+import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -383,10 +403,16 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityChangeBlock(EntityChangeBlockEvent event) {
 		
-		if(!(event.getEntity() instanceof Player)) {
+		
+		// All entities section
+		if(worldListener.onEntityChangeBlock(BukkitUtils.toPoint(event.getBlock().getLocation()),
+				event.getEntityType().name(),
+				event.getBlock().getType().name(), event.getTo().name())) {
+			event.setCancelled(true);
 			return;
 		}
 		
+		// Player only section
 		FPlayer player = Factoid.getServerCache().getPlayer(((Player) event.getEntity()).getUniqueId());
 		
 		// Real player?
@@ -434,6 +460,16 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockIgnite(BlockIgniteEvent event) {
 		
+		Point loc = BukkitUtils.toPoint(event.getBlock().getLocation());
+
+		// Natural cause
+		if (event.getCause() == IgniteCause.SPREAD || event.getCause() == IgniteCause.LAVA
+				&& worldListener.onBlockIgniteNatural(loc)) {
+			event.setCancelled(true);
+			return;
+		}
+		
+		// Player cause
 		if(event.getPlayer() == null) {
 			return;
 		}
@@ -445,7 +481,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 
-		if(playerListener.onBlockIgnite(player, BukkitUtils.toPoint(event.getBlock().getLocation()))) {
+		if(playerListener.onBlockIgnite(player, loc)) {
 			event.setCancelled(true);
 		}
 	}
@@ -541,8 +577,21 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageEvent event) {
 		
+		Point loc = BukkitUtils.toPoint(event.getEntity().getLocation());
+		
+		// Hanging break
+		if(event.getEntity() instanceof Hanging
+                && (event.getCause() == DamageCause.BLOCK_EXPLOSION 
+                || event.getCause() == DamageCause.ENTITY_EXPLOSION
+                || event.getCause() == DamageCause.PROJECTILE)
+                && worldListener.onHangingBreakExplosion(loc)) {
+			event.setCancelled(true);
+			return;
+		}
+		
 		// Not a player
 		if(!(event.getEntity() instanceof Player)) {
+			
 			return;
 		}
 		
@@ -553,8 +602,6 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 
-		Point loc = BukkitUtils.toPoint(event.getEntity().getLocation());
-		
 		if(playerListener.onPlayerDamage(player, loc)) {
 			event.setCancelled(true);
 		} else {
@@ -594,8 +641,135 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 				BukkitUtils.toPoint(event.getBlock().getLocation()));
 	}
 
+    /**************************************************************************
+	 * World events
+	 *************************************************************************/
 
-	/**************************************************************************
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onExplosionPrime(ExplosionPrimeEvent event) {
+    	
+		Entity entity = event.getEntity();
+		
+		if(entity == null) {
+			return;
+		}
+		
+		if(worldListener.onExplosionPrime(BukkitUtils.toPoint(entity.getLocation()), 
+				entity.getType().name())) {
+			event.setCancelled(true);
+            if (entity.getType() == EntityType.CREEPER) {
+                event.getEntity().remove();
+            }
+		}
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onEntityExplode(EntityExplodeEvent event) {
+    	
+        if (event.getEntity() == null) {
+            return;
+        }
+
+        if (Factoid.getConf().isOverrideExplosions()) {
+
+            float power;
+
+            // Creeper Explosion
+            if (event.getEntityType() == EntityType.CREEPER) {
+               	power = 0L;
+                ExplodeBlocks(event, event.blockList(), FlagList.CREEPER_DAMAGE.getFlagType(), event.getLocation(),
+                        event.getYield(), power, false, true);
+
+                //  Wither
+            } else if (event.getEntityType() == EntityType.WITHER_SKULL) {
+                ExplodeBlocks(event, event.blockList(), FlagList.WITHER_DAMAGE.getFlagType(), event.getLocation(),
+                        event.getYield(), 1L, false, true);
+            } else if (event.getEntityType() == EntityType.WITHER) {
+                ExplodeBlocks(event, event.blockList(), FlagList.WITHER_DAMAGE.getFlagType(), event.getLocation(),
+                        event.getYield(), 7L, false, true);
+
+                // Ghast
+            } else if (event.getEntityType() == EntityType.FIREBALL) {
+                ExplodeBlocks(event, event.blockList(), FlagList.GHAST_DAMAGE.getFlagType(), event.getLocation(),
+                        event.getYield(), 1L, true, true);
+
+                // TNT
+            } else if (event.getEntityType() == EntityType.MINECART_TNT
+                    || event.getEntityType() == EntityType.PRIMED_TNT) {
+                ExplodeBlocks(event, event.blockList(), FlagList.TNT_DAMAGE.getFlagType(), event.getLocation(),
+                        event.getYield(), 4L, false, true);
+            } else if (event.getEntityType() == EntityType.ENDER_DRAGON) {
+                ExplodeBlocks(event, event.blockList(), FlagList.ENDERDRAGON_DAMAGE.getFlagType(), event.getLocation(),
+                        event.getYield(), 4L, false, false);
+            }
+        }
+    }
+    
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onHangingBreak(HangingBreakEvent event) {
+    	
+		Entity entity = event.getEntity();
+		
+		if(entity == null) {
+			return;
+		}
+		
+		if(event.getCause() == RemoveCause.EXPLOSION
+				&& worldListener.onHangingBreakExplosion(BukkitUtils.toPoint(entity.getLocation()))) {
+			event.setCancelled(true);
+		}
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onBlockBurn(BlockBurnEvent event) {
+    	
+    	if(worldListener.onBlockBurn(BukkitUtils.toPoint(event.getBlock().getLocation()))) {
+			event.setCancelled(true);
+		}
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onCreatureSpawn(CreatureSpawnEvent event) {
+    	
+    	Entity entity = event.getEntity();
+    	boolean isAnimal = false;
+    	boolean isMob = false;
+    	
+    	if(entity instanceof Animals) {
+    		isAnimal = true;
+    	}
+    	
+    	if(event.getEntity() instanceof Monster
+                || event.getEntity() instanceof Slime
+                || event.getEntity() instanceof Flying) {
+    		isMob = true;
+    	}
+    	
+    	if(worldListener.onCreatureSpawn(BukkitUtils.toPoint(event.getLocation()), 
+    			isAnimal, isMob)) {
+    		event.setCancelled(true);
+    	}
+    }
+    
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onLeavesDecay(LeavesDecayEvent event) {
+    	
+    	if(worldListener.onLeavesDecay(BukkitUtils.toPoint(event.getBlock().getLocation()))) {
+    		event.setCancelled(true);
+    	}
+    }
+    
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onBlockFromTo(BlockFromToEvent event) {
+    	
+    	if(worldListener.onBlockFromTo(BukkitUtils.toPoint(event.getBlock().getLocation()),
+    			event.getBlock().getType().name())) {
+    		event.setCancelled(true);
+    	}
+    	
+    }
+
+    /**************************************************************************
 	 * Factoid events
 	 *************************************************************************/
 
@@ -650,4 +824,46 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		
 		return null;
 	}
+
+    /**
+     * Explode blocks.
+     *
+     * @param event The cancellable event
+     * @param blocks the blocks
+     * @param ft the flag type
+     * @param loc the location
+     * @param yield the yield
+     * @param power the power
+     * @param setFire the set fire
+     * @param doExplosion the do explosion
+     */
+    private void ExplodeBlocks(Cancellable event, List<Block> blocks, FlagType ft, Location loc,
+            float yield, float power, boolean setFire, boolean doExplosion) {
+
+        FlagValue value;
+        boolean cancelEvent = false;
+        Iterator<Block> itBlock = blocks.iterator();
+        Block block;
+
+        Factoid.getFactoidLog().write("Explosion : " + ", Yield: " + yield + ", power: " + power);
+
+        // Check if 1 block or more is in a protected place
+        while(itBlock.hasNext() && !cancelEvent) {
+        	block = itBlock.next();
+        	value = Factoid.getLands().getLandOrOutsideArea(
+        			BukkitUtils.toPoint(block.getLocation())).getFlagAndInherit(ft);
+            if (value.getValueBoolean() == false) {
+                cancelEvent = true;
+            }
+        }
+        
+        if(cancelEvent) {
+        	// Cancel Event and do a false explosion
+        	event.setCancelled(true);
+            loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(),
+                    power, setFire, false);
+        }
+        
+        // If not the event will be executed has is
+    }
 }

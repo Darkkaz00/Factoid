@@ -25,12 +25,12 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.reflections.Reflections;
-
-import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.executor.CommandHelp;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.minecraft.FSender;
+import me.tabinol.factoid.minecraft.FSenderInterface;
+
+import org.reflections.Reflections;
 
 
 
@@ -71,7 +71,7 @@ public class OnCommand {
         }
     }
 
-    public boolean onCommand(FSender sender, String cmd, String label, String[] arg) {
+    public boolean onCommand(FSenderInterface sender, String cmd, String[] arg) {
 
         // Others commands then /factoid, /claim and /fd will not be send.
         
@@ -87,14 +87,14 @@ public class OnCommand {
     }
 
     // Get command from args
-    private void getCommand(FSender sender, String cmd, ArgList argList) throws FactoidCommandException {
+    private void getCommand(FSenderInterface sender, String cmd, ArgList argList) throws FactoidCommandException {
 
         try {
             MainCommand mainCommand = MainCommand.valueOf(cmd.toUpperCase());
             
             // Show help if there is no arguments
             if (argList.isLast()) {
-                new CommandHelp(this, sender, mainCommand, "GENERAL").commandExecute();
+                new CommandHelp(this, (FSender) sender, mainCommand, "GENERAL").commandExecute();
                 return;
             }
 

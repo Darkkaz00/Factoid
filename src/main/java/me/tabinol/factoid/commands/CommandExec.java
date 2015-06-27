@@ -34,11 +34,6 @@ import me.tabinol.factoid.playercontainer.PlayerContainer;
 import me.tabinol.factoid.playercontainer.PlayerContainerOwner;
 import me.tabinol.factoid.utilities.ChatStyle;
 
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 
 /**
  * The Class CommandExec.
