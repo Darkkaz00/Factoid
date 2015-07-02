@@ -49,7 +49,7 @@ public class FWorldSponge implements FWorld {
 	@Override
     public int getMaxHeight() {
 	    
-		return world.getBuildHeight();
+		return world.getBlockMax().getY();
     }
 
 	@Override

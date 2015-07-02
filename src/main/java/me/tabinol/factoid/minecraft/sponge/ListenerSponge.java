@@ -213,7 +213,7 @@ public class ListenerSponge implements Listener {
 		}
 		
     	FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
-		if(playerListener.onPlayerInteract(player, click, itemInHand, event.getBlock().getType().getName(),
+		if(playerListener.onPlayerInteract(player, click, itemInHand, event.getBlock().getBlockType().getName(),
 				SpongeUtils.toPoint(event.getBlock()))) {
 			event.setCancelled(true);
 		}
@@ -229,7 +229,7 @@ public class ListenerSponge implements Listener {
 			return;
 		}
 
-    	if(playerListener.onBlockPlace(player, event.getBlock().getType().getName(),
+    	if(playerListener.onBlockPlace(player, event.getBlock().getBlockType().getName(),
     			SpongeUtils.toPoint(event.getBlock()))) {
     		event.setCancelled(true);
     	}
@@ -245,7 +245,7 @@ public class ListenerSponge implements Listener {
 			return;
 		}
 
-		pvpListener.onBlockPlaceMonitor(player, event.getBlock().getType().getName(),
+		pvpListener.onBlockPlaceMonitor(player, event.getBlock().getBlockType().getName(),
 				SpongeUtils.toPoint(event.getBlock()));
 	}
 
@@ -286,7 +286,7 @@ public class ListenerSponge implements Listener {
 			return;
 		}
 
-    	if(playerListener.onBlockPlace(player, event.getBlock().getType().getName(),
+    	if(playerListener.onBlockPlace(player, event.getBlock().getBlockType().getName(),
     			SpongeUtils.toPoint(event.getBlock()))) {
     		event.setCancelled(true);
     	}
@@ -394,7 +394,7 @@ public class ListenerSponge implements Listener {
 			return;
 		}
 
-    	if(playerListener.onPlayerChangeBlock(player, event.getBlock().getType().getName(),
+    	if(playerListener.onPlayerChangeBlock(player, event.getBlock().getBlockType().getName(),
     			event.getReplacementBlock().getState().getType().getName(), SpongeUtils.toPoint(event.getBlock()))) {
     		event.setCancelled(true);
     	}
@@ -414,7 +414,7 @@ public class ListenerSponge implements Listener {
 		
     	if(newLoc != null) {
     		// TODO Yaw and Pitch
-    		event.setRespawnLocation(SpongeUtils.toLocation(event.getGame().getServer().getWorld(newLoc.getWorldName()).get(), 
+    		event.setNewRespawnLocation(SpongeUtils.toLocation(event.getGame().getServer().getWorld(newLoc.getWorldName()).get(), 
     				newLoc));
     	}
 	}
@@ -602,7 +602,7 @@ public class ListenerSponge implements Listener {
 		// All entities section
 		if(worldListener.onEntityChangeBlock(SpongeUtils.toPoint(event.getBlock()), 
 				event.getEntity().getType().getName(),
-				event.getBlock().getType().getName(), 
+				event.getBlock().getBlockType().getName(), 
 				event.getReplacementBlock().getState().getType().getName())) {
 			event.setCancelled(true);
 			return;
@@ -650,7 +650,7 @@ public class ListenerSponge implements Listener {
 	public void onBlockChange(BlockChangeEvent event) {
 		
 		if(worldListener.onBlockFromTo(SpongeUtils.toPoint(event.getBlock()), 
-				event.getBlock().getType().getName())) {
+				event.getBlock().getBlockType().getName())) {
 			event.setCancelled(true);
 		}
 	}

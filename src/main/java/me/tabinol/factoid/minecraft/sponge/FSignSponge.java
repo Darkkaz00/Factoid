@@ -61,13 +61,13 @@ public class FSignSponge implements FSign {
 		direction.setValue(facing);
 		state.withData(direction).get();
 		
-		loc.replaceWith(state);
+		loc.setBlock(state);
 	}
 
 	@Override
     public boolean isWallSign() {
 
-		if(loc.getType() == BlockTypes.WALL_SIGN) {
+		if(loc.getBlockType() == BlockTypes.WALL_SIGN) {
 			return true;
 		} else {
 			return false;

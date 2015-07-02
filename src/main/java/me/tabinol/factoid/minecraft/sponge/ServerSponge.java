@@ -1,4 +1,13 @@
 /*
+
+!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!
+
+You must edit ServerSponge.java.template. ServerSponge.java is overwrite 
+at compile time!
+
+!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!
+
+
  Factoid: Lands and Factions plugin for Minecraft server
  Copyright (C) 2014 Kaz00, Tabinol
 
@@ -65,7 +74,8 @@ import com.google.inject.Inject;
 
 /**
  * Main class for Sponge
- * CAUTION : You must edit ServerSponge.java.template. ServerSponge.java is overwrite at compile time!
+ * CAUTION : You must edit ServerSponge.java.template. ServerSponge.java is 
+ * overwrite at compile time!
  * @author Tabinol
  *
  */
@@ -183,9 +193,18 @@ public class ServerSponge implements Server {
         runnable.stopNextRun();
         
         if(multiple) {
-            task = game.getSyncScheduler().runRepeatingTask(plugin, runnable, tick).get();
+            task = game.getScheduler()
+            		.getTaskBuilder()
+            		.execute(runnable)
+            		.delay(tick)
+            		.interval(tick)
+            		.submit(plugin);
         } else {
-            task = game.getSyncScheduler().runTaskAfter(plugin, runnable, tick).get();
+            task = game.getScheduler()
+            		.getTaskBuilder()
+            		.execute(runnable)
+            		.delay(tick)
+            		.submit(plugin);
         }
         
         return new TaskSponge(task);
@@ -194,7 +213,10 @@ public class ServerSponge implements Server {
     @Override
     public void callTaskNow(Runnable runnable) {
         
-        game.getSyncScheduler().runTask(plugin, runnable);
+        game.getScheduler()
+        	.getTaskBuilder()
+        	.execute(runnable)
+        	.submit(plugin);
     }
 
     @Override
@@ -279,7 +301,7 @@ public class ServerSponge implements Server {
         
         // Remove block
         BlockState state = BlockTypes.AIR.getDefaultState();
-        loc.replaceWith(state);
+        loc.setBlock(state);
         
         // Create entity (item drop)
         Optional<Entity> optional = world.createEntity(EntityTypes.DROPPED_ITEM, loc.getPosition());
@@ -306,7 +328,7 @@ public class ServerSponge implements Server {
         World world = ((FWorldSponge) point.getWorld()).getWorld();
         Location loc = SpongeUtils.toLocation(world, point);
         
-        if(loc.getType() != BlockTypes.WALL_SIGN && loc.getType() != BlockTypes.STANDING_SIGN) {
+        if(loc.getBlockType() != BlockTypes.WALL_SIGN && loc.getBlockType() != BlockTypes.STANDING_SIGN) {
             throw new SignException();
         }
 
