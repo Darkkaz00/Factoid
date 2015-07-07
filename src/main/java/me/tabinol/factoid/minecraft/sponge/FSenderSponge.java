@@ -18,8 +18,10 @@
 
 package me.tabinol.factoid.minecraft.sponge;
 
+import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.minecraft.FSender;
 
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.TextBuilder;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.util.command.CommandSource;
@@ -29,13 +31,24 @@ public class FSenderSponge extends FSender {
 	private final CommandSource sender;
 	
 	/**
-	 * Constructor for Console and players
+	 * Constructor for Console
 	 * @param sender
 	 */
 	public FSenderSponge(CommandSource sender) {
 		
 		super();
 		this.sender = sender;
+	}
+
+	/**
+	 * Constructor for Player
+	 * @param fplayer Factoid player
+	 * @param player Sponge player
+	 */
+	public FSenderSponge(FPlayer fplayer, Player player) {
+		
+		super(fplayer);
+		this.sender = player;
 	}
 
 	@Override

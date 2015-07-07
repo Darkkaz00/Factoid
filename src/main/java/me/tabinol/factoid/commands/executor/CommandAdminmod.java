@@ -49,12 +49,12 @@ public class CommandAdminmod extends CommandExec {
 
         checkPermission(false, false, null, "factoid.adminmod");
         
-        if (entity.player.isAdminMod()) {
-            entity.player.setAdminMod(false);
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ADMINMOD.QUIT"));
+        if (entity.sender.isAdminMod()) {
+            entity.sender.setAdminMod(false);
+            entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ADMINMOD.QUIT"));
         } else {
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ADMINMOD.JOIN"));
-            entity.player.setAdminMod(true);
+            entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ADMINMOD.JOIN"));
+            entity.sender.setAdminMod(true);
         }
     }
 }

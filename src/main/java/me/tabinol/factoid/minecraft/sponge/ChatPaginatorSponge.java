@@ -19,7 +19,7 @@
 package me.tabinol.factoid.minecraft.sponge;
 
 import me.tabinol.factoid.minecraft.ChatPaginator;
-import me.tabinol.factoid.minecraft.FSenderInterface;
+import me.tabinol.factoid.minecraft.FSender;
 
 import org.spongepowered.api.Game;
 import org.spongepowered.api.service.pagination.PaginationBuilder;
@@ -39,7 +39,7 @@ public class ChatPaginatorSponge implements ChatPaginator {
     }
 
 	@Override
-	public void send(FSenderInterface sender, String title) {
+	public void send(FSender sender, String title) {
 		
 		builder.title(Texts.of(title)).contents(Texts.of(text)).paddingString("-")
 			.sendTo(((FSenderSponge) sender).getSpongeSender());

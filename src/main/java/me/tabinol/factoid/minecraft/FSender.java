@@ -33,7 +33,7 @@ import me.tabinol.factoid.selection.PlayerSelection;
  * @author Tabinol
  *
  */
-public abstract class FSender implements FSenderInterface, Comparable<FSender> {
+public abstract class FSender implements Comparable<FSender> {
 	
     /**************************************************************************
      * Settings for player and Sender
@@ -76,29 +76,40 @@ public abstract class FSender implements FSenderInterface, Comparable<FSender> {
      *************************************************************************/
     
     /**
-     * Constructor for a player
-     * @param uuid
+     * Constructor for the console
      */
     protected FSender() {
     	
-    	if(this instanceof FPlayer) {
-    		// For real player
-            player = ((FPlayer) this);
-        	playerSelection = new PlayerSelection(player);
-            pcp = new PlayerContainerPlayer(player.getUUID());
-    	} else {
-    		// For console
-            player = null;
-        	playerSelection = null;
-            pcp = null;
-    	}
+		// For console
+        player = null;
+    	playerSelection = null;
+        pcp = null;
+    }
+
+    /**
+     * Constructor for a player
+     * @param player Factoid player
+     */
+    protected FSender(FPlayer player) {
+    	
+        this.player = player;
+    	playerSelection = new PlayerSelection(player);
+        pcp = new PlayerContainerPlayer(player.getUUID());
     }
     
+    /**************************************************************************
+     * Abstract methods
+     *************************************************************************/
+    
+	public abstract void sendMessage(String msg);
+	public abstract void sendMessage(String[] msg);
+	public abstract boolean hasPermission(String perm);
+	public abstract String getName();
+
     /**************************************************************************
      * Methods
      *************************************************************************/
     
-	@Override
     public int compareTo(FSender arg0) {
 		
 		return getName().compareTo(getName());
@@ -118,6 +129,16 @@ public abstract class FSender implements FSenderInterface, Comparable<FSender> {
 
         return playerSelection;
     }
+
+	public boolean isPlayer() {
+		
+		return player != null;
+	}
+    
+	public FPlayer getFPlayer() {
+		
+		return player;
+	}
 
 	public boolean isAdminMod() {
 

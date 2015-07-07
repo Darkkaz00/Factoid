@@ -1040,7 +1040,7 @@ public class Land extends DummyLand {
 
         if (playersInLand.contains(player)
                 && (!Factoid.getDependPlugin().getVanish().isVanished(player) 
-                		|| fromPlayer.isAdminMod())) {
+                		|| fromPlayer.getFSender().isAdminMod())) {
             return true;
         }
 
@@ -1093,7 +1093,8 @@ public class Land extends DummyLand {
         Set<FPlayer> playerList = new TreeSet<FPlayer>();
 
         for (FPlayer player : playersInLand) {
-            if (!Factoid.getDependPlugin().getVanish().isVanished(player) || fromPlayer.isAdminMod()) {
+            if (!Factoid.getDependPlugin().getVanish().isVanished(player) 
+            		|| fromPlayer.getFSender().isAdminMod()) {
                 playerList.add(player);
             }
         }

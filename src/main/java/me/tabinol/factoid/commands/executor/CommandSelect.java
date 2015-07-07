@@ -42,7 +42,7 @@ import me.tabinol.factoid.utilities.ChatStyle;
 @InfoCommand(name="select")
 public class CommandSelect extends CommandExec {
 
-    /** The player. */
+    /** The player.getFSender(). */
     private final FPlayer player;
     
     /** The location. */
@@ -93,15 +93,15 @@ public class CommandSelect extends CommandExec {
 
         String curArg;
 
-        if (player.getSelection().getCuboidArea() == null) {
-            Factoid.getFactoidLog().write(player.getName() + " join select mode");
+        if (player.getFSender().getSelection().getCuboidArea() == null) {
+            Factoid.getFactoidLog().write(player.getFSender().getName() + " join select mode");
 
             if (!argList.isLast()) {
 
                 curArg = argList.getNext();
                 if (curArg.equalsIgnoreCase("worldedit")) {
                     if (!Factoid.getDependPlugin().getEditWorld().isPluginLoaded()) {
-                        throw new FactoidCommandException("CommandSelect", player, "COMMAND.SELECT.WORLDEDIT.NOTLOAD");
+                        throw new FactoidCommandException("CommandSelect", player.getFSender(), "COMMAND.SELECT.WORLDEDIT.NOTLOAD");
                     }
                     Factoid.getDependPlugin().getEditWorld().makeSelect(entity.player);
 
@@ -127,34 +127,34 @@ public class CommandSelect extends CommandExec {
                     }
 
                     if (landtest == null) {
-                        throw new FactoidCommandException("CommandSelect", player, "COMMAND.SELECT.NOLAND");
+                        throw new FactoidCommandException("CommandSelect", player.getFSender(), "COMMAND.SELECT.NOLAND");
 
                     }
                     PlayerContainer owner = landtest.getOwner();
 
-                    if (!owner.hasAccess(player) && !player.isAdminMod()
+                    if (!owner.hasAccess(player) && !player.getFSender().isAdminMod()
                             && !(landtest.checkPermissionAndInherit(player, PermissionList.RESIDENT_MANAGER.getPermissionType())
                             		&& (landtest.isResident(player) || landtest.isOwner(player)))) {
-                        throw new FactoidCommandException("CommandSelect", player, "GENERAL.MISSINGPERMISSION");
+                        throw new FactoidCommandException("CommandSelect", player.getFSender(), "GENERAL.MISSINGPERMISSION");
                     }
-                    if (player.getSelection().getLand() == null) {
+                    if (player.getFSender().getSelection().getLand() == null) {
 
-                        player.getSelection().addSelection(new LandSelection(player, landtest));
+                        player.getFSender().getSelection().addSelection(new LandSelection(player, landtest));
 
-                        player.sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.DARK_GRAY + Factoid.getLanguage().getMessage("COMMAND.SELECT.SELECTEDLAND", landtest.getName()));
-                        player.setAutoCancelSelect(true);
+                        player.getFSender().sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.DARK_GRAY + Factoid.getLanguage().getMessage("COMMAND.SELECT.SELECTEDLAND", landtest.getName()));
+                        player.getFSender().setAutoCancelSelect(true);
                     } else {
 
-                        player.sendMessage(ChatStyle.RED + "[Factoid] " + ChatStyle.DARK_GRAY + Factoid.getLanguage().getMessage("COMMAND.SELECT.ALREADY"));
+                        player.getFSender().sendMessage(ChatStyle.RED + "[Factoid] " + ChatStyle.DARK_GRAY + Factoid.getLanguage().getMessage("COMMAND.SELECT.ALREADY"));
                     }
                 }
             } else {
 
-                player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.JOINMODE"));
-                player.sendMessage(ChatStyle.DARK_GRAY + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.HINT", ChatStyle.ITALIC.toString(), ChatStyle.RESET.toString(), ChatStyle.DARK_GRAY.toString()));
+                player.getFSender().sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.JOINMODE"));
+                player.getFSender().sendMessage(ChatStyle.DARK_GRAY + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.HINT", ChatStyle.ITALIC.toString(), ChatStyle.RESET.toString(), ChatStyle.DARK_GRAY.toString()));
                 ActiveAreaSelection select = new ActiveAreaSelection(player);
-                player.getSelection().addSelection(select);
-                player.setAutoCancelSelect(true);
+                player.getFSender().getSelection().addSelection(select);
+                player.getFSender().setAutoCancelSelect(true);
             }
         } else if ((curArg = argList.getNext()) != null && curArg.equalsIgnoreCase("done")) {
 
@@ -171,7 +171,7 @@ public class CommandSelect extends CommandExec {
             doSelectAreaInfo();
 
         } else {
-            throw new FactoidCommandException("CommandSelect", player, "COMMAND.SELECT.ALREADY");
+            throw new FactoidCommandException("CommandSelect", player.getFSender(), "COMMAND.SELECT.ALREADY");
         }
     }
 
@@ -184,16 +184,16 @@ public class CommandSelect extends CommandExec {
 
         checkSelections(null, true);
 
-        AreaSelection select = (AreaSelection) player.getSelection().getSelection(SelectionType.AREA);
-        player.getSelection().addSelection(new AreaSelection(player, select.getCuboidArea()));
-        player.setAutoCancelSelect(true);
+        AreaSelection select = (AreaSelection) player.getFSender().getSelection().getSelection(SelectionType.AREA);
+        player.getFSender().getSelection().addSelection(new AreaSelection(player, select.getCuboidArea()));
+        player.getFSender().setAutoCancelSelect(true);
 
         if (!select.getCollision()) {
 
-            player.sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.DARK_GRAY
+            player.getFSender().sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.DARK_GRAY
                     + Factoid.getLanguage().getMessage("COMMAND.SELECT.LAND.NOCOLLISION"));
         } else {
-            player.sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.RED
+            player.getFSender().sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.RED
                     + Factoid.getLanguage().getMessage("COMMAND.SELECT.LAND.COLLISION"));
         }
     }
@@ -209,23 +209,23 @@ public class CommandSelect extends CommandExec {
 
         double price;
 
-        AreaSelection select = (AreaSelection) player.getSelection().getSelection(SelectionType.AREA);
+        AreaSelection select = (AreaSelection) player.getFSender().getSelection().getSelection(SelectionType.AREA);
         CuboidArea area = select.getCuboidArea();
 
-        player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.INFO.INFO1",
+        player.getFSender().sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.INFO.INFO1",
                 area.getPrint()));
-        player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.INFO.INFO2",
+        player.getFSender().sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.INFO.INFO2",
                 area.getTotalBlock() + ""));
 
         // Price (economy)
-        price = player.getSelection().getLandCreatePrice();
+        price = player.getFSender().getSelection().getLandCreatePrice();
         if (price != 0L) {
-            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.INFO.INFO3",
+            player.getFSender().sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.INFO.INFO3",
                     Factoid.getPlayerMoney().toFormat(price)));
         }
-        price = player.getSelection().getAreaAddPrice();
+        price = player.getFSender().getSelection().getAreaAddPrice();
         if (price != 0L) {
-            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.INFO.INFO4",
+            player.getFSender().sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.INFO.INFO4",
                     Factoid.getPlayerMoney().toFormat(price)));
         }
     }

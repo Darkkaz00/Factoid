@@ -194,8 +194,9 @@ public class Factoid {
     /**
      * Main declaration (start) for both Bukkit and Sponge
      * @param serverType BUKKIT or SPONGE
+     * @param server the init class of this plugin
      */
-    public Factoid(ServerType serverType) {
+    public Factoid(ServerType serverType, Server server) {
 
     	// Init Server dependencies
     	Factoid.serverType = serverType;
@@ -203,13 +204,14 @@ public class Factoid {
         mavenAppProperties.loadProperties();
         
         // Init Server access (Minecraft/Sponge)
+        minecraftServer = server;
+        serverCache = new ServerCache();
         minecraftServer.initServer();
         
         // Init API
         // TODO FactoidAPI Re-Enable FactoidAPI.initFactoidPluginAccess();
         
         // Init Factoid
-        serverCache = new ServerCache();
         parameters = new Parameters();
         types = new Types();
         conf = minecraftServer.newConfig();

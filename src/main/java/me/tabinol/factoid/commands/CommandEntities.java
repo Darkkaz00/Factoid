@@ -19,7 +19,6 @@ package me.tabinol.factoid.commands;
 
 import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.minecraft.FSender;
-import me.tabinol.factoid.minecraft.FSenderInterface;
 
 /**
  * Contains general information for commandExecutor.
@@ -38,7 +37,7 @@ public class CommandEntities {
     /** The arg list. */
     public final ArgList argList;
     
-    /** The player. */
+    /** The player.getFSender(). */
     public final FPlayer player;
     
     /** The player name. */
@@ -57,7 +56,7 @@ public class CommandEntities {
      * @param onCommand the on command
      */
     public CommandEntities(MainCommand mainCommand, InfoCommand infoCommand, 
-    		FSenderInterface sender, ArgList argList, OnCommand onCommand) {
+    		FSender sender, ArgList argList, OnCommand onCommand) {
         
         this.mainCommand = mainCommand;
     	this.infoCommand = infoCommand;
@@ -65,11 +64,7 @@ public class CommandEntities {
         this.argList = argList;
         this.onCommand = onCommand;
 
-        if (sender instanceof FPlayer) {
-            player = (FPlayer) sender;
-        } else {
-            player = null;
-        }
+        player = sender.getFPlayer();
         
         playerName = sender.getName();
     }

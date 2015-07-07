@@ -18,16 +18,18 @@
 
 package me.tabinol.factoid.minecraft.bukkit;
 
+import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.minecraft.FSender;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class FSenderBukkit extends FSender {
 	
 	private final CommandSender sender;
 	
 	/**
-	 * Constructor for Console and players
+	 * Constructor for Console
 	 * @param sender
 	 */
 	public FSenderBukkit(CommandSender sender) {
@@ -36,6 +38,17 @@ public class FSenderBukkit extends FSender {
 		this.sender = sender;
 	}
 	
+	/**
+	 * Constructor for Player
+	 * @param fplayer Factoid player
+	 * @param player Bukkit player
+	 */
+	public FSenderBukkit(FPlayer fplayer, Player player) {
+		
+		super(fplayer);
+		this.sender = player;
+	}
+
 	@Override
     public String getName() {
 

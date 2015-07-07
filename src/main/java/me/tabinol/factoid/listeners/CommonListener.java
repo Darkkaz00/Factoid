@@ -63,14 +63,14 @@ public class CommonListener {
 	 */
 	protected void messagePermission(FPlayer player) {
 
-		player.sendMessage(ChatStyle.GRAY + "[Factoid] "
+		player.getFSender().sendMessage(ChatStyle.GRAY + "[Factoid] "
 				+ Factoid.getLanguage().getMessage("GENERAL.MISSINGPERMISSION"));
 	}
 	
 	/**
 	 * Check is the block to destroy is attached to an eco sign
 	 * @param land the land
-	 * @param block the block
+	 * @param point the location
 	 * @return true if the sign is attached
 	 */
 	protected boolean hasEcoSign(Land land, Point point) {

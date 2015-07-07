@@ -5,6 +5,7 @@
 	<groupId>me.tabinol.factoid</groupId>
 	<artifactId>Factoid</artifactId>
 	<!-- *** Change version here *** -->
+	<!-- IMPORTANT: The version must manually in ServerSponge.java -->
 	<version>1.3.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -23,8 +24,6 @@
 		<!-- *** Change players cache .conf version here here *** -->
 		<playersCacheVersion>1</playersCacheVersion>
 		<!-- *** For Sponge plugin version *** -->
-		<version.template.file>src/main/java/me/tabinol/factoid/minecraft/sponge/ServerSponge.java.template</version.template.file>
-		<version.file>src/main/java/me/tabinol/factoid/minecraft/sponge/ServerSponge.java</version.file>
 	</properties>
 
 	<repositories>
@@ -214,7 +213,7 @@
 				<filtering>true</filtering>
 				<directory>${basedir}/src/main/resources/</directory>
 				<includes>
-					<include>lang/*.yml</include>
+					<include>lang/*.properties</include>
 					<include>*.yml</include>
 					<include>app.properties</include>
 					<include>LICENSE</include>
@@ -222,29 +221,6 @@
 			</resource>
 		</resources>
 		<plugins>
-			<plugin>
-				<groupId>com.google.code.maven-replacer-plugin</groupId>
-				<artifactId>replacer</artifactId>
-				<version>1.5.3</version>
-				<executions>
-					<execution>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>replace</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<file>${version.template.file}</file>
-					<outputFile>${version.file}</outputFile>
-					<replacements>
-						<replacement>
-							<token>@version@</token>
-							<value>${project.version}</value>
-						</replacement>
-					</replacements>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

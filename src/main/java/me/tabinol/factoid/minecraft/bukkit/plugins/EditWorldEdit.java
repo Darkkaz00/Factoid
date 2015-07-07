@@ -59,10 +59,12 @@ public class EditWorldEdit extends EditWorld {
             Region sel;
             if (session.getSelectionWorld() == null
                     || !((sel = session.getSelection(session.getSelectionWorld())) != null && sel instanceof CuboidRegion)) {
-                throw new FactoidCommandException("CommandSelectWorldEdit", player, "COMMAND.SELECT.WORLDEDIT.NOSELECTIONNED");
+                throw new FactoidCommandException("CommandSelectWorldEdit", 
+                		player.getFSender(), 
+                		"COMMAND.SELECT.WORLDEDIT.NOSELECTIONNED");
             }
 
-            player.sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.DARK_GRAY + Factoid.getLanguage().getMessage("COMMAND.SELECT.WORLDEDIT.SELECTIONNED"));
+            player.getFSender().sendMessage(ChatStyle.GREEN + "[Factoid] " + ChatStyle.DARK_GRAY + Factoid.getLanguage().getMessage("COMMAND.SELECT.WORLDEDIT.SELECTIONNED"));
             Factoid.getFactoidLog().write(Factoid.getLanguage().getMessage("COMMAND.SELECT.WORLDEDIT.SELECTIONNED"));
             
             AreaSelection select = new AreaSelection(player, new CuboidArea(sel.getWorld().getName(), 
@@ -70,11 +72,11 @@ public class EditWorldEdit extends EditWorld {
                     sel.getMinimumPoint().getBlockZ(), sel.getMaximumPoint().getBlockX(), 
                     sel.getMaximumPoint().getBlockY(), sel.getMaximumPoint().getBlockZ()));
             
-            player.getSelection().addSelection(select);
-            player.setAutoCancelSelect(true);
+            player.getFSender().getSelection().addSelection(select);
+            player.getFSender().setAutoCancelSelect(true);
 
         } catch (IncompleteRegionException ex) {
-            throw new FactoidCommandException("CommandSelectWorldEdit", player, "COMMAND.SELECT.WORLDEDIT.SELECTIONINCOMPLET");
+            throw new FactoidCommandException("CommandSelectWorldEdit", player.getFSender(), "COMMAND.SELECT.WORLDEDIT.SELECTIONINCOMPLET");
         }
     }
 }

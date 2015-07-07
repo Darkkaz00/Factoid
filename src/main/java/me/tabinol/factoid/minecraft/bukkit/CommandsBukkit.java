@@ -26,7 +26,7 @@ import org.bukkit.entity.Player;
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.OnCommand;
 import me.tabinol.factoid.minecraft.Commands;
-import me.tabinol.factoid.minecraft.FSenderInterface;
+import me.tabinol.factoid.minecraft.FSender;
 
 public class CommandsBukkit implements Commands, CommandExecutor  {
 	
@@ -41,12 +41,12 @@ public class CommandsBukkit implements Commands, CommandExecutor  {
     public boolean onCommand(CommandSender sender, Command cmd, String label,
             String[] arg) {
 
-		FSenderInterface fSender;
+		FSender fSender;
 		
 		if(sender instanceof Player) {
-			fSender = Factoid.getServerCache().getPlayer(((Player) sender).getUniqueId());
+			fSender = Factoid.getServerCache().getPlayer(((Player) sender).getUniqueId()).getFSender();
 		} else {
-			fSender = new FSenderBukkit(null);
+			fSender = new FSenderBukkit(sender);
 		}
 		
 		return onCommand.onCommand(fSender, cmd.getName(), arg);

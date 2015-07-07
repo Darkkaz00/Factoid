@@ -55,19 +55,19 @@ public class CommandPriority extends CommandExec {
         short newPrio;
 
         if (land.getParent() != null) {
-            throw new FactoidCommandException("Priority", entity.player, "COMMAND.PRIORITY.NOTCHILD");
+            throw new FactoidCommandException("Priority", entity.sender, "COMMAND.PRIORITY.NOTCHILD");
         }
         try {
             newPrio = Short.parseShort(curArg);
         } catch (NumberFormatException ex) {
-            throw new FactoidCommandException("Priority", entity.player, "COMMAND.PRIORITY.INVALID", Land.MINIM_PRIORITY + "", Land.MAXIM_PRIORITY + "");
+            throw new FactoidCommandException("Priority", entity.sender, "COMMAND.PRIORITY.INVALID", Land.MINIM_PRIORITY + "", Land.MAXIM_PRIORITY + "");
         }
         if (!Calculate.isInInterval(newPrio, Land.MINIM_PRIORITY, Land.MAXIM_PRIORITY)) {
-            throw new FactoidCommandException("Priority", entity.player, "COMMAND.PRIORITY.INVALID", Land.MINIM_PRIORITY + "", Land.MAXIM_PRIORITY + "");
+            throw new FactoidCommandException("Priority", entity.sender, "COMMAND.PRIORITY.INVALID", Land.MINIM_PRIORITY + "", Land.MAXIM_PRIORITY + "");
         }
         land.setPriority(newPrio);
 
-        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage(
+        entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage(
                 "COMMAND.PRIORITY.DONE", land.getName(), land.getPriority() + ""));
         Factoid.getFactoidLog().write("Priority for land " + land.getName() + " changed for " + land.getPriority());
     }

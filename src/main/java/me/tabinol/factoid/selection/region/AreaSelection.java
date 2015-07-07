@@ -160,7 +160,7 @@ public class AreaSelection extends RegionSelection {
                         // Active Selection
                         DummyLand testCuboidarea = Factoid.getLands().getLandOrOutsideArea(newloc);
                         if (parentDetected == testCuboidarea 
-                        		&& (canCreate == true || player.isAdminMod())) {
+                        		&& (canCreate == true || player.getFSender().isAdminMod())) {
                             this.player.sendBlockChange(newloc, "SPONGE", this.by);
                         } else {
                             this.player.sendBlockChange(newloc, "REDSTONE_BLOCK", this.by);

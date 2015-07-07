@@ -76,7 +76,7 @@ public class PlayerContainerFaction extends PlayerContainer {
     @Override
     public boolean hasAccess(FPlayer player) {
 
-        return faction.isPlayerInList(player.getPlayerContainer());
+        return faction.isPlayerInList(player.getFSender().getPlayerContainer());
     }
 
     @Override

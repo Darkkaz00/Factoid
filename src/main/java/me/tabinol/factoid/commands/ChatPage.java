@@ -21,7 +21,7 @@ import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.Factoid.ServerType;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.minecraft.ChatPaginator;
-import me.tabinol.factoid.minecraft.FSenderInterface;
+import me.tabinol.factoid.minecraft.FSender;
 import me.tabinol.factoid.utilities.ChatStyle;
 
 /**
@@ -36,7 +36,7 @@ public class ChatPage {
     private final String text;
     
     /** The sender. */
-    private final FSenderInterface sender;
+    private final FSender sender;
     
     /** The param. */
     private final String param;
@@ -53,7 +53,7 @@ public class ChatPage {
      * @param param the param
      * @throws FactoidCommandException the factoid command exception
      */
-    public ChatPage(String header, String text, FSenderInterface sender, String param) throws FactoidCommandException {
+    public ChatPage(String header, String text, FSender sender, String param) throws FactoidCommandException {
 
         this.header = header;
         this.text = text;

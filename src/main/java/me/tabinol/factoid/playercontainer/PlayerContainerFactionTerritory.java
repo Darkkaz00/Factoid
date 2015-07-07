@@ -69,7 +69,7 @@ public class PlayerContainerFactionTerritory extends PlayerContainer {
             return false;
         }
         
-        return land.getFactionTerritory().isPlayerInList(player.getPlayerContainer());
+        return land.getFactionTerritory().isPlayerInList(player.getFSender().getPlayerContainer());
     }
 
     @Override

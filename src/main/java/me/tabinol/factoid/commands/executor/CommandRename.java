@@ -59,7 +59,7 @@ public class CommandRename extends CommandExec {
         
         String curArg = entity.argList.getNext();
         if (BannedWords.isBannedWord(curArg)) {
-            throw new FactoidCommandException("CommandRename", entity.player, "COMMAND.RENAME.HINTUSE");
+            throw new FactoidCommandException("CommandRename", entity.sender, "COMMAND.RENAME.HINTUSE");
         }
 
         // Check for collision
@@ -74,9 +74,9 @@ public class CommandRename extends CommandExec {
             Factoid.getLands().renameLand(oldName, curArg);
         } catch (FactoidLandException ex) {
             Logger.getLogger(CommandRename.class.getName()).log(Level.SEVERE, "On land rename", ex);
-            throw new FactoidCommandException("On land rename", entity.player, "GENERAL.ERROR");
+            throw new FactoidCommandException("On land rename", entity.sender, "GENERAL.ERROR");
         }
-        entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.RENAME.ISDONE", oldName, curArg));
+        entity.sender.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.RENAME.ISDONE", oldName, curArg));
         Factoid.getFactoidLog().write(entity.playerName + " has renamed " + oldName + " to " + curArg);
 
         // Cancel the selection

@@ -107,10 +107,10 @@ public class CommandPermission extends CommandThreadExec {
     				land.getWorldName())).append(Config.NEWLINE);
         	importDisplayPermsFrom(Factoid.getLands().getOutsideArea(land.getWorldName()), true);
         	
-            new ChatPage("COMMAND.PERMISSION.LISTSTART", stList.toString(), entity.player, land.getName()).getPage(1);
+            new ChatPage("COMMAND.PERMISSION.LISTSTART", stList.toString(), entity.sender, land.getName()).getPage(1);
 
         } else {
-            throw new FactoidCommandException("Missing information command", entity.player, "GENERAL.MISSINGINFO");
+            throw new FactoidCommandException("Missing information command", entity.sender, "GENERAL.MISSINGINFO");
         }
     }
 
@@ -168,29 +168,29 @@ public class CommandPermission extends CommandThreadExec {
 
     	if (fonction.equalsIgnoreCase("set")) {
 
-            Permission perm = entity.argList.getPermissionFromArg(entity.player.isAdminMod(), land.isOwner(entity.player));
+            Permission perm = entity.argList.getPermissionFromArg(entity.sender.isAdminMod(), land.isOwner(entity.player));
 
             if(!perm.getPermType().isRegistered()) {
-            	throw new FactoidCommandException("Permission not registered", entity.player, "COMMAND.PERMISSIONTYPE.TYPENULL");
+            	throw new FactoidCommandException("Permission not registered", entity.sender, "COMMAND.PERMISSIONTYPE.TYPENULL");
             }
             
             if (perm.getPermType() == PermissionList.LAND_ENTER.getPermissionType()
                     && perm.getValue() != perm.getPermType().getDefaultValue()
                     && land.isLocationInside(land.getWorld().getSpawnLocation())) {
-                throw new FactoidCommandException("Permission", entity.player, "COMMAND.PERMISSION.NOENTERNOTINSPAWN");
+                throw new FactoidCommandException("Permission", entity.sender, "COMMAND.PERMISSION.NOENTERNOTINSPAWN");
             }
             ((Land) land).addPermission(pc, perm);
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.PERMISSION.ISDONE", perm.getPermType().getPrint(),
+            entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.PERMISSION.ISDONE", perm.getPermType().getPrint(),
                     pc.getPrint() + ChatStyle.YELLOW, land.getName()));
             Factoid.getFactoidLog().write("Permission set: " + perm.getPermType().toString() + ", value: " + perm.getValue());
 
         } else if (fonction.equalsIgnoreCase("unset")) {
 
-            PermissionType pt = entity.argList.getPermissionTypeFromArg(entity.player.isAdminMod(), land.isOwner(entity.player));
+            PermissionType pt = entity.argList.getPermissionTypeFromArg(entity.sender.isAdminMod(), land.isOwner(entity.player));
             if (!land.removePermission(pc, pt)) {
-                throw new FactoidCommandException("Permission", entity.player, "COMMAND.PERMISSION.REMOVENOTEXIST");
+                throw new FactoidCommandException("Permission", entity.sender, "COMMAND.PERMISSION.REMOVENOTEXIST");
             }
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.PERMISSION.REMOVEISDONE", pt.toString()));
+            entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.PERMISSION.REMOVEISDONE", pt.toString()));
             Factoid.getFactoidLog().write("Permission unset: " + pt.toString());
         }
     }

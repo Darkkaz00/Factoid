@@ -108,10 +108,10 @@ public class CommandList extends CommandThreadExec {
     	// Check if the player is AdminMod or send only owned lands
         Collection<Land> lands;
 
-        if (entity.player.isAdminMod()) {
+        if (entity.sender.isAdminMod()) {
             lands = Factoid.getLands().getLands();
         } else {
-            lands = Factoid.getLands().getLands(entity.player.getPlayerContainer());
+            lands = Factoid.getLands().getLands(entity.sender.getPlayerContainer());
         }
 
         // Get the list of the land
@@ -127,6 +127,6 @@ public class CommandList extends CommandThreadExec {
             }
         }
 
-        new ChatPage("COMMAND.LAND.LISTSTART", stList.toString(), entity.player, null).getPage(1);
+        new ChatPage("COMMAND.LAND.LISTSTART", stList.toString(), entity.sender, null).getPage(1);
     }
 }

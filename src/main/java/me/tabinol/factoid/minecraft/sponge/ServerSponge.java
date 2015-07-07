@@ -1,13 +1,4 @@
 /*
-
-!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!
-
-You must edit ServerSponge.java.template. ServerSponge.java is overwrite 
-at compile time!
-
-!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!CAUTION!!
-
-
  Factoid: Lands and Factions plugin for Minecraft server
  Copyright (C) 2014 Kaz00, Tabinol
 
@@ -74,8 +65,6 @@ import com.google.inject.Inject;
 
 /**
  * Main class for Sponge
- * CAUTION : You must edit ServerSponge.java.template. ServerSponge.java is 
- * overwrite at compile time!
  * @author Tabinol
  *
  */
@@ -102,7 +91,7 @@ public class ServerSponge implements Server {
     @Subscribe
     public void onServerStart(ServerStartedEvent event) {
         
-        factoid = new Factoid(ServerType.SPONGE);
+        factoid = new Factoid(ServerType.SPONGE, this);
 
         // Start Listener
         new ListenerSponge();

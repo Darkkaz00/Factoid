@@ -63,8 +63,8 @@ public class CommandArea extends CommandExec {
             checkPermission(true, true, null, null);
             checkSelections(true, true);
 
-            CuboidArea area = entity.player.getSelection().getCuboidArea();
-            double price = entity.player.getSelection().getAreaAddPrice();
+            CuboidArea area = entity.sender.getSelection().getCuboidArea();
+            double price = entity.sender.getSelection().getAreaAddPrice();
 
             // Check for collision
             if (checkCollision(land.getName(), land, null, LandAction.AREA_ADD, 0, area, land.getParent(), 
@@ -75,10 +75,10 @@ public class CommandArea extends CommandExec {
             // Add Area
             ((Land) land).addArea(area, price);
 
-            entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CREATE.AREA.ISDONE", land.getName()));
+            entity.sender.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CREATE.AREA.ISDONE", land.getName()));
             Factoid.getFactoidLog().write(entity.playerName + " have create an area named " + land.getName() + " at position " + land.getAreas().toString());
             new CommandCancel(entity.player, false).commandExecute();
-            entity.player.getSelection().refreshLand();
+            entity.sender.getSelection().refreshLand();
 
         } else if (curArg.equalsIgnoreCase("remove") || curArg.equalsIgnoreCase("replace")) {
 
@@ -90,7 +90,7 @@ public class CommandArea extends CommandExec {
             int areaNb = 0;
 
             // check here if there is an area to replace
-            CuboidArea areaToReplace = entity.player.getSelection().getAreaToReplace();
+            CuboidArea areaToReplace = entity.sender.getSelection().getAreaToReplace();
             if (areaToReplace != null) {
                 areaNb = areaToReplace.getKey();
             }
@@ -129,17 +129,17 @@ public class CommandArea extends CommandExec {
                     throw new FactoidCommandException("Area", entity.sender, "COMMAND.REMOVE.AREA.INVALID");
                 }
 
-                entity.player.setConfirm(new ConfirmEntry(
+                entity.sender.setConfirm(new ConfirmEntry(
                         ConfirmType.REMOVE_AREA, land, areaNb));
-                entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CONFIRM"));
+                entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CONFIRM"));
 
             } else {
 
                 //Only for a replace
                 checkSelections(true, true);
 
-                CuboidArea area = entity.player.getSelection().getCuboidArea();
-                double price = entity.player.getSelection().getAreaReplacePrice(areaNb);
+                CuboidArea area = entity.sender.getSelection().getCuboidArea();
+                double price = entity.sender.getSelection().getAreaReplacePrice(areaNb);
 
                 // Check for collision
                 if (checkCollision(land.getName(), land, null, LandAction.AREA_MODIFY, areaNb, area, land.getParent(), 
@@ -150,10 +150,10 @@ public class CommandArea extends CommandExec {
                 // Replace Area
                 ((Land) land).replaceArea(areaNb, area, price);
 
-                entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CREATE.AREA.ISDONE", land.getName()));
+                entity.sender.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CREATE.AREA.ISDONE", land.getName()));
                 Factoid.getFactoidLog().write(entity.playerName + " have create an area named " + land.getName() + " at position " + land.getAreas().toString());
                 new CommandCancel(entity.player, false).commandExecute();
-                entity.player.getSelection().refreshLand();
+                entity.sender.getSelection().refreshLand();
             }
 
         } else if (curArg.equalsIgnoreCase("list")) {

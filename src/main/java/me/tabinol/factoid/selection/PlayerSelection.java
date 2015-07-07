@@ -292,7 +292,7 @@ public class PlayerSelection {
         // Is Economy?
         if (Factoid.getPlayerMoney() == null
         		|| !Factoid.getConf().useEconomy()
-        		|| playerConfEntry.isAdminMod()) {
+        		|| playerConfEntry.getFSender().isAdminMod()) {
             return false;
         }
 

@@ -27,18 +27,19 @@ import me.tabinol.factoid.lands.areas.Point;
  * @author Tabinol
  *
  */
-public interface FPlayer extends FSenderInterface {
+public interface FPlayer {
 	
-    
-    public Point getLocation();
+    public FSender getFSender();
+	public Point getLocation();
 	public UUID getUUID();
 	public String getName();
 	public String getDisplayName();
 	public boolean isOnline();
+	public boolean hasPermission(String perm);
 	
 	/**
 	 * Get the game mode in STRING format
-	 * @return
+	 * @return the game mode
 	 */
 	public String getGameMode();
 	

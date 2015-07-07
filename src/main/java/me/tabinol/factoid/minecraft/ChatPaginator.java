@@ -25,7 +25,7 @@ package me.tabinol.factoid.minecraft;
  */
 public interface ChatPaginator {
 	
-	public void send(FSenderInterface sender, String title);
+	public void send(FSender sender, String title);
 	public int getTotalPages();
 	public String[] getLines();
 }

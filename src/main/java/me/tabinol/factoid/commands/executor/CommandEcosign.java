@@ -35,7 +35,7 @@ public class CommandEcosign extends CommandExec {
 		SALE, RENT;
 	}
 
-	/** The player. */
+	/** The player.getFSender(). */
 	private final FPlayer player;
 
 	/** The player conf. */
@@ -64,11 +64,11 @@ public class CommandEcosign extends CommandExec {
 				// Buy a land
 				if (!land.checkPermissionAndInherit(player,
 						PermissionList.ECO_LAND_BUY.getPermissionType())) {
-					throw new FactoidCommandException("No permission to do this action", player, "GENERAL.MISSINGPERMISSION");
+					throw new FactoidCommandException("No permission to do this action", player.getFSender(), "GENERAL.MISSINGPERMISSION");
 				}
 				if (Factoid.getPlayerMoney().getPlayerBalance(player,
 						land.getWorldName()) < land.getSalePrice()) {
-					throw new FactoidCommandException("Not enough money to buy a land", player, "COMMAND.ECONOMY.NOTENOUGHMONEY");
+					throw new FactoidCommandException("Not enough money to buy a land", player.getFSender(), "COMMAND.ECONOMY.NOTENOUGHMONEY");
 				}
 				Factoid.getPlayerMoney().getFromPlayer(player,
 						land.getWorldName(), land.getSalePrice());
@@ -86,16 +86,16 @@ public class CommandEcosign extends CommandExec {
 					e.printStackTrace();
 				}
 				((Land) land).setForSale(false, 0, null);
-				land.setOwner(player.getPlayerContainer());
-		        player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.BUYLAND",
+				land.setOwner(player.getFSender().getPlayerContainer());
+		        player.getFSender().sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.BUYLAND",
 		        		land.getName()));
-		        Factoid.getFactoidLog().write("The land " + land.getName() + " is purchased by : " + player.getName());
+		        Factoid.getFactoidLog().write("The land " + land.getName() + " is purchased by : " + player.getFSender().getName());
 			} else {
 
 				// Rent and unrent
 				if (land.isRented()
 						&& (land.getTenant().hasAccess(player) || land.getOwner().hasAccess(player)
-								|| player.isAdminMod())) {
+								|| player.getFSender().isAdminMod())) {
 
 					// Unrent
 					((Land) land).unSetRented();
@@ -107,20 +107,20 @@ public class CommandEcosign extends CommandExec {
 						// Real Error
 						e.printStackTrace();
 					}
-			        player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.UNRENTLAND",
+			        player.getFSender().sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.UNRENTLAND",
 			        		land.getName()));
-			        Factoid.getFactoidLog().write("The land " + land.getName() + " is unrented by : " + player.getName());
+			        Factoid.getFactoidLog().write("The land " + land.getName() + " is unrented by : " + player.getFSender().getName());
 				
 				} else if (!land.isRented()) {
 
 					// Rent
 					if (!land.checkPermissionAndInherit(player,
 							PermissionList.ECO_LAND_RENT.getPermissionType())) {
-						throw new FactoidCommandException("No permission to do this action", player, "GENERAL.MISSINGPERMISSION");
+						throw new FactoidCommandException("No permission to do this action", player.getFSender(), "GENERAL.MISSINGPERMISSION");
 					}
 					if (Factoid.getPlayerMoney().getPlayerBalance(player,
 							land.getWorldName()) < land.getRentPrice()) {
-						throw new FactoidCommandException("Not enough money to rent a land", player, "COMMAND.ECONOMY.NOTENOUGHMONEY");
+						throw new FactoidCommandException("Not enough money to rent a land", player.getFSender(), "COMMAND.ECONOMY.NOTENOUGHMONEY");
 					}
 					Factoid.getPlayerMoney().getFromPlayer(player,
 							land.getWorldName(), land.getRentPrice());
@@ -132,24 +132,24 @@ public class CommandEcosign extends CommandExec {
 										land.getWorldName(),
 										land.getRentPrice());
 					}
-					((Land) land).setRented(player.getPlayerContainer());
+					((Land) land).setRented(player.getFSender().getPlayerContainer());
 					try {
 						new EcoSign(land, land.getRentSignLoc()).createSignForRent(
 								land.getRentPrice(), land.getRentRenew(),
-								land.getRentAutoRenew(), player.getName());
+								land.getRentAutoRenew(), player.getFSender().getName());
 					} catch (SignException e) {
 						// Real Error
 						e.printStackTrace();
 					}
-			        player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.RENTLAND",
+			        player.getFSender().sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.RENTLAND",
 			        		land.getName()));
-			        Factoid.getFactoidLog().write("The land " + land.getName() + " is rented by : " + player.getName());
+			        Factoid.getFactoidLog().write("The land " + land.getName() + " is rented by : " + player.getFSender().getName());
 				}
 			}
 		} else {
 
 			// Left Click, destroy the sign
-			if (land.getOwner().hasAccess(player) || player.isAdminMod()) {
+			if (land.getOwner().hasAccess(player) || player.getFSender().isAdminMod()) {
 				
 				if (signType == SignType.SALE) {
 
@@ -161,9 +161,9 @@ public class CommandEcosign extends CommandExec {
 						e.printStackTrace();
 					}
 					((Land) land).setForSale(false, 0, null);
-			        player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.UNFORSALE", 
+			        player.getFSender().sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.UNFORSALE", 
 			        		land.getName()));
-			        Factoid.getFactoidLog().write("The land " + land.getName() + " is no longer for sale by : " + player.getName());
+			        Factoid.getFactoidLog().write("The land " + land.getName() + " is no longer for sale by : " + player.getFSender().getName());
 				} else {
 
 					// Destroy rent sign
@@ -175,9 +175,9 @@ public class CommandEcosign extends CommandExec {
 					}
 					((Land) land).unSetRented();
 					((Land) land).unSetForRent();
-			        player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.UNFORRENT",
+			        player.getFSender().sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.UNFORRENT",
 			        		land.getName()));
-			        Factoid.getFactoidLog().write("The land " + land.getName() + " is no longer for rent by : " + player.getName());
+			        Factoid.getFactoidLog().write("The land " + land.getName() + " is no longer for rent by : " + player.getFSender().getName());
 				}
 			}
 		}

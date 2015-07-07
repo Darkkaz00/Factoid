@@ -97,7 +97,7 @@ public class LandListener extends CommonListener {
     // Must be running before PlayerListener
     public void onPlayerQuitMonitor(FPlayer player) {
 
-        DummyLand land = player.getLastLand();
+        DummyLand land = player.getFSender().getLastLand();
 
         // Notify for quit
         while (land instanceof Land) {
@@ -125,7 +125,7 @@ public class LandListener extends CommonListener {
                 // Message quit
                 value = lastLand.getFlagNoInherit(FlagList.MESSAGE_QUIT.getFlagType()).getValueString();
                 if (!value.isEmpty()) {
-                    player.sendMessage(ChatStyle.GRAY + "[Factoid] (" + ChatStyle.GREEN + lastLand.getName() + ChatStyle.GRAY + "): " + ChatStyle.WHITE + value);
+                    player.getFSender().sendMessage(ChatStyle.GRAY + "[Factoid] (" + ChatStyle.GREEN + lastLand.getName() + ChatStyle.GRAY + "): " + ChatStyle.WHITE + value);
                 }
             }
 
@@ -137,7 +137,7 @@ public class LandListener extends CommonListener {
         if (land != null) {
             dummyLand = land;
 
-            if (!player.isAdminMod()) {
+            if (!player.getFSender().isAdminMod()) {
                 // is banned or can enter
                 PermissionType permissionType = PermissionList.LAND_ENTER.getPermissionType();
                 if ((land.isBanned(player)
@@ -153,7 +153,7 @@ public class LandListener extends CommonListener {
                         tpSpawn(player, land, message);
                         return false;
                     } else {
-                        player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getLanguage().getMessage(message, land.getName()));
+                        player.getFSender().sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getLanguage().getMessage(message, land.getName()));
                         return true;
                     }
                 }
@@ -170,7 +170,7 @@ public class LandListener extends CommonListener {
                 // Message join
                 value = land.getFlagNoInherit(FlagList.MESSAGE_JOIN.getFlagType()).getValueString();
                 if (!value.isEmpty()) {
-                    player.sendMessage(ChatStyle.GRAY + "[Factoid] (" + ChatStyle.GREEN + land.getName() + ChatStyle.GRAY + "): " + ChatStyle.WHITE + value);
+                    player.getFSender().sendMessage(ChatStyle.GRAY + "[Factoid] (" + ChatStyle.GREEN + land.getName() + ChatStyle.GRAY + "): " + ChatStyle.WHITE + value);
                 }
             }
 
@@ -200,7 +200,7 @@ public class LandListener extends CommonListener {
         //Death land
         permissionType = PermissionList.LAND_DEATH.getPermissionType();
         
-        if (player.isAdminMod() 
+        if (player.getFSender().isAdminMod() 
         		&& dummyLand.checkPermissionAndInherit(player, permissionType) != permissionType.getDefaultValue()) {
         	player.setHealth(0);
         }
@@ -235,7 +235,7 @@ public class LandListener extends CommonListener {
     	for (FPlayer players : playersArray) {
             if (pc.hasAccess(players)
                     && !land.isOwner(players)
-                    && !players.isAdminMod()
+                    && !players.getFSender().isAdminMod()
                     && !players.hasPermission("factoid.bypassban")
                     && (land.checkPermissionAndInherit(players, PermissionList.LAND_ENTER.getPermissionType()) == false
                     || land.isBanned(players))
@@ -269,8 +269,8 @@ public class LandListener extends CommonListener {
             
             if (player != null && player != playerIn
                     // Only adminmod can see vanish
-                    && (!Factoid.getDependPlugin().getVanish().isVanished(playerIn) || player.isAdminMod())) {
-                player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getLanguage().getMessage(
+                    && (!Factoid.getDependPlugin().getVanish().isVanished(playerIn) || player.getFSender().isAdminMod())) {
+                player.getFSender().sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getLanguage().getMessage(
                         message, playerIn.getDisplayName(), land.getName() + ChatStyle.GRAY));
             }
         }
@@ -286,6 +286,6 @@ public class LandListener extends CommonListener {
     private void tpSpawn(FPlayer player, Land land, String message) {
 
         player.teleport(player.getLocation().getWorld().getSpawnLocation());
-        player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getLanguage().getMessage(message, land.getName()));
+        player.getFSender().sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getLanguage().getMessage(message, land.getName()));
     }
 }

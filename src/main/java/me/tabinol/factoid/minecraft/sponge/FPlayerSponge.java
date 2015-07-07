@@ -22,19 +22,44 @@ import java.util.UUID;
 
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.minecraft.FSender;
 
 import org.spongepowered.api.data.manipulator.entity.FoodData;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.world.Location;
 
-public class FPlayerSponge extends FSenderSponge implements FPlayer {
+public class FPlayerSponge implements FPlayer, Comparable<FSender> {
 	
+	private final FSender sender;
 	private final Player player;
 	
 	protected FPlayerSponge(Player player) {
 		
-		super(player);
 		this.player = player;
+
+		if(player.isOnline()) {
+			sender = new FSenderSponge(this, player);
+		} else {
+			sender = null;
+		}
+	}
+
+	@Override
+	public int compareTo(FSender fsender) {
+		
+		return getName().compareTo(fsender.getName());
+	}
+
+	@Override
+    public FSender getFSender() {
+		
+		return sender;
+	}
+
+	@Override
+	public String getName() {
+		
+		return player.getName();
 	}
 
 	@Override
@@ -63,6 +88,12 @@ public class FPlayerSponge extends FSenderSponge implements FPlayer {
 		return player.isOnline();
     }
 
+	@Override
+	public boolean hasPermission(String perm) {
+		
+		return player.hasPermission(perm);
+	}
+	
 	@Override
     public String getGameMode() {
 	    

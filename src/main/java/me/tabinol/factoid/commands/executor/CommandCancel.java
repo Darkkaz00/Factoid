@@ -32,7 +32,7 @@ import me.tabinol.factoid.utilities.ChatStyle;
 @InfoCommand(name="cancel")
 public class CommandCancel extends CommandExec {
 
-    /** The player. */
+    /** The player.getFSender(). */
     private final FPlayer player;
     
     /** The from auto cancel. */
@@ -55,7 +55,7 @@ public class CommandCancel extends CommandExec {
     /**
      * Instantiates a new command cancel.
      *
-     * @param entry the entry
+     * @param player the player
      * @param fromAutoCancel the from auto cancel
      * @throws FactoidCommandException the factoid command exception
      */
@@ -72,21 +72,21 @@ public class CommandCancel extends CommandExec {
     @Override
     public void commandExecute() throws FactoidCommandException {
 
-        if (player.getConfirm() != null) {
-            player.setConfirm(null);
-            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CANCEL.ACTION"));
-            Factoid.getFactoidLog().write(player.getName() + " cancel for action");
+        if (player.getFSender().getConfirm() != null) {
+            player.getFSender().setConfirm(null);
+            player.getFSender().sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CANCEL.ACTION"));
+            Factoid.getFactoidLog().write(player.getFSender().getName() + " cancel for action");
             
             if(!fromAutoCancel) {
                 return;
             }
         }
         
-        if (player.getSelection().getSelection(SelectionType.AREA) != null) {
+        if (player.getFSender().getSelection().getSelection(SelectionType.AREA) != null) {
 
-            player.getSelection().removeSelection(SelectionType.AREA);
-            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.CANCEL"));
-            Factoid.getFactoidLog().write(player.getName() + ": Select cancel");
+            player.getFSender().getSelection().removeSelection(SelectionType.AREA);
+            player.getFSender().sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SELECT.CANCEL"));
+            Factoid.getFactoidLog().write(player.getFSender().getName() + ": Select cancel");
 
             if(!fromAutoCancel) {
                 return;
@@ -97,7 +97,7 @@ public class CommandCancel extends CommandExec {
         if (playerConf.getSetFlagUI() != null) {
 
             playerConf.setSetFlagUI(null);
-            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CANCEL.FLAGS"));
+            player.getFSender().sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CANCEL.FLAGS"));
 
             if(!fromAutoCancel) {
                 return;
@@ -105,13 +105,13 @@ public class CommandCancel extends CommandExec {
         }
   
 */
-        if (player.getSelection().getSelection(SelectionType.LAND) != null) {
+        if (player.getFSender().getSelection().getSelection(SelectionType.LAND) != null) {
 
-            player.getSelection().removeSelection(SelectionType.LAND);
-            player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CANCEL.SELECT"));
+            player.getFSender().getSelection().removeSelection(SelectionType.LAND);
+            player.getFSender().sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.CANCEL.SELECT"));
 
             // Cancel selection (it is the last think selected)
-            player.setAutoCancelSelect(false);
+            player.getFSender().setAutoCancelSelect(false);
             
             if(!fromAutoCancel) {
                 return;
@@ -120,7 +120,7 @@ public class CommandCancel extends CommandExec {
         
         // No cancel done
         if(!fromAutoCancel) {
-            throw new FactoidCommandException("Nothing to confirm", player, "COMMAND.CANCEL.NOCANCEL");
+            throw new FactoidCommandException("Nothing to confirm", player.getFSender(), "COMMAND.CANCEL.NOCANCEL");
         }
     }
 }

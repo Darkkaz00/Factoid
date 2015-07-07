@@ -47,11 +47,11 @@ public class CommandPage extends CommandExec {
     @Override
     public void commandExecute() throws FactoidCommandException {
 
-        ChatPage chatPage = entity.player.getChatPage();
+        ChatPage chatPage = entity.sender.getChatPage();
         int pageNumber;
 
         if (chatPage == null) {
-            throw new FactoidCommandException("Page", entity.player, "COMMAND.PAGE.INVALID");
+            throw new FactoidCommandException("Page", entity.sender, "COMMAND.PAGE.INVALID");
         }
 
         String curArg = entity.argList.getNext();
@@ -59,7 +59,7 @@ public class CommandPage extends CommandExec {
         try {
             pageNumber = Integer.parseInt(curArg);
         } catch (NumberFormatException ex) {
-            throw new FactoidCommandException("Page", entity.player, "COMMAND.PAGE.INVALID");
+            throw new FactoidCommandException("Page", entity.sender, "COMMAND.PAGE.INVALID");
         }
         chatPage.getPage(pageNumber);
     }

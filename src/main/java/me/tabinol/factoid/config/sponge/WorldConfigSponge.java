@@ -74,14 +74,14 @@ public class WorldConfigSponge extends WorldConfig {
         
         // We have to take _global_ first then others
         for (ConfigurationNode worldNode : worldConfig.getChildrenList()) {
-        	if(worldNode.getKey().toString().equalsIgnoreCase(GLOBAL)) {
+        	if(worldNode.getKey().toString().equals(GLOBAL)) {
             	createConfForWorld(worldNode, landList, false);
         	}
         }
         
         // The none-global
         for (ConfigurationNode worldNode : worldConfig.getChildrenList()) {
-        	if(!worldNode.getKey().toString().equalsIgnoreCase(GLOBAL)) {
+        	if(!worldNode.getKey().toString().equals(GLOBAL)) {
             	createConfForWorld(worldNode, landList, true);
         	}
         }

@@ -55,7 +55,7 @@ public class CommandSetspawn extends CommandExec {
         
         // If the player is not inside the land
         if(!land.isLocationInside(loc)) {
-        	throw new FactoidCommandException("On land tp create", entity.player, "COMMAND.TP.OUTSIDE");
+        	throw new FactoidCommandException("On land tp create", entity.sender, "COMMAND.TP.OUTSIDE");
         }
         
         // put player position to String
@@ -65,7 +65,7 @@ public class CommandSetspawn extends CommandExec {
         LandFlag flag = new LandFlag(FlagList.SPAWN.getFlagType(), posStr, true);
         ((Land) land).addFlag(flag);
         
-        entity.player.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.TP.CREATED"));
+        entity.sender.sendMessage(ChatStyle.GREEN + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.TP.CREATED"));
 	}
 
 }

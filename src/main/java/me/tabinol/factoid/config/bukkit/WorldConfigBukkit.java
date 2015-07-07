@@ -55,14 +55,14 @@ public class WorldConfigBukkit extends WorldConfig {
         
         // We have to take _global_ first then others
         for (String worldName : keys) {
-        	if(worldName.equalsIgnoreCase(GLOBAL)) {
+        	if(worldName.equals(GLOBAL)) {
             	createConfForWorld(worldName, landList, false);
         	}
         }
         
         // The none-global
         for (String worldName : keys) {
-        	if(!worldName.equalsIgnoreCase(GLOBAL)) {
+        	if(!worldName.equals(GLOBAL)) {
             	createConfForWorld(worldName, landList, true);
         	}
         }

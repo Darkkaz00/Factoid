@@ -70,7 +70,7 @@ public abstract class CommandExec {
 
         if (entity.player != null) {
             // get the land Selected or null
-            land = entity.player.getSelection().getLand();
+            land = entity.sender.getSelection().getLand();
         }
 
         if (entity.player == null && !entity.infoCommand.allowConsole()) {
@@ -123,20 +123,20 @@ public abstract class CommandExec {
         // "If" is not in checkSelection to save CPU
 /*
          if (mustBeExpandMode != null) {
-         checkSelection(entity.player.getExpendingLand() != null, mustBeExpandMode, "GENERAL.QUIT.EXPANDMODE", null, true);
+         checkSelection(entity.sender.getExpendingLand() != null, mustBeExpandMode, "GENERAL.QUIT.EXPANDMODE", null, true);
          }
 
          if (mustBeExpandMode != null) {
-         checkSelection(entity.player.getSetFlagUI() != null, mustBeFlagMode, "GENERAL.QUIT.FLAGMODE", null, true);
+         checkSelection(entity.sender.getSetFlagUI() != null, mustBeFlagMode, "GENERAL.QUIT.FLAGMODE", null, true);
          }
          */
         if (mustBeSelectMode != null) {
             // Pasted to variable land, can take direcly
             checkSelection(land != null, mustBeSelectMode, null, "GENERAL.JOIN.SELECTMODE",
-                    entity != null && entity.player.getSelection().getLand() != null);
+                    entity != null && entity.sender.getSelection().getLand() != null);
         }
         if (mustBeAreaSelected != null) {
-            checkSelection(entity.player.getSelection().getCuboidArea() != null, mustBeAreaSelected, null, "GENERAL.JOIN.SELECTAREA", true);
+            checkSelection(entity.sender.getSelection().getCuboidArea() != null, mustBeAreaSelected, null, "GENERAL.JOIN.SELECTAREA", true);
         }
     }
 
@@ -164,7 +164,7 @@ public abstract class CommandExec {
             if (startSelectCancel && !resetSelectCancel && result == true) {
 
                 // Reset autocancel if there is a command executed that need it
-                entity.player.setAutoCancelSelect(true);
+                entity.sender.setAutoCancelSelect(true);
                 resetSelectCancel = true;
             }
         }
@@ -185,7 +185,7 @@ public abstract class CommandExec {
 
         boolean canDo = false;
 
-        if (mustBeAdminMod && entity.player.isAdminMod()) {
+        if (mustBeAdminMod && entity.sender.isAdminMod()) {
             canDo = true;
         }
         if (mustBeOwner && (land == null || (land !=null && new PlayerContainerOwner(land).hasAccess(entity.player)))) {

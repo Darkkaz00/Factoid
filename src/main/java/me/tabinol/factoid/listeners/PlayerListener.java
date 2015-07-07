@@ -74,7 +74,7 @@ public class PlayerListener extends CommonListener {
 
 		// Check if AdminMod is auto
 		if (player.hasPermission("factoid.adminmod.auto")) {
-			player.setAdminMod(true);
+			player.getFSender().setAdminMod(true);
 		}
 	}
 
@@ -82,7 +82,7 @@ public class PlayerListener extends CommonListener {
 	public void onPlayerQuitMonitor(FPlayer player) {
 
 		// Remove player from the land
-		DummyLand land = player.getLastLand();
+		DummyLand land = player.getFSender().getLastLand();
 		if (land instanceof Land) {
 			((Land) land).removePlayerInLand(player);
 		}
@@ -92,16 +92,16 @@ public class PlayerListener extends CommonListener {
 
 		DummyLand land;
 
-		if (!player.hasTpCancel()) {
+		if (!player.getFSender().hasTpCancel()) {
 			updatePosInfo(true, player, to, false);
 		} else {
-			player.setTpCancel(false);
+			player.getFSender().setTpCancel(false);
 		}
 
 		land = Factoid.getLands().getLandOrOutsideArea(to);
 
 		// TP With ender pearl
-		if (!player.isAdminMod()
+		if (!player.getFSender().isAdminMod()
 				&& isEnderPearl
 				&& !checkPermission(land, player,
 						PermissionList.ENDERPEARL_TP.getPermissionType())) {
@@ -115,13 +115,13 @@ public class PlayerListener extends CommonListener {
 	public void onPlayerMoveMonitor(FPlayer player, Point from, Point to) {
 
 		// Check if the player must move
-		long last = player.getLastMoveUpdate();
+		long last = player.getFSender().getLastMoveUpdate();
 		long now = System.currentTimeMillis();
 		if (now - last < timeCheck) {
 			return;
 		}
 
-		player.setLastMoveUpdate(now);
+		player.getFSender().setLastMoveUpdate(now);
 		if (from.getWorld() == to.getWorld()) {
 			if (from.distance(to) == 0) {
 				return;
@@ -159,7 +159,7 @@ public class PlayerListener extends CommonListener {
 
 			try {
 				new CommandSelect(player, new ArgList(new String[] { "here" },
-						player), loc)
+						player.getFSender()), loc)
 						.commandExecute();
 			} catch (FactoidCommandException ex) {
 				// Empty, message is sent by the catch
@@ -171,7 +171,7 @@ public class PlayerListener extends CommonListener {
 		} else if (itemInHand != null
 				&& click == Click.RIGHT
 				&& itemInHand == conf.getSelectItem()
-				&& player.getSelection().hasSelection()) {
+				&& player.getFSender().getSelection().hasSelection()) {
 
 			try {
 				new CommandCancel(player, false).commandExecute();
@@ -211,7 +211,7 @@ public class PlayerListener extends CommonListener {
 			}
 
 			// Citizen bug, check if entry exist before
-		} else if (!player.isAdminMod()) {
+		} else if (!player.getFSender().isAdminMod()) {
 			land = Factoid.getLands().getLandOrOutsideArea(loc);
 			if ((land instanceof Land && ((Land) land).isBanned(player))
 					|| ((click == Click.RIGHT // BEGIN of USE
@@ -350,7 +350,7 @@ public class PlayerListener extends CommonListener {
 				return true;
 			}
 			
-		} else if (!player.isAdminMod()) {
+		} else if (!player.getFSender().isAdminMod()) {
 
 			DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 
@@ -377,7 +377,7 @@ public class PlayerListener extends CommonListener {
 
 	public boolean onPlayerInteractEntity(FPlayer player, String entityType, Point loc) {
 		
-		if (!player.isAdminMod()
+		if (!player.getFSender().isAdminMod()
 				&& (entityType.equals("ITEM_FRAME") || entityType.equals("PAINTING"))) {
 
 			DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
@@ -396,7 +396,7 @@ public class PlayerListener extends CommonListener {
 
 	public boolean onBlockBreak(FPlayer player, String blockType, Point loc) {
 
-		if (!player.isAdminMod()) {
+		if (!player.getFSender().isAdminMod()) {
 
 			DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 
@@ -425,7 +425,7 @@ public class PlayerListener extends CommonListener {
 
 	public boolean onPlayerDropItem(FPlayer player, String itemType, Point loc) {
 
-		if (!player.isAdminMod()) {
+		if (!player.getFSender().isAdminMod()) {
 			DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 
 			if (!checkPermission(land, player, PermissionList.DROP.getPermissionType())) {
@@ -438,7 +438,7 @@ public class PlayerListener extends CommonListener {
 
 	public boolean onPlayerPickupItem(FPlayer player, String itemType, Point loc) {
 
-		if (!player.isAdminMod()) {
+		if (!player.getFSender().isAdminMod()) {
 			DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 
 			if (!checkPermission(land, player,
@@ -452,7 +452,7 @@ public class PlayerListener extends CommonListener {
 
 	public boolean onPlayerBedEnter(FPlayer player, Point loc) {
 
-		if (!player.isAdminMod()) {
+		if (!player.getFSender().isAdminMod()) {
 			DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 
 			if ((land instanceof Land && ((Land) land).isBanned(player))
@@ -472,7 +472,7 @@ public class PlayerListener extends CommonListener {
 			DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 
 			// kill an entity (none player)
-			if (!player.isAdminMod()
+			if (!player.getFSender().isAdminMod()
 					&& ((land instanceof Land && ((Land) land).isBanned(player))
 							|| ((entityType.equals("ARMOR_STAND") || entityType.equals("ITEM_FRAME") 
 									|| entityType.equals("PAINTING"))
@@ -601,7 +601,7 @@ public class PlayerListener extends CommonListener {
 	
 	public boolean onEntityRegainHealth(FPlayer player, Point loc) {
 		
-		if(!player.isAdminMod()) {
+		if(!player.getFSender().isAdminMod()) {
 		
 			DummyLand land = Factoid.getLands().getLandOrOutsideArea(player.getLocation());
 			
@@ -614,7 +614,7 @@ public class PlayerListener extends CommonListener {
 
 	public boolean onPlayerItemConsume(FPlayer player, Point loc) {
 		
-		if(!player.isAdminMod()) {
+		if(!player.getFSender().isAdminMod()) {
 		
 			DummyLand land = Factoid.getLands().getLandOrOutsideArea(player.getLocation());
 			
@@ -628,7 +628,7 @@ public class PlayerListener extends CommonListener {
 
 	public boolean onPlayerCommandPreprocess(FPlayer player, Point loc, String commandTyped) {
 
-		if (!player.isAdminMod()) {
+		if (!player.getFSender().isAdminMod()) {
 
 			DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 			String[] excludedCommands = land
@@ -639,7 +639,7 @@ public class PlayerListener extends CommonListener {
 				for (String commandTest : excludedCommands) {
 
 					if (commandTest.equalsIgnoreCase(commandTyped)) {
-						player.sendMessage(ChatStyle.RED
+						player.getFSender().sendMessage(ChatStyle.RED
 								+ "[Factoid] "
 								+ Factoid.getLanguage().getMessage(
 										"GENERAL.MISSINGPERMISSIONHERE"));
@@ -670,7 +670,7 @@ public class PlayerListener extends CommonListener {
 				"PlayerInteractAtEntity player name: " + player.getName()
 						+ ", Entity: " + entityType);
 
-		if (!player.isAdminMod()) {
+		if (!player.getFSender().isAdminMod()) {
 			land = Factoid.getLands().getLandOrOutsideArea(loc);
 			
 			// Remove and add an item from an armor stand
@@ -698,7 +698,7 @@ public class PlayerListener extends CommonListener {
 	 */
 	private boolean checkForPutFire(Point loc, FPlayer player) {
 		
-		if (!player.isAdminMod()) {
+		if (!player.getFSender().isAdminMod()) {
 
 			DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 
@@ -729,16 +729,16 @@ public class PlayerListener extends CommonListener {
 		land = Factoid.getLands().getLandOrOutsideArea(loc);
 
 		if (newPlayer) {
-			player.setLastLand((DummyLand) (landOld = land));
+			player.getFSender().setLastLand((DummyLand) (landOld = land));
 		} else {
-			landOld = player.getLastLand();
+			landOld = player.getFSender().getLastLand();
 		}
 		if (newPlayer || land != landOld) {
 			// First parameter : If it is a new player, it is null, if not new
 			// player, it is "landOld"
 			boolean isCancelled = Factoid.getServer().CallEvents().callPlayerLandChangeEvent(
 					newPlayer ? null : (DummyLand) landOld,
-					(DummyLand) land, player, player.getLastLoc(), loc, isTp);
+					(DummyLand) land, player, player.getFSender().getLastLoc(), loc, isTp);
 			
 			if (isCancelled) {
 				if (isTp) {
@@ -747,15 +747,15 @@ public class PlayerListener extends CommonListener {
 				if (land == landOld || newPlayer) {
 					player.teleport(player.getLocation().getWorld().getSpawnLocation());
 				} else {
-					Point retLoc = player.getLastLoc();
+					Point retLoc = player.getFSender().getLastLoc();
 					player.teleport(new Point(retLoc.getWorldName(), retLoc
 							.getX(), retLoc.getBlockY(), retLoc.getZ(), loc
 							.getYaw(), loc.getPitch()));
 				}
-				player.setTpCancel(true);
+				player.getFSender().setTpCancel(true);
 				return true;
 			}
-			player.setLastLand((me.tabinol.factoid.lands.DummyLand) land);
+			player.getFSender().setLastLand((me.tabinol.factoid.lands.DummyLand) land);
 
 			// Update player in the lands
 			if (landOld instanceof Land && landOld != land) {
@@ -765,11 +765,11 @@ public class PlayerListener extends CommonListener {
 				((Land) land).addPlayerInLand(player);
 			}
 		}
-		player.setLastLoc(loc);
+		player.getFSender().setLastLoc(loc);
 
 		// Update visual selection
-		if (player.getSelection().hasSelection()) {
-			for (RegionSelection sel : player.getSelection().getSelections()) {
+		if (player.getFSender().getSelection().hasSelection()) {
+			for (RegionSelection sel : player.getFSender().getSelection().getSelections()) {
 				if (sel instanceof PlayerMoveListen) {
 					((PlayerMoveListen) sel).playerMove();
 				}

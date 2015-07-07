@@ -44,7 +44,7 @@ public class CommandSale extends CommandExec {
     	
         checkSelections(true, null);
         checkPermission(true, true, null, null);
-        if(!entity.player.isAdminMod()) {
+        if(!entity.sender.isAdminMod()) {
         	// If the player not adminmod, he must be owner && permission true
         	checkPermission(false, false, PermissionList.ECO_LAND_FOR_SALE.getPermissionType(), null);
         }
@@ -56,13 +56,13 @@ public class CommandSale extends CommandExec {
         
         // Check for sign in hand
         if(!entity.player.getGameMode().equals("CREATIVE") && (itemInHand == null || !itemInHand.equals("SIGN"))) {
-        	throw new FactoidCommandException("Must have a sign in hand", entity.player, "COMMAND.ECONOMY.MUSTHAVEISIGN");
+        	throw new FactoidCommandException("Must have a sign in hand", entity.sender, "COMMAND.ECONOMY.MUSTHAVEISIGN");
         }
         
         // If 'recreate'
         if(curArg.equalsIgnoreCase("recreate")) {
         	if(!land.isForSale()) {
-        		throw new FactoidCommandException("The land is not for sale", entity.player, "COMMAND.ECONOMY.ERRORCREATESIGN");
+        		throw new FactoidCommandException("The land is not for sale", entity.sender, "COMMAND.ECONOMY.ERRORCREATESIGN");
         	}
         	try {
         		ecoSign = new EcoSign(land, entity.player);
@@ -73,10 +73,10 @@ public class CommandSale extends CommandExec {
 					((Land) land).setSaleSignLoc(ecoSign.getLocation());
 				}
 			} catch (SignException e) {
-				throw new FactoidCommandException("Error in the command", entity.player, "COMMAND.ECONOMY.ERRORCREATESIGN");
+				throw new FactoidCommandException("Error in the command", entity.sender, "COMMAND.ECONOMY.ERRORCREATESIGN");
 			}
         	
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.RECREATE"));
+            entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.RECREATE"));
             Factoid.getFactoidLog().write("Sign recreated for land " + land.getName() + " by: " + entity.playerName);
             
             return;
@@ -86,12 +86,12 @@ public class CommandSale extends CommandExec {
         try {
             salePrice = Double.parseDouble(curArg);
         } catch (NumberFormatException ex) {
-        	throw new FactoidCommandException("Error in the command", entity.player, "GENERAL.MISSINGINFO");
+        	throw new FactoidCommandException("Error in the command", entity.sender, "GENERAL.MISSINGINFO");
         }
         
         // Land already for sale?
         if(land.isForSale()) {
-        	throw new FactoidCommandException("Land already for sale", entity.player, "COMMAND.ECONOMY.ALREADYSALE");
+        	throw new FactoidCommandException("Land already for sale", entity.sender, "COMMAND.ECONOMY.ALREADYSALE");
         }
 
         // Create Sign
@@ -100,10 +100,10 @@ public class CommandSale extends CommandExec {
 			ecoSign.createSignForSale(salePrice);
 			removeSignFromHand();
 		} catch (SignException e) {
-			throw new FactoidCommandException("Error in the command", entity.player, "COMMAND.ECONOMY.ERRORCREATESIGN");
+			throw new FactoidCommandException("Error in the command", entity.sender, "COMMAND.ECONOMY.ERRORCREATESIGN");
 		}
         ((Land) land).setForSale(true, salePrice, ecoSign.getLocation());
-        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.SIGNDONE"));
+        entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.SIGNDONE"));
         Factoid.getFactoidLog().write("The land " + land.getName() + " is set to for sale by: " + entity.playerName);
     }
 

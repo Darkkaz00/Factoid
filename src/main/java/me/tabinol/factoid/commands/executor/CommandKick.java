@@ -37,7 +37,7 @@ public class CommandKick extends CommandExec {
     /** The arg list. */
     private final ArgList argList;
     
-    /** The player. */
+    /** The player.getFSender(). */
     private final FPlayer player;
 
     /**
@@ -72,22 +72,22 @@ public class CommandKick extends CommandExec {
 
         // No player name?
         if (playerKickName == null) {
-            throw new FactoidCommandException("Kicked", player, "COMMAND.KICK.PLAYERNULL");
+            throw new FactoidCommandException("Kicked", player.getFSender(), "COMMAND.KICK.PLAYERNULL");
         }
 
 		FPlayer playerKick = Factoid.getServerCache().getPlayer(playerKickName);
 
         // Player not in land?
         if (playerKick == null || !land.isPlayerinLandNoVanish(playerKick, player)
-                || playerKick.isAdminMod()
+                || playerKick.getFSender().isAdminMod()
                 || playerKick.hasPermission("factoid.bypassban")) {
-            throw new FactoidCommandException("Kicked", player, "COMMAND.KICK.NOTINLAND");
+            throw new FactoidCommandException("Kicked", player.getFSender(), "COMMAND.KICK.NOTINLAND");
         }
         
         //Kick the player
         playerKick.teleport(playerKick.getLocation().getWorld().getSpawnLocation());
-        player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.KICK.DONE", playerKickName, land.getName()));
-        playerKick.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.KICK.KICKED", land.getName()));
+        player.getFSender().sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.KICK.DONE", playerKickName, land.getName()));
+        playerKick.getFSender().sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.KICK.KICKED", land.getName()));
         Factoid.getFactoidLog().write("Player " + playerKick + " kicked from " + land.getName() + ".");
     }
 }

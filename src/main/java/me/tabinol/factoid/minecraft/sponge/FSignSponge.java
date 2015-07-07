@@ -21,7 +21,7 @@ public class FSignSponge implements FSign {
 	
 	/**
 	 * For Server class only (already existing sign)
-	 * @param block
+	 * @param loc the location
 	 */
 	public FSignSponge(Location loc) {
     

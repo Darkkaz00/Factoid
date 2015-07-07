@@ -35,7 +35,7 @@ public abstract class Config {
     //public static final String NEWLINE = System.getProperty("line.separator");
     
     /** The Constant GLOBAL. */
-    public static final String GLOBAL = "_global_";
+    public static final String GLOBAL = "_Global_";
     
     // Configuration
     /** The debug. */

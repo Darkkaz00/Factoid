@@ -54,7 +54,8 @@ public class PvpListener extends CommonListener {
 		DummyLand landSource = Factoid.getLands().getLandOrOutsideArea(locPlayer);
 
 		// For PVP
-		if (!isPvpValid(land, landSource, player.getPlayerContainer(), victime.getPlayerContainer())) {
+		if (!isPvpValid(land, landSource, player.getFSender().getPlayerContainer(), 
+				victime.getFSender().getPlayerContainer())) {
 			return true;
 		}
 		
@@ -98,11 +99,11 @@ public class PvpListener extends CommonListener {
 				if(loc.getWorld() == fireEntry.getKey().getWorld() 
 						&& loc.distance(fireEntry.getKey()) < 5) {
 					if((blockType.equals("FIRE") || blockType.equals("AIR")) 
-							&& !isPvpValid(land, land, fireEntry.getValue(), player.getPlayerContainer())) {
+							&& !isPvpValid(land, land, fireEntry.getValue(), player.getFSender().getPlayerContainer())) {
 						
 						// remove fire
 						Factoid.getFactoidLog().write("Anti-pvp from " 
-								+ player.getPlayerContainer().getPlayer().getName()
+								+ player.getFSender().getPlayerContainer().getPlayer().getName()
 								+ " to " + player.getName());
 						return true;
 					}
@@ -127,7 +128,7 @@ public class PvpListener extends CommonListener {
 				|| land.getFlagAndInherit(FlagList.FULL_PVP.getFlagType()).getValueBoolean() == false) {
 				
 			// Add fire for pvp listen
-			playerFireLocation.put(point, player.getPlayerContainer());
+			playerFireLocation.put(point, player.getFSender().getPlayerContainer());
 		}
 	}
 	

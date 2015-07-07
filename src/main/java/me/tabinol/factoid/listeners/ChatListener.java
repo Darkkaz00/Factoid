@@ -44,7 +44,7 @@ public class ChatListener extends CommonListener {
     		
     		// The player is not in a land
     		if(land == null) {
-				player.sendMessage(ChatStyle.RED + "[Factoid] "
+				player.getFSender().sendMessage(ChatStyle.RED + "[Factoid] "
 						+ Factoid.getLanguage().getMessage("CHAT.OUTSIDE"));
 				return true;
     		}
@@ -73,7 +73,7 @@ public class ChatListener extends CommonListener {
 					+ ChatStyle.GREEN + land.getName() + ChatStyle.WHITE + "'] "
 					+ ChatStyle.GRAY + messageSend);
     		for(FPlayer playerToMsg : playersToMsg) {
-    			playerToMsg.sendMessage(ChatStyle.WHITE + "[" + player.getDisplayName()
+    			playerToMsg.getFSender().sendMessage(ChatStyle.WHITE + "[" + player.getDisplayName()
     					+ ChatStyle.WHITE + " " + firstChar + " " + "'" 
     					+ ChatStyle.GREEN + land.getName() + ChatStyle.WHITE + "'] "
     					+ ChatStyle.GRAY + messageSend);

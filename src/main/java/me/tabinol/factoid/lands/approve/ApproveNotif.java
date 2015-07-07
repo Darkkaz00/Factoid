@@ -99,7 +99,7 @@ public class ApproveNotif extends FactoidRunnable {
 
         for (FPlayer players : Factoid.getServerCache().getPlayers()) {
             if (players.hasPermission(PERM_APPROVE)) {
-                players.sendMessage(ChatStyle.GREEN + "[Factoid] " + message);
+                players.getFSender().sendMessage(ChatStyle.GREEN + "[Factoid] " + message);
             }
         }
 

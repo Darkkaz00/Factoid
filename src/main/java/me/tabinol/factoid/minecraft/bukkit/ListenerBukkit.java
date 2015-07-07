@@ -412,8 +412,12 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 		
-		// Player only section
-		FPlayer player = Factoid.getServerCache().getPlayer(((Player) event.getEntity()).getUniqueId());
+		// Players only
+		if(!(event.getEntity() instanceof Player)) {
+			return;
+		}
+
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
 		
 		// Real player?
 		if(player == null) {
@@ -535,7 +539,12 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 		
-		FPlayer player = Factoid.getServerCache().getPlayer(((Player) event.getEntity()).getUniqueId());
+		// Players only
+		if(!(event.getEntity() instanceof Player)) {
+			return;
+		}
+		
+		FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
 
 		// Real player?
 		if(player == null) {

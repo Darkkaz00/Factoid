@@ -44,7 +44,7 @@ public class CommandRent extends CommandExec {
     	
         checkSelections(true, null);
         checkPermission(true, true, null, null);
-        if(!entity.player.isAdminMod()) {
+        if(!entity.sender.isAdminMod()) {
         	// If the player not adminmod, he must be owner && permission true
         	checkPermission(false, false, PermissionList.ECO_LAND_FOR_RENT.getPermissionType(), null);
         }
@@ -58,13 +58,13 @@ public class CommandRent extends CommandExec {
         
         // Check for sign in hand
         if(!entity.player.getGameMode().equals("CREATIVE") && (itemInHand == null || !itemInHand.equals("SIGN"))) {
-        	throw new FactoidCommandException("Must have a sign in hand", entity.player, "COMMAND.ECONOMY.MUSTHAVEISIGN");
+        	throw new FactoidCommandException("Must have a sign in hand", entity.sender, "COMMAND.ECONOMY.MUSTHAVEISIGN");
         }
         
         // If 'recreate'
         if(curArg.equalsIgnoreCase("recreate")) {
         	if(!land.isForRent()) {
-        		throw new FactoidCommandException("The land is not for rent", entity.player, "COMMAND.ECONOMY.ERRORCREATESIGN");
+        		throw new FactoidCommandException("The land is not for rent", entity.sender, "COMMAND.ECONOMY.ERRORCREATESIGN");
         	}
         	try {
         		ecoSign = new EcoSign(land, entity.player);
@@ -76,10 +76,10 @@ public class CommandRent extends CommandExec {
 					((Land) land).setRentSignLoc(ecoSign.getLocation());
 				}
 			} catch (SignException e) {
-				throw new FactoidCommandException("Error in the command", entity.player, "COMMAND.ECONOMY.ERRORCREATESIGN");
+				throw new FactoidCommandException("Error in the command", entity.sender, "COMMAND.ECONOMY.ERRORCREATESIGN");
 			}
         	
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.RECREATE"));
+            entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.RECREATE"));
             Factoid.getFactoidLog().write("Sign recreated for land " + land.getName() + " by: " + entity.playerName);
             
             return;
@@ -89,7 +89,7 @@ public class CommandRent extends CommandExec {
         try {
             rentPrice = Double.parseDouble(curArg);
         } catch (NumberFormatException ex) {
-        	throw new FactoidCommandException("Error in the command", entity.player, "GENERAL.MISSINGINFO");
+        	throw new FactoidCommandException("Error in the command", entity.sender, "GENERAL.MISSINGINFO");
         }
         
         // get renew
@@ -97,7 +97,7 @@ public class CommandRent extends CommandExec {
         try {
             rentRenew = Integer.parseInt(curArg);
         } catch (NumberFormatException ex) {
-        	throw new FactoidCommandException("Error in the command", entity.player, "GENERAL.MISSINGINFO");
+        	throw new FactoidCommandException("Error in the command", entity.sender, "GENERAL.MISSINGINFO");
         }
         
         // get auto renew
@@ -113,7 +113,7 @@ public class CommandRent extends CommandExec {
         
         // Land already for rent?
         if(land.isForRent()) {
-        	throw new FactoidCommandException("Land already for rent", entity.player, "COMMAND.ECONOMY.ALREADYRENT");
+        	throw new FactoidCommandException("Land already for rent", entity.sender, "COMMAND.ECONOMY.ALREADYRENT");
         }
         
         // Create Sign
@@ -122,10 +122,10 @@ public class CommandRent extends CommandExec {
 			ecoSign.createSignForRent(rentPrice, rentRenew, rentAutoRenew, null);
 			removeSignFromHand();
 		} catch (SignException e) {
-			throw new FactoidCommandException("Error in the command", entity.player, "COMMAND.ECONOMY.ERRORCREATESIGN");
+			throw new FactoidCommandException("Error in the command", entity.sender, "COMMAND.ECONOMY.ERRORCREATESIGN");
 		}
         ((Land) land).setForRent(rentPrice, rentRenew, rentAutoRenew, ecoSign.getLocation());
-        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.SIGNDONE"));
+        entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.SIGNDONE"));
         Factoid.getFactoidLog().write("The land " + land.getName() + " is set to for rent by: " + entity.playerName);
     }
 }

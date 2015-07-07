@@ -28,8 +28,7 @@ import org.spongepowered.api.util.command.spec.CommandExecutor;
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.commands.OnCommand;
 import me.tabinol.factoid.minecraft.Commands;
-import me.tabinol.factoid.minecraft.FSenderInterface;
-import me.tabinol.factoid.minecraft.bukkit.FSenderBukkit;
+import me.tabinol.factoid.minecraft.FSender;
 
 public class CommandsSpongeFaction implements Commands, CommandExecutor {
 
@@ -44,12 +43,12 @@ public class CommandsSpongeFaction implements Commands, CommandExecutor {
     public CommandResult execute(CommandSource src, CommandContext args)
             throws CommandException {
 
-		FSenderInterface fSender;
+		FSender fSender;
 		
 		if(src instanceof Player) {
-			fSender = Factoid.getServerCache().getPlayer(((Player) src).getUniqueId());
+			fSender = Factoid.getServerCache().getPlayer(((Player) src).getUniqueId()).getFSender();
 		} else {
-			fSender = new FSenderBukkit(null);
+			fSender = new FSenderSponge(src);
 		}
 
 		onCommand.onCommand(fSender, "faction", args.<String>getAll("string").toArray(new String[0]));

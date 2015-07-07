@@ -30,24 +30,43 @@ import org.bukkit.inventory.ItemStack;
 
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.minecraft.FSender;
 
-public class FPlayerBukkit extends FSenderBukkit implements FPlayer {
+public class FPlayerBukkit implements FPlayer, Comparable<FSender> {
 	
+	private final FSender sender;
 	private final Player player;
 	private final OfflinePlayer offlinePlayer;
 	
-	protected FPlayerBukkit(Player player) {
-		
-		super(player);
-		this.player = player;
-		this.offlinePlayer = player;
-	}
-
 	protected FPlayerBukkit(OfflinePlayer player) {
 		
-		super(null);
-		this.player = null;
 		this.offlinePlayer = player;
+
+		if(player.isOnline()) {
+			this.player = (Player) player;
+			sender = new FSenderBukkit(this, this.player);
+		} else {
+			this.player = null;
+			sender = null;
+		}
+	}
+
+	@Override
+	public int compareTo(FSender fsender) {
+		
+		return getName().compareTo(fsender.getName());
+	}
+
+	@Override
+    public FSender getFSender() {
+		
+		return sender;
+	}
+
+	@Override
+	public String getName() {
+		
+		return player.getName();
 	}
 
 	@Override
@@ -75,6 +94,12 @@ public class FPlayerBukkit extends FSenderBukkit implements FPlayer {
 
 		return offlinePlayer.isOnline();
     }
+	
+	@Override
+	public boolean hasPermission(String perm) {
+		
+		return player.hasPermission(perm);
+	}
 	
 	@Override
     public String getGameMode() {

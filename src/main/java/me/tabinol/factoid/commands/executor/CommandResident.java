@@ -60,8 +60,8 @@ public class CommandResident extends CommandThreadExec {
         checkPermission(true, true, PermissionList.RESIDENT_MANAGER.getPermissionType(), null);
        
         // Double check: The player must be resident, owner or adminmod
-        if(!entity.player.isAdminMod() && !land.isResident(entity.player) && !land.isOwner(entity.player)) {
-        	throw new FactoidCommandException("No permission to do this action", entity.player, "GENERAL.MISSINGPERMISSION");
+        if(!entity.sender.isAdminMod() && !land.isResident(entity.player) && !land.isOwner(entity.player)) {
+        	throw new FactoidCommandException("No permission to do this action", entity.sender, "GENERAL.MISSINGPERMISSION");
         }
         
         fonction = entity.argList.getNext();
@@ -91,12 +91,12 @@ public class CommandResident extends CommandThreadExec {
                 }
                 stList.append(Config.NEWLINE);
             } else {
-                entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.RESIDENT.LISTROWNULL"));
+                entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.RESIDENT.LISTROWNULL"));
             }
-            new ChatPage("COMMAND.RESIDENT.LISTSTART", stList.toString(), entity.player, land.getName()).getPage(1);
+            new ChatPage("COMMAND.RESIDENT.LISTSTART", stList.toString(), entity.sender, land.getName()).getPage(1);
         
         } else {
-            throw new FactoidCommandException("Missing information command", entity.player, "GENERAL.MISSINGINFO");
+            throw new FactoidCommandException("Missing information command", entity.sender, "GENERAL.MISSINGINFO");
         }
     }
 
@@ -112,15 +112,15 @@ public class CommandResident extends CommandThreadExec {
         if (fonction.equalsIgnoreCase("add")) {
 
             land.addResident(pc);
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.RESIDENT.ISDONE", pc.getPrint(), land.getName()));
+            entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.RESIDENT.ISDONE", pc.getPrint(), land.getName()));
             Factoid.getFactoidLog().write("Resident added: " + pc.toString());
 
         } else if (fonction.equalsIgnoreCase("remove")) {
 		
             if (!land.removeResident(pc)) {
-                throw new FactoidCommandException("Resident", entity.player, "COMMAND.RESIDENT.REMOVENOTEXIST");
+                throw new FactoidCommandException("Resident", entity.sender, "COMMAND.RESIDENT.REMOVENOTEXIST");
             }
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.RESIDENT.REMOVEISDONE", pc.getPrint(), land.getName()));
+            entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.RESIDENT.REMOVEISDONE", pc.getPrint(), land.getName()));
             Factoid.getFactoidLog().write("Resident removed: " + pc.toString());
         }
 	}

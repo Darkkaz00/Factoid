@@ -53,12 +53,12 @@ public class CommandType extends CommandExec {
                 stList.append(ChatStyle.WHITE).append(type.getName());
             stList.append(Config.NEWLINE);
             }
-            new ChatPage("COMMAND.TYPES.LISTSTART", stList.toString(), entity.player, null).getPage(1);
+            new ChatPage("COMMAND.TYPES.LISTSTART", stList.toString(), entity.sender, null).getPage(1);
         
         } else if(curArg.equals("remove")) {
         	
         	land.setType(null);
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.TYPES.REMOVEISDONE", land.getName()));
+            entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.TYPES.REMOVEISDONE", land.getName()));
             Factoid.getFactoidLog().write("Land type removed: " + land.getName());
         
         } else { // Type change 
@@ -66,11 +66,11 @@ public class CommandType extends CommandExec {
         	Type type = Factoid.getTypes().getType(curArg);
         	
         	if(type == null) {
-        		throw new FactoidCommandException("Land Types", entity.player, "COMMAND.TYPES.INVALID");
+        		throw new FactoidCommandException("Land Types", entity.sender, "COMMAND.TYPES.INVALID");
         	}
         	
         	land.setType(type);
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.TYPES.ISDONE", type.getName(), land.getName()));
+            entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.TYPES.ISDONE", type.getName(), land.getName()));
             Factoid.getFactoidLog().write("Land type: " + type.getName() + " for land: " + land.getName());
         }
     }

@@ -35,6 +35,8 @@ public class EditWorld {
 	
 	public void makeSelect(FPlayer player) throws FactoidCommandException {
         
-        throw new FactoidCommandException("CommandSelectWorldEdit", player, "COMMAND.SELECT.WORLDEDIT.NOTLOAD");
+        throw new FactoidCommandException("CommandSelectWorldEdit", 
+        		player.getFSender(), 
+        		"COMMAND.SELECT.WORLDEDIT.NOTLOAD");
     }
 }

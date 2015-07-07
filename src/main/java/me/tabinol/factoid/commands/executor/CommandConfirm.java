@@ -55,7 +55,7 @@ public class CommandConfirm extends CommandExec {
 
         ConfirmEntry confirmEntry;
 
-        if ((confirmEntry = entity.player.getConfirm()) != null) {
+        if ((confirmEntry = entity.sender.getConfirm()) != null) {
             
             if (confirmEntry.confirmType == ConfirmEntry.ConfirmType.REMOVE_LAND) {
 
@@ -65,35 +65,35 @@ public class CommandConfirm extends CommandExec {
                     Factoid.getLands().removeLand(confirmEntry.land);
                 } catch (FactoidLandException ex) {
                     Logger.getLogger(CommandConfirm.class.getName()).log(Level.SEVERE, "On land remove", ex);
-                    throw new FactoidCommandException("On land remove", entity.player, "GENERAL.ERROR");
+                    throw new FactoidCommandException("On land remove", entity.sender, "GENERAL.ERROR");
                 }
-                entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.REMOVE.DONE.LAND", confirmEntry.land.getName(), i + ""));
+                entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.REMOVE.DONE.LAND", confirmEntry.land.getName(), i + ""));
                 Factoid.getFactoidLog().write(entity.playerName + " confirm for removing " + confirmEntry.land.getName());
 
             } else if (confirmEntry.confirmType == ConfirmEntry.ConfirmType.REMOVE_AREA) {
 
                 // Remove area
                 if (!confirmEntry.land.removeArea(confirmEntry.areaNb)) {
-                    throw new FactoidCommandException("Area", entity.player, "COMMAND.REMOVE.AREA.INVALID");
+                    throw new FactoidCommandException("Area", entity.sender, "COMMAND.REMOVE.AREA.INVALID");
                 }
-                entity.player.getSelection().refreshLand();
-                entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.REMOVE.DONE.AREA", confirmEntry.land.getName()));
+                entity.sender.getSelection().refreshLand();
+                entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.REMOVE.DONE.AREA", confirmEntry.land.getName()));
                 Factoid.getFactoidLog().write("area " + confirmEntry.areaNb + " for land " + confirmEntry.land.getName() + " is removed by " + entity.playerName);
 
             } else if (confirmEntry.confirmType == ConfirmEntry.ConfirmType.LAND_DEFAULT) {
 
                 // Set to default
                 confirmEntry.land.setDefault();
-                entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SETDEFAULT.ISDONE", confirmEntry.land.getName()));
+                entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.SETDEFAULT.ISDONE", confirmEntry.land.getName()));
                 Factoid.getFactoidLog().write("The land " + confirmEntry.land.getName() + "is set to default configuration by " + entity.playerName);
             }
             
             // Remove confirm
-            entity.player.setConfirm(null);
+            entity.sender.setConfirm(null);
             
         } else {
             
-            throw new FactoidCommandException("Nothing to confirm", entity.player, "COMMAND.NOCONFIRM");
+            throw new FactoidCommandException("Nothing to confirm", entity.sender, "COMMAND.NOCONFIRM");
         }
     }
 }

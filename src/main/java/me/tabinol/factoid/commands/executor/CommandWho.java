@@ -63,9 +63,9 @@ public class CommandWho extends CommandExec {
         }
 
         if (stList.length() != 0) {
-            new ChatPage("COMMAND.WHO.LISTSTART", stList.toString(), entity.player, land.getName()).getPage(1);
+            new ChatPage("COMMAND.WHO.LISTSTART", stList.toString(), entity.sender, land.getName()).getPage(1);
         } else {
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.WHO.LISTNULL", land.getName()));
+            entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.WHO.LISTNULL", land.getName()));
         }
     }
 }

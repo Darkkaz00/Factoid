@@ -61,7 +61,7 @@ public class ServerBukkit extends JavaPlugin implements Server {
     @Override
     public void onEnable() {
     	
-    	factoid = new Factoid(ServerType.BUKKIT);
+    	factoid = new Factoid(ServerType.BUKKIT, this);
 
     	// Start Plugin Metrics
         try {

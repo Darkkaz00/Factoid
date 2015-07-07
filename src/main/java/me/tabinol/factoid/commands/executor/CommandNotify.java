@@ -54,12 +54,12 @@ public class CommandNotify extends CommandExec {
         checkPermission(true, true, PermissionList.LAND_NOTIFY.getPermissionType(), null);
 
         
-        if (land.isPlayerNotify(entity.player.getPlayerContainer())) {
-            land.removePlayerNotify(entity.player.getPlayerContainer());
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.NOTIFY.QUIT", land.getName()));
+        if (land.isPlayerNotify(entity.sender.getPlayerContainer())) {
+            land.removePlayerNotify(entity.sender.getPlayerContainer());
+            entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.NOTIFY.QUIT", land.getName()));
         } else {
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.NOTIFY.JOIN", land.getName()));
-            land.addPlayerNotify(entity.player.getPlayerContainer());
+            entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.NOTIFY.JOIN", land.getName()));
+            land.addPlayerNotify(entity.sender.getPlayerContainer());
         }
     }
 }

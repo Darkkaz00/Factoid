@@ -19,7 +19,7 @@
 package me.tabinol.factoid.minecraft.bukkit;
 
 import me.tabinol.factoid.minecraft.ChatPaginator;
-import me.tabinol.factoid.minecraft.FSenderInterface;
+import me.tabinol.factoid.minecraft.FSender;
 
 public class ChatPaginatorBukkit implements ChatPaginator {
 	
@@ -39,7 +39,7 @@ public class ChatPaginatorBukkit implements ChatPaginator {
      * title The title
      */
     @Override
-    public void send(FSenderInterface sender, String title) {
+    public void send(FSender sender, String title) {
     	
     	sender.sendMessage(page.getLines());
     }

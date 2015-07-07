@@ -42,7 +42,7 @@ public class CommandInfo extends CommandExec {
     /** The area. */
     private CuboidArea area;
     
-    /** The player. */
+    /** The player.getFSender(). */
     private final FPlayer player;
     
     /** The arg list. */
@@ -92,7 +92,7 @@ public class CommandInfo extends CommandExec {
             land = Factoid.getLands().getLand(argList.getNext());
 
             if (land == null) {
-                throw new FactoidCommandException("CommandInfo", player, "COMMAND.INFO.NOTEXIST");
+                throw new FactoidCommandException("CommandInfo", player.getFSender(), "COMMAND.INFO.NOTEXIST");
             }
 
             // If the land is in parameter, cancel Area
@@ -141,10 +141,10 @@ public class CommandInfo extends CommandExec {
                 stList.append(NEWLINE);
             }
             // Create the multiple page
-            new ChatPage("COMMAND.INFO.LAND.LISTSTART", stList.toString(), player, land.getName()).getPage();
+            new ChatPage("COMMAND.INFO.LAND.LISTSTART", stList.toString(), player.getFSender(), land.getName()).getPage();
 
         } else {
-            player.sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.INFO.NOLAND"));
+            player.getFSender().sendMessage(ChatStyle.GRAY + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.INFO.NOLAND"));
         }
     }
 

@@ -68,7 +68,7 @@ public class CommandOwner extends CommandThreadExec {
     	convertPcIfNeeded(playerCacheEntry);
 
         land.setOwner(pc);
-        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.OWNER.ISDONE", pc.getPrint(), land.getName()));
+        entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.OWNER.ISDONE", pc.getPrint(), land.getName()));
         Factoid.getFactoidLog().write("The land " + land.getName() + "is set to owner: " + pc.getPrint());
 
         // Cancel the selection

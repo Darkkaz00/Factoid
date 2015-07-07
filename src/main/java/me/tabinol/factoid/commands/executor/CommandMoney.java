@@ -55,7 +55,7 @@ public class CommandMoney extends CommandExec {
 
         if (playerMoney == null) {
 
-            throw new FactoidCommandException("Economy not avalaible", entity.player, "COMMAND.ECONOMY.NOTAVAILABLE");
+            throw new FactoidCommandException("Economy not avalaible", entity.sender, "COMMAND.ECONOMY.NOTAVAILABLE");
         }
 
         checkSelections(true, null);
@@ -69,7 +69,7 @@ public class CommandMoney extends CommandExec {
         } else if (curArg.equalsIgnoreCase("withdraw")) {
             withdraw();
         } else {
-            throw new FactoidCommandException("Missing information command", entity.player, "GENERAL.MISSINGINFO");
+            throw new FactoidCommandException("Missing information command", entity.sender, "GENERAL.MISSINGINFO");
         }
     }
 
@@ -81,7 +81,7 @@ public class CommandMoney extends CommandExec {
     private void balance() throws FactoidCommandException {
 
         checkPermission(true, false, PermissionList.MONEY_BALANCE.getPermissionType(), null);
-        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.LANDBALANCE",
+        entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.LANDBALANCE",
                 land.getName(), playerMoney.toFormat(land.getMoney())));
     }
 
@@ -98,13 +98,13 @@ public class CommandMoney extends CommandExec {
 
         // Amount is valid?
         if (amount > playerMoney.getPlayerBalance(entity.player, land.getWorldName())) {
-            throw new FactoidCommandException("Invalid amount", entity.player, "COMMAND.ECONOMY.INVALIDAMOUNT");
+            throw new FactoidCommandException("Invalid amount", entity.sender, "COMMAND.ECONOMY.INVALIDAMOUNT");
         }
 
         // Land Deposit
         playerMoney.getFromPlayer(entity.player, land.getWorldName(), amount);
         land.addMoney(amount);
-        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.LANDDEPOSIT",
+        entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.LANDDEPOSIT",
                 playerMoney.toFormat(land.getMoney()), land.getName()));
     }
 
@@ -121,13 +121,13 @@ public class CommandMoney extends CommandExec {
 
         // Amount is valid?
         if (amount > land.getMoney()) {
-            throw new FactoidCommandException("Invalid amount", entity.player, "COMMAND.ECONOMY.INVALIDAMOUNT");
+            throw new FactoidCommandException("Invalid amount", entity.sender, "COMMAND.ECONOMY.INVALIDAMOUNT");
         }
 
         // Land Deposit
         land.substractMoney(amount);
         playerMoney.giveToPlayer(entity.player, land.getWorldName(), amount);
-        entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.LANDWITHDRAW",
+        entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.ECONOMY.LANDWITHDRAW",
                 playerMoney.toFormat(land.getMoney()), land.getName()));
     }
 
@@ -157,7 +157,7 @@ public class CommandMoney extends CommandExec {
         }
 
         if (err) {
-            throw new FactoidCommandException("Invalid amount", entity.player, "COMMAND.ECONOMY.INVALIDAMOUNT");
+            throw new FactoidCommandException("Invalid amount", entity.sender, "COMMAND.ECONOMY.INVALIDAMOUNT");
         }
 
         return ret;

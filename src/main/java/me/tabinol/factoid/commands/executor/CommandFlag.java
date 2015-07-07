@@ -65,12 +65,12 @@ public class CommandFlag extends CommandExec {
         /*
         if (entity.argList.length() < 2) {
 
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.FLAGS.JOINMODE"));
+            entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.FLAGS.JOINMODE"));
             Factoid.getFactoidLog().write("PlayerSetFlagUI for " + entity.playerName);
-            entity.player.sendMessage(ChatStyle.DARK_GRAY + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.FLAGS.HINT"));
-            CuboidArea area = Factoid.getLands().getCuboidArea(entity.player.getLocation());
+            entity.sender.sendMessage(ChatStyle.DARK_GRAY + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.FLAGS.HINT"));
+            CuboidArea area = Factoid.getLands().getCuboidArea(entity.sender.getLocation());
             LandSetFlag setting = new LandSetFlag(entity.player, area);
-            entity.player.setSetFlagUI(setting);
+            entity.sender.setSetFlagUI(setting);
             
                     
         } else 
@@ -80,14 +80,14 @@ public class CommandFlag extends CommandExec {
 
             // Permission check is on getFlagFromArg
             
-            LandFlag landFlag = entity.argList.getFlagFromArg(entity.player.isAdminMod(), land.isOwner(entity.player));
+            LandFlag landFlag = entity.argList.getFlagFromArg(entity.sender.isAdminMod(), land.isOwner(entity.player));
             
             if(!landFlag.getFlagType().isRegistered()) {
-            	throw new FactoidCommandException("Flag not registered", entity.player, "COMMAND.FLAGS.FLAGNULL");
+            	throw new FactoidCommandException("Flag not registered", entity.sender, "COMMAND.FLAGS.FLAGNULL");
             }
             
             ((Land)land).addFlag(landFlag);
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + 
+            entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + 
             Factoid.getLanguage().getMessage("COMMAND.FLAGS.ISDONE", landFlag.getFlagType().toString(), 
                     landFlag.getValue().getValuePrint() + ChatStyle.YELLOW));
             Factoid.getFactoidLog().write("Flag set: " + landFlag.getFlagType().toString() + ", value: " + 
@@ -95,11 +95,11 @@ public class CommandFlag extends CommandExec {
 
         } else if (curArg.equalsIgnoreCase("unset")) {
         
-            FlagType flagType = entity.argList.getFlagTypeFromArg(entity.player.isAdminMod(), land.isOwner(entity.player));
+            FlagType flagType = entity.argList.getFlagTypeFromArg(entity.sender.isAdminMod(), land.isOwner(entity.player));
             if (!land.removeFlag(flagType)) {
-                throw new FactoidCommandException("Flags", entity.player, "COMMAND.FLAGS.REMOVENOTEXIST");
+                throw new FactoidCommandException("Flags", entity.sender, "COMMAND.FLAGS.REMOVENOTEXIST");
             }
-            entity.player.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.FLAGS.REMOVEISDONE", flagType.toString()));
+            entity.sender.sendMessage(ChatStyle.YELLOW + "[Factoid] " + Factoid.getLanguage().getMessage("COMMAND.FLAGS.REMOVEISDONE", flagType.toString()));
             Factoid.getFactoidLog().write("Flag unset: " + flagType.toString());
         
         } else if (curArg.equalsIgnoreCase("list")) {
@@ -130,10 +130,10 @@ public class CommandFlag extends CommandExec {
     				land.getWorldName())).append(Config.NEWLINE);
         	importDisplayFlagsFrom(Factoid.getLands().getOutsideArea(land.getWorldName()), true);
                 
-            new ChatPage("COMMAND.FLAGS.LISTSTART", stList.toString(), entity.player, land.getName()).getPage(1);
+            new ChatPage("COMMAND.FLAGS.LISTSTART", stList.toString(), entity.sender, land.getName()).getPage(1);
 
         } else {
-            throw new FactoidCommandException("Missing information command", entity.player, "GENERAL.MISSINGINFO");
+            throw new FactoidCommandException("Missing information command", entity.sender, "GENERAL.MISSINGINFO");
         }
     }
     

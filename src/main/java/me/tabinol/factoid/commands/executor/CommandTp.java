@@ -56,7 +56,7 @@ public class CommandTp extends CommandExec {
         
         // Land not found
         if(land == null) {
-        	throw new FactoidCommandException("On land tp player", entity.player, "COMMAND.TP.LANDNOTFOUND");
+        	throw new FactoidCommandException("On land tp player", entity.sender, "COMMAND.TP.LANDNOTFOUND");
         }
         
         // Check adminmod or permission TP
@@ -66,13 +66,13 @@ public class CommandTp extends CommandExec {
         FlagValue value = land.getFlagAndInherit(FlagList.SPAWN.getFlagType());
         
         if(value.getValueString().isEmpty()) {
-        	throw new FactoidCommandException("On land tp player", entity.player, "COMMAND.TP.NOSPAWN");
+        	throw new FactoidCommandException("On land tp player", entity.sender, "COMMAND.TP.NOSPAWN");
         }
         
         Point location = Point.fromString(value.getValueString());
         
         if(location == null) {
-        	throw new FactoidCommandException("On land tp player", entity.player, "COMMAND.TP.INVALID");
+        	throw new FactoidCommandException("On land tp player", entity.sender, "COMMAND.TP.INVALID");
         }
         
         // Teleport player
