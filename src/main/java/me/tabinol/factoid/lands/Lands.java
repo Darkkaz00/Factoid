@@ -110,7 +110,7 @@ public class Lands {
 
         landList = new TreeMap<String, Land>();
         landUUIDList = new TreeMap<UUID, Land>();
-        approveList = new ApproveList();
+        approveList = ApproveList.newApproveList();
         forSale = new HashSet<Land>();
         forRent = new HashSet<Land>();
     }

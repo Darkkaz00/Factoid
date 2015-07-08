@@ -15,84 +15,39 @@
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package me.tabinol.factoid.lands.approve;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Calendar;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import me.tabinol.factoid.Factoid;
-import me.tabinol.factoid.lands.Land;
-import me.tabinol.factoid.lands.areas.CuboidArea;
-import me.tabinol.factoid.lands.collisions.Collisions.LandAction;
-import me.tabinol.factoid.lands.types.Type;
-import me.tabinol.factoid.playercontainer.PlayerContainer;
-import me.tabinol.factoid.utilities.StringChanges;
-import me.tabinol.factoid.playercontainer.PlayerContainerType;
-
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import me.tabinol.factoid.Factoid.ServerType;
+import me.tabinol.factoid.lands.approve.bukkit.ApproveListBukkit;
+import me.tabinol.factoid.lands.approve.sponge.ApproveListSponge;
 
 
 /**
  * The Class ApproveList.
  */
-public class ApproveList {
+public abstract class ApproveList {
 
-    /** The approve file. */
-    final private File approveFile;
-    
-    /** The approve config. */
-    private FileConfiguration approveConfig;
-    
     /** The land names. */
-    final private TreeSet<String> landNames;
+    final protected TreeSet<String> landNames;
 
-    /**
-     * Instantiates a new approve list.
-     */
     public ApproveList() {
-
-        approveFile = new File(Factoid.getServer().getDataFolder() + "/approvelist.yml");
-        approveConfig = new YamlConfiguration();
+    	
         landNames = new TreeSet<String>();
-        loadFile();
     }
-
+    
     /**
      * Adds the approve.
      *
      * @param approve the approve
      */
-    public void addApprove(Approve approve) {
-
-        landNames.add(approve.getLandName());
-        ConfigurationSection section = approveConfig.createSection(approve.getLandName());
-        if(approve.getType() != null) {
-        	section.set("Type", approve.getType().getName());
-        }
-        section.set("Action", approve.getAction().toString());
-        section.set("RemovedAreaId", approve.getRemovedAreaId());
-        if (approve.getNewArea() != null) {
-        	section.set("NewArea", approve.getNewArea().toString());
-        }
-        section.set("Owner", approve.getOwner().toString());
-        if (approve.getParent() != null) {
-            section.set("Parent", approve.getParent().getName());
-        }
-        section.set("Price", approve.getPrice());
-        section.set("DateTime", approve.getDateTime().getTimeInMillis());
-        saveFile();
-        Factoid.getApproveNotif().notifyForApprove(approve.getLandName(), approve.getOwner().getPrint());
-    }
-
+    public abstract void addApprove(Approve approve);
+    
     /**
      * Gets the approve list.
      *
@@ -138,146 +93,45 @@ public class ApproveList {
 
         return landNames.contains(landName.toLowerCase());
     }
-
+    
     /**
      * Gets the approve.
      *
      * @param landName the land name
      * @return the approve
      */
-    public Approve getApprove(String landName) {
-
-        Factoid.getFactoidLog().write("Get approve for: " + landName);
-        ConfigurationSection section = approveConfig.getConfigurationSection(landName);
-
-        if (section == null) {
-            Factoid.getFactoidLog().write("Error Section null");
-            return null;
-        }
-        
-        String typeName = section.getString("Type");
-        Type type = null;
-        if(typeName != null) {
-        	type = Factoid.getTypes().addOrGetType(typeName);
-        }
-
-        String[] ownerS = StringChanges.splitAddVoid(section.getString("Owner"), ":");
-        PlayerContainer pc = PlayerContainer.create(null, PlayerContainerType.getFromString(ownerS[0]), ownerS[1]);
-        Land parent = null;
-        CuboidArea newArea = null;
-        
-        if (section.contains("Parent")) {
-            parent = Factoid.getLands().getLand(section.getString("Parent"));
-            
-            // If the parent does not exist
-            if (parent == null) {
-                Factoid.getFactoidLog().write("Error, parent not found");
-                return null;
-            }
-        }
-        
-        if(section.contains("NewArea")) {
-        	newArea = CuboidArea.getFromString(section.getString("NewArea"));
-        }
-        
-        LandAction action = LandAction.valueOf(section.getString("Action"));
-        
-        // If the land was deleted
-        if(action != LandAction.LAND_ADD && Factoid.getLands().getLand(landName) == null) {
-        	return null;
-        }
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(section.getLong("DateTime"));
-
-        return new Approve(landName, type, action,
-                section.getInt("RemovedAreaId"), newArea, pc,
-                parent, section.getDouble("Price"), cal);
-    }
-
+    public abstract Approve getApprove(String landName);
+    
     /**
      * Removes the approve.
      *
      * @param approve the approve
      */
-    public void removeApprove(Approve approve) {
+    public abstract void removeApprove(Approve approve);
     
-    	removeApprove(approve.getLandName());
-    }
-
     /**
      * Removes the approve.
      *
      * @param landName the land name
      */
-    public void removeApprove(String landName) {
-        
-    	Factoid.getFactoidLog().write("Remove Approve from list: " + landName);
-
-        approveConfig.set(landName, null);
-        landNames.remove(landName);
-        saveFile();
-    }
-
+    public abstract void removeApprove(String landName);
+    
     /**
      * Removes the all.
      */
-    public void removeAll() {
+    public abstract void removeAll();
 
-        Factoid.getFactoidLog().write("Remove all Approves from list.");
-
-        // Delete file
-        if (approveFile.exists()) {
-            approveFile.delete();
-        }
-        
-        // Delete list
-        landNames.clear();
-        approveConfig = new YamlConfiguration();
-        
-        // Reload file
-        loadFile();
-    }
-
+	
     /**
-     * Load file.
+     * Create the specific Approve List
+     * @return approve list
      */
-    private void loadFile() {
-
-        Factoid.getFactoidLog().write("Loading Approve list file");
-
-        if (!approveFile.exists()) {
-            try {
-                approveFile.createNewFile();
-            } catch (IOException ex) {
-                Logger.getLogger(ApproveList.class.getName()).log(Level.SEVERE, "Error on approve file creation", ex);
-            }
-        }
-        try {
-            approveConfig.load(approveFile);
-        } catch (IOException ex) {
-            Logger.getLogger(ApproveList.class.getName()).log(Level.SEVERE, "Error on approve file load", ex);
-        } catch (InvalidConfigurationException ex) {
-            Logger.getLogger(ApproveList.class.getName()).log(Level.SEVERE, "Error on approve file load", ex);
-        }
-
-        // add land names to list
-        for (String landName : approveConfig.getKeys(false)) {
-            landNames.add(landName);
-        }
-    }
-
-    /**
-     * Save file.
-     */
-    private void saveFile() {
-
-        Factoid.getFactoidLog().write("Saving Approve list file");
-
-        try {
-            approveConfig.save(approveFile);
-        } catch (IOException ex) {
-            Logger.getLogger(ApproveList.class.getName()).log(Level.SEVERE, "Error on approve file save", ex);
-        }
-    }
+    public static ApproveList newApproveList() {
+    	
+		if(Factoid.getServerType() == ServerType.BUKKIT) {
+			return new ApproveListBukkit();
+		} else {
+			return new ApproveListSponge();
+		}
+	}
 }

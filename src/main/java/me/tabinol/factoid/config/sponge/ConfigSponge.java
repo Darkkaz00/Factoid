@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.TreeSet;
 
+import com.google.common.base.Function;
+
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.config.Config;
 import me.tabinol.factoid.config.WorldConfig;
@@ -35,28 +37,27 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 
-import org.spongepowered.api.service.config.DefaultConfig;
-
-import com.google.common.base.Function;
-import com.google.inject.Inject;
-
 public class ConfigSponge extends Config {
 	
-	@Inject
-	@DefaultConfig(sharedRoot = true)
+	public static final String FILE_CONFIG_SRC = "/config.conf";
+	
 	private File defaultConfig;
+    private File configDir;
 
 	ConfigurationNode config;
 
 	/**
      * Instantiates a new config.
      */
-    public ConfigSponge() {
+    public ConfigSponge(File defaultConfig, File configDir) {
+    	
+    	this.defaultConfig = defaultConfig;
+    	this.configDir = configDir;
     	
     	try {
     		if (!defaultConfig.exists()) {
     			// Copy file
-    			InputStream source = Factoid.getServer().getResource("Config.conf");
+    			InputStream source = Factoid.getServer().getResource(FILE_CONFIG_SRC);
     			FileCopy.copyTextFromJav(source, defaultConfig);
     		}
    		} catch (IOException e) {
@@ -161,6 +162,6 @@ public class ConfigSponge extends Config {
 	@Override
     public WorldConfig newWorldConfig() {
 
-		return new WorldConfigSponge();
+		return new WorldConfigSponge(configDir);
     }
 }

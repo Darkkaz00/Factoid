@@ -32,7 +32,7 @@ import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.minecraft.FSender;
 
-public class FPlayerBukkit implements FPlayer, Comparable<FSender> {
+public class FPlayerBukkit implements FPlayer, Comparable<FPlayer> {
 	
 	private final FSender sender;
 	private final Player player;
@@ -52,9 +52,9 @@ public class FPlayerBukkit implements FPlayer, Comparable<FSender> {
 	}
 
 	@Override
-	public int compareTo(FSender fsender) {
+	public int compareTo(FPlayer fplayer) {
 		
-		return getName().compareTo(fsender.getName());
+		return getName().compareTo(fplayer.getName());
 	}
 
 	@Override

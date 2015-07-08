@@ -125,7 +125,7 @@ public class PvpListener extends CommonListener {
 		DummyLand land = Factoid.getLands().getLandOrOutsideArea(point);
 
 		if (land.getFlagAndInherit(FlagList.FULL_PVP.getFlagType()).getValueBoolean() == false
-				|| land.getFlagAndInherit(FlagList.FULL_PVP.getFlagType()).getValueBoolean() == false) {
+				|| land.getFlagAndInherit(FlagList.FACTION_PVP.getFlagType()).getValueBoolean() == false) {
 				
 			// Add fire for pvp listen
 			playerFireLocation.put(point, player.getFSender().getPlayerContainer());

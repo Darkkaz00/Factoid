@@ -5,7 +5,7 @@
 	<groupId>me.tabinol.factoid</groupId>
 	<artifactId>Factoid</artifactId>
 	<!-- *** Change version here *** -->
-	<!-- IMPORTANT: The version must manually in ServerSponge.java -->
+	<!-- IMPORTANT: The version must be set manually in ServerSponge.java -->
 	<version>1.3.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -215,6 +215,7 @@
 				<includes>
 					<include>lang/*.properties</include>
 					<include>*.yml</include>
+                    <include>*.conf</include>
 					<include>app.properties</include>
 					<include>LICENSE</include>
 				</includes>

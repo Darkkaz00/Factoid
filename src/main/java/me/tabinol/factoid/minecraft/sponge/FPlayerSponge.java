@@ -28,7 +28,7 @@ import org.spongepowered.api.data.manipulator.entity.FoodData;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.world.Location;
 
-public class FPlayerSponge implements FPlayer, Comparable<FSender> {
+public class FPlayerSponge implements FPlayer, Comparable<FPlayer> {
 	
 	private final FSender sender;
 	private final Player player;
@@ -45,9 +45,9 @@ public class FPlayerSponge implements FPlayer, Comparable<FSender> {
 	}
 
 	@Override
-	public int compareTo(FSender fsender) {
+	public int compareTo(FPlayer fplayer) {
 		
-		return getName().compareTo(fsender.getName());
+		return getName().compareTo(fplayer.getName());
 	}
 
 	@Override

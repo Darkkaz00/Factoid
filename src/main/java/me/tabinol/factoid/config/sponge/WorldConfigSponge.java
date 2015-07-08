@@ -4,6 +4,7 @@ import static me.tabinol.factoid.config.Config.GLOBAL;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import me.tabinol.factoid.Factoid;
@@ -22,26 +23,18 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 
-import org.spongepowered.api.service.config.ConfigDir;
-
-import com.google.inject.Inject;
-
 public class WorldConfigSponge extends WorldConfig {
 
-	public static final String FILE_LANDDEFAULT="Factoid_landdefault.conf"; 
-	public static final String FILE_WORLDCONFIG="Factoid_landdefault.conf"; 
+	public static final String FILE_LANDDEFAULT = "/landdefault.conf"; 
+	public static final String FILE_WORLDCONFIG = "/worldconfig.conf"; 
 	
-	@Inject
-	@ConfigDir(sharedRoot = true)
-	private File configDir;
-
 	/** The land default. */
-	ConfigurationNode  landDefault;
+	ConfigurationNode landDefault;
     
     /** The world config. */
 	ConfigurationNode worldConfig;
 
-	public WorldConfigSponge() {
+	public WorldConfigSponge(File configDir) {
 		
     	try {
             // Create files (if not exist) and load
@@ -73,16 +66,16 @@ public class WorldConfigSponge extends WorldConfig {
         TreeMap<String, DummyLand> landList = new TreeMap<String, DummyLand>();
         
         // We have to take _global_ first then others
-        for (ConfigurationNode worldNode : worldConfig.getChildrenList()) {
-        	if(worldNode.getKey().toString().equals(GLOBAL)) {
-            	createConfForWorld(worldNode, landList, false);
+        for (Entry<Object, ? extends ConfigurationNode> worldNodes : worldConfig.getChildrenMap().entrySet()) {
+        	if(worldNodes.getKey().toString().equals(GLOBAL)) {
+            	createConfForWorld(worldNodes.getValue(), landList, false);
         	}
         }
         
         // The none-global
-        for (ConfigurationNode worldNode : worldConfig.getChildrenList()) {
-        	if(!worldNode.getKey().toString().equals(GLOBAL)) {
-            	createConfForWorld(worldNode, landList, true);
+        for (Entry<Object, ? extends ConfigurationNode> worldNodes : worldConfig.getChildrenMap().entrySet()) {
+        	if(!worldNodes.getKey().toString().equals(GLOBAL)) {
+            	createConfForWorld(worldNodes.getValue(), landList, true);
         	}
         }
 
@@ -141,40 +134,40 @@ public class WorldConfigSponge extends WorldConfig {
 
         // Add permissions
         if (csPerm != null) {
-            for (ConfigurationNode container : csPerm.getChildrenList()) {
+            for (Entry<Object, ? extends ConfigurationNode> containers : csPerm.getChildrenMap().entrySet()) {
                 
-                PlayerContainerType pcType = PlayerContainerType.getFromString(container.getKey().toString());
+                PlayerContainerType pcType = PlayerContainerType.getFromString(containers.getKey().toString());
                 
                 if (pcType.hasParameter()) {
-                    for (ConfigurationNode containerName : container.getChildrenList()) {
-                        for (ConfigurationNode perm : containerName.getChildrenList()) {
-                            Factoid.getFactoidLog().write("Container: " + container.getKey() + ":" 
-                            		+ containerName.getKey() + ", " + perm.getKey());
+                    for (Entry<Object, ? extends ConfigurationNode> containerNames : containers.getValue().getChildrenMap().entrySet()) {
+                        for (Entry<Object, ? extends ConfigurationNode> permss : containerNames.getValue().getChildrenMap().entrySet()) {
+                            Factoid.getFactoidLog().write("Container: " + containers.getKey() + ":" 
+                            		+ containerNames.getKey() + ", " + permss.getKey());
                             
                             // Remove _ if it is a Bukkit Permission
                             String containerNameLower;
                             if(pcType == PlayerContainerType.PERMISSION) {
-                                containerNameLower = containerName.getKey().toString().toLowerCase().replaceAll("_", ".");
+                                containerNameLower = containerNames.getKey().toString().toLowerCase().replaceAll("_", ".");
                             } else {
-                                containerNameLower = containerName.getKey().toString().toLowerCase();
+                                containerNameLower = containerNames.getKey().toString().toLowerCase();
                             }
                             
                             dl.addPermission(
                                     PlayerContainer.create(null, pcType, containerNameLower),
                                     new Permission(Factoid.getParameters().getPermissionTypeNoValid(
-                                    		perm.getKey().toString().toUpperCase()),
-                                            perm.getNode("Value").getBoolean(true),
-                                            perm.getNode("Heritable").getBoolean(true)));
+                                    		permss.getKey().toString().toUpperCase()),
+                                            permss.getValue().getNode("Value").getBoolean(true),
+                                            permss.getValue().getNode("Heritable").getBoolean(true)));
                         }
                     }
                 } else {
-                    for (ConfigurationNode perm : container.getChildrenList()) {
-                        Factoid.getFactoidLog().write("Container: " + container + ", " + perm);
+                    for (Entry<Object, ? extends ConfigurationNode> permss : containers.getValue().getChildrenMap().entrySet()) {
+                        Factoid.getFactoidLog().write("Container: " + containers.getKey() + ", " + permss.getKey());
                         dl.addPermission(
                                 PlayerContainer.create(null, pcType, null),
-                                new Permission(Factoid.getParameters().getPermissionTypeNoValid(perm.getKey().toString().toUpperCase()),
-                                        perm.getNode("Value").getBoolean(true),
-                                        perm.getNode("Heritable").getBoolean(true)));
+                                new Permission(Factoid.getParameters().getPermissionTypeNoValid(permss.getKey().toString().toUpperCase()),
+                                        permss.getValue().getNode("Value").getBoolean(true),
+                                        permss.getValue().getNode("Heritable").getBoolean(true)));
                     }
                 }
             }
@@ -182,11 +175,11 @@ public class WorldConfigSponge extends WorldConfig {
 
         // add flags
         if (csFlags != null) {
-            for (ConfigurationNode flag : csFlags.getChildrenList()) {
-                Factoid.getFactoidLog().write("Flag: " + flag.getKey());
-                FlagType ft = Factoid.getParameters().getFlagTypeNoValid(flag.getKey().toString().toUpperCase());
+            for (Entry<Object, ? extends ConfigurationNode> flagss : csFlags.getChildrenMap().entrySet()) {
+                Factoid.getFactoidLog().write("Flag: " + flagss.getKey());
+                FlagType ft = Factoid.getParameters().getFlagTypeNoValid(flagss.getKey().toString().toUpperCase());
                 dl.addFlag(new LandFlag(ft,
-                        FlagValue.getFromString(flag.getNode(".Value").getString(), ft), 
+                        FlagValue.getFromString(flagss.getValue().getNode("Value").getString(), ft), 
                         fc.getNode("Heritable").getBoolean(true)));
             }
         }

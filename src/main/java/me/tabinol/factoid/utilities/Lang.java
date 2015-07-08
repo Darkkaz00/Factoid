@@ -59,7 +59,8 @@ public class Lang {
      */
     public final void reloadConfig() {
         this.lang = Factoid.getConf().getLang();
-        this.langFile = new File(Factoid.getServer().getDataFolder() + "/lang/", lang + ".properties");
+        this.langFile = new File(Factoid.getServer().getDataFolder() 
+        		+ "/lang/", lang + ".properties");
         if (Factoid.getConf().getLang() != null) {
             copyLang();
             loadProperties();
@@ -76,7 +77,8 @@ public class Lang {
 
         // We must rename the file and activate the new file
         if (ACTUAL_VERSION != fileVersion) {
-            langFile.renameTo(new File(Factoid.getServer().getDataFolder() + "/lang/", lang + ".properties.v" + fileVersion));
+            langFile.renameTo(new File(Factoid.getServer().getDataFolder() 
+            		+ "/lang/", lang + ".properties.v" + fileVersion));
             reloadConfig();
             Factoid.getServer().info("There is a new language file. Your old language file was renamed \""
                     + lang + ".properties.v" + fileVersion + "\".");
@@ -171,7 +173,7 @@ public class Lang {
         try {
             if (!langFile.exists()) {
                 langFile.getParentFile().mkdirs();
-                FileCopy.copyTextFromJav(Factoid.getServer().getResource("lang/" + lang + ".properties"), langFile);
+                FileCopy.copyTextFromJav(Factoid.getServer().getResource("/lang/" + lang + ".properties"), langFile);
             }
         } catch (IOException e) {
             e.printStackTrace();

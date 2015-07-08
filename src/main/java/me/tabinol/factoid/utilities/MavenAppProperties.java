@@ -17,15 +17,13 @@
  */
 package me.tabinol.factoid.utilities;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.Properties;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import me.tabinol.factoid.Factoid;
 
 
 /**
@@ -52,16 +50,17 @@ public class MavenAppProperties {
 
         try {
             
-            File jarloc = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getCanonicalFile();
-            JarFile jar = new JarFile(jarloc);
-            JarEntry entry = jar.getJarEntry("app.properties");
-            InputStream resource = jar.getInputStream(entry);
+            // File jarloc = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getCanonicalFile();
+            // JarFile jar = new JarFile(jarloc);
+            // JarEntry entry = jar.getJarEntry("app.properties");
+            // InputStream resource = jar.getInputStream(entry);
+        	InputStream resource = Factoid.getServer().getResource("/app.properties");
             properties.load(resource);
             resource.close();
-            jar.close();
+            // jar.close();
         
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(MavenAppProperties.class.getName()).log(Level.SEVERE, null, ex);
+        // } catch (URISyntaxException ex) {
+        //     Logger.getLogger(MavenAppProperties.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(MavenAppProperties.class.getName()).log(Level.SEVERE, null, ex);
         }

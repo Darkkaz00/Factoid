@@ -200,11 +200,11 @@ public class Factoid {
 
     	// Init Server dependencies
     	Factoid.serverType = serverType;
+        minecraftServer = server;
         mavenAppProperties = new MavenAppProperties();
         mavenAppProperties.loadProperties();
         
         // Init Server access (Minecraft/Sponge)
-        minecraftServer = server;
         serverCache = new ServerCache();
         minecraftServer.initServer();
         

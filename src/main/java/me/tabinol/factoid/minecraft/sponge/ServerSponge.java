@@ -22,23 +22,6 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.UUID;
 
-import me.tabinol.factoid.Factoid;
-import me.tabinol.factoid.Factoid.ServerType;
-import me.tabinol.factoid.commands.OnCommand;
-import me.tabinol.factoid.config.Config;
-import me.tabinol.factoid.config.sponge.ConfigSponge;
-import me.tabinol.factoid.exceptions.SignException;
-import me.tabinol.factoid.lands.Land;
-import me.tabinol.factoid.lands.areas.Point;
-import me.tabinol.factoid.minecraft.CallEvents;
-import me.tabinol.factoid.minecraft.ChatPaginator;
-import me.tabinol.factoid.minecraft.DependPlugin;
-import me.tabinol.factoid.minecraft.FPlayer;
-import me.tabinol.factoid.minecraft.FSign;
-import me.tabinol.factoid.minecraft.Server;
-import me.tabinol.factoid.minecraft.Task;
-import me.tabinol.factoid.utilities.FactoidRunnable;
-
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.block.BlockState;
@@ -55,13 +38,31 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.config.ConfigDir;
+import org.spongepowered.api.service.config.DefaultConfig;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.util.command.spec.CommandSpec;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
+
+import me.tabinol.factoid.Factoid;
+import me.tabinol.factoid.Factoid.ServerType;
+import me.tabinol.factoid.commands.OnCommand;
+import me.tabinol.factoid.config.Config;
+import me.tabinol.factoid.config.sponge.ConfigSponge;
+import me.tabinol.factoid.exceptions.SignException;
+import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.lands.areas.Point;
+import me.tabinol.factoid.minecraft.CallEvents;
+import me.tabinol.factoid.minecraft.ChatPaginator;
+import me.tabinol.factoid.minecraft.DependPlugin;
+import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.minecraft.FSign;
+import me.tabinol.factoid.minecraft.Server;
+import me.tabinol.factoid.minecraft.Task;
+import me.tabinol.factoid.utilities.FactoidRunnable;
 
 /**
  * Main class for Sponge
@@ -80,11 +81,15 @@ public class ServerSponge implements Server {
     @Inject
     private PluginContainer plugin;
     
-    @Inject 
+	@Inject
+	@DefaultConfig(sharedRoot = false)
+	private File defaultConfig;
+
+	@Inject 
     @ConfigDir(sharedRoot = false)
     private File configDir;
 
-    private Factoid factoid;
+	private Factoid factoid;
 
     private CallEvents callEvents;
 
@@ -94,7 +99,7 @@ public class ServerSponge implements Server {
         factoid = new Factoid(ServerType.SPONGE, this);
 
         // Start Listener
-        new ListenerSponge();
+        game.getEventManager().register(plugin, new ListenerSponge());
     }
     
     public void initServer() {
@@ -103,21 +108,25 @@ public class ServerSponge implements Server {
 
         // Register commands
         OnCommand onCommand = new OnCommand();
-        CommandsSpongeFactoid commandsFactoid = new CommandsSpongeFactoid(onCommand);
-        CommandSpec commandFactoid = CommandSpec.builder()
-                .description(Texts.of("Factoid Command. Use \"/fd help\" for details"))
-                .permission("factoid.use")
-                .executor(commandsFactoid)
-                .build();
-        game.getCommandDispatcher().register(plugin, commandFactoid, "factoid", "fd", "claim", "faction", "fn");
+        CommandsSponge commandsFactoid = new CommandsSponge(onCommand,     
+        		"factoid",
+        		"factoid.use",
+        		Optional.of((Text) Texts.of("Factoid Command.")),
+        		Optional.of((Text) Texts.of("Factoid Command. Use \"/fd help\" for details")),
+        		Texts.of("<argument> <...>"),
+        		"help");
+        game.getCommandDispatcher().register(plugin, 
+        		commandsFactoid, "factoid", "fd", "claim");
 
-        CommandsSpongeFaction commandsFaction = new CommandsSpongeFaction(onCommand);
-        CommandSpec commandFaction = CommandSpec.builder()
-                .description(Texts.of("Factions Command. Use \"/fn help\" for details"))
-                .permission("factoid.faction.use")
-                .executor(commandsFaction)
-                .build();
-        game.getCommandDispatcher().register(plugin, commandFaction, "faction", "fn");
+        CommandsSponge commandsFaction = new CommandsSponge(onCommand,     
+        		"faction",
+        		"factoid.faction.use",
+        		Optional.of((Text) Texts.of("Factions Command.")),
+        		Optional.of((Text) Texts.of("Factions Command. Use \"/fn help\" for details")),
+        		Texts.of("<argument> <...>"),
+        		"help");
+        game.getCommandDispatcher().register(plugin, 
+        		commandsFaction, "faction", "fn");
 
         // Add loaded worlds
         for(World world : game.getServer().getWorlds()) {
@@ -130,13 +139,13 @@ public class ServerSponge implements Server {
         }
     }
     
-    @Subscribe
+    @Override
     public Config newConfig() {
         
-        return new ConfigSponge();
+        return new ConfigSponge(defaultConfig, configDir);
     }
     
-    @Subscribe
+    @Override
     public DependPlugin newDependPlugin() {
         
         return new DependPluginSponge(game);
