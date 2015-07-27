@@ -25,6 +25,7 @@ import me.tabinol.factoid.economy.EcoSign;
 import me.tabinol.factoid.exceptions.FactoidCommandException;
 import me.tabinol.factoid.exceptions.SignException;
 import me.tabinol.factoid.lands.Land;
+import me.tabinol.factoid.minecraft.Item;
 import me.tabinol.factoid.parameters.PermissionList;
 import me.tabinol.factoid.utilities.ChatStyle;
 
@@ -54,10 +55,10 @@ public class CommandRent extends CommandExec {
         int rentRenew = 0;
         boolean rentAutoRenew = true;
         EcoSign ecoSign = null;
-        String itemInHand = entity.player.getItemInHand();
+        Item itemInHand = entity.player.getItemInHand();
         
         // Check for sign in hand
-        if(!entity.player.getGameMode().equals("CREATIVE") && (itemInHand == null || !itemInHand.equals("SIGN"))) {
+        if(!entity.player.getGameMode().equals("CREATIVE") && (itemInHand == null || !itemInHand.strEquals("SIGN"))) {
         	throw new FactoidCommandException("Must have a sign in hand", entity.sender, "COMMAND.ECONOMY.MUSTHAVEISIGN");
         }
         

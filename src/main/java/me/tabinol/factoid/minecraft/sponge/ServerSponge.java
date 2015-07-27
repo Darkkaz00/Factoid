@@ -278,17 +278,24 @@ public class ServerSponge implements Server {
         String[] names = new String[materials.length];
         
         for (int i = 0; i < materials.length; i++) {
-            names[i] = materials[i].getName();
+        	names[i] = materials[i].getName();
         }
         return names;
     }
 
     @Override
-    public String getBlockTypeName(Point point) {
+    public me.tabinol.factoid.minecraft.Item getBlockItem(Point point) {
         
         World world = ((FWorldSponge) point.getWorld()).getWorld();
         
-        return world.getBlock(SpongeUtils.toLocationVectorI(point)).getType().getName();
+        return new ItemSponge(world.getBlock(SpongeUtils.toLocationVectorI(point)).getType());
+    }
+
+    @Override
+    public byte getByteItem(Point point) {
+        
+        //  TODO Block type in sponge
+    	return 0;
     }
 
     @Override

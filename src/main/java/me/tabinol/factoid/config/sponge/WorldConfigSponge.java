@@ -68,23 +68,25 @@ public class WorldConfigSponge extends WorldConfig {
         // We have to take _global_ first then others
         for (Entry<Object, ? extends ConfigurationNode> worldNodes : worldConfig.getChildrenMap().entrySet()) {
         	if(worldNodes.getKey().toString().equals(GLOBAL)) {
-            	createConfForWorld(worldNodes.getValue(), landList, false);
+            	createConfForWorld(worldNodes, landList, false);
         	}
         }
         
         // The none-global
         for (Entry<Object, ? extends ConfigurationNode> worldNodes : worldConfig.getChildrenMap().entrySet()) {
         	if(!worldNodes.getKey().toString().equals(GLOBAL)) {
-            	createConfForWorld(worldNodes.getValue(), landList, true);
+            	createConfForWorld(worldNodes, landList, true);
         	}
         }
 
         return landList;
     }
 
-    private void createConfForWorld(ConfigurationNode worldNode, TreeMap<String, DummyLand> landList, boolean copyFromGlobal) {
+    private void createConfForWorld(Entry<Object, ? extends ConfigurationNode> worldNodes, 
+    		TreeMap<String, DummyLand> landList, 
+    		boolean copyFromGlobal) {
     	
-        String worldName = worldNode.toString();
+        String worldName = worldNodes.getKey().toString();
         Factoid.getFactoidLog().write("Create conf for World: " + worldName);
         DummyLand dl = new DummyLand(worldName);
         if(copyFromGlobal) {

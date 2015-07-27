@@ -31,6 +31,7 @@ import org.bukkit.inventory.ItemStack;
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.minecraft.FSender;
+import me.tabinol.factoid.minecraft.Item;
 
 public class FPlayerBukkit implements FPlayer, Comparable<FPlayer> {
 	
@@ -125,12 +126,19 @@ public class FPlayerBukkit implements FPlayer, Comparable<FPlayer> {
 	
 	@SuppressWarnings("deprecation")
     @Override
-    public void sendBlockChange(Point loc, String blockType, byte by) {
+    public void sendBlockChange(Point loc, Item blockType, byte by) {
 	    
 	    player.sendBlockChange(BukkitUtils.toLocation(((FWorldBukkit) loc.getWorld()).getWorld(), loc), 
-	    		Material.getMaterial(blockType), by);
+	    		((ItemBukkit) blockType).getMaterial(), by);
     }
 
+	@SuppressWarnings("deprecation")
+	@Override
+	public void sendBlockChange(Point loc, String blockShortName, byte by) {
+		
+	    player.sendBlockChange(BukkitUtils.toLocation(((FWorldBukkit) loc.getWorld()).getWorld(), loc), 
+	    		Material.getMaterial(blockShortName), by);
+	}
 	@Override
     public Point getTargetBlockLocation() {
 	    
@@ -138,9 +146,9 @@ public class FPlayerBukkit implements FPlayer, Comparable<FPlayer> {
     }
 
 	@Override
-    public String getItemInHand() {
+    public Item getItemInHand() {
 
-		return player.getItemInHand().getType().name();
+		return new ItemBukkit(player.getItemInHand().getType());
     }
 
 	@Override

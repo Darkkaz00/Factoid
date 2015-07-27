@@ -33,6 +33,7 @@ import me.tabinol.factoid.listeners.PlayerListener;
 import me.tabinol.factoid.listeners.PvpListener;
 import me.tabinol.factoid.listeners.WorldListener;
 import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.minecraft.Item;
 import me.tabinol.factoid.minecraft.Listener;
 import me.tabinol.factoid.parameters.FlagList;
 import me.tabinol.factoid.parameters.FlagType;
@@ -211,10 +212,11 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		}
 		
 		// Check item in hand
-		String itemInHand = event.getPlayer().getItemInHand().getType().name();
+		Item itemInHand = new ItemBukkit(event.getPlayer().getItemInHand().getType());
 		
     	FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
-		if(playerListener.onPlayerInteract(player, click, itemInHand, event.getClickedBlock().getType().name(),
+		if(playerListener.onPlayerInteract(player, click, itemInHand, 
+				new ItemBukkit(event.getClickedBlock().getType()),
 				BukkitUtils.toPoint(event.getClickedBlock().getLocation()))) {
 			event.setCancelled(true);
 		}
@@ -230,7 +232,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 
-		if(playerListener.onBlockPlace(player, event.getBlockPlaced().getType().name(),
+		if(playerListener.onBlockPlace(player, new ItemBukkit(event.getBlockPlaced().getType()),
 				BukkitUtils.toPoint(event.getBlockPlaced().getLocation()))) {
 			event.setCancelled(true);
 		}
@@ -246,7 +248,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 
-		pvpListener.onBlockPlaceMonitor(player, event.getBlockPlaced().getType().name(),
+		pvpListener.onBlockPlaceMonitor(player, new ItemBukkit(event.getBlockPlaced().getType()),
 				BukkitUtils.toPoint(event.getBlockPlaced().getLocation()));
 	}
 
@@ -271,7 +273,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 
-		if(playerListener.onBlockBreak(player, event.getBlock().getType().name(),
+		if(playerListener.onBlockBreak(player, new ItemBukkit(event.getBlock().getType()),
 				BukkitUtils.toPoint(event.getBlock().getLocation()))) {
 			event.setCancelled(true);
 		}
@@ -287,7 +289,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 
-		if(playerListener.onPlayerDropItem(player, event.getItemDrop().getType().name(),
+		if(playerListener.onPlayerDropItem(player, new ItemBukkit(event.getItemDrop().getType()),
 				BukkitUtils.toPoint(event.getItemDrop().getLocation()))) {
 			event.setCancelled(true);
 		}
@@ -303,7 +305,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 
-		if(playerListener.onPlayerPickupItem(player, event.getItem().getType().name(),
+		if(playerListener.onPlayerPickupItem(player, new ItemBukkit(event.getItem().getType()),
 				BukkitUtils.toPoint(event.getItem().getLocation()))) {
 			event.setCancelled(true);
 		}
@@ -351,7 +353,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 
-		if(playerListener.onEntityDamageByEntity(player, entity.getType().name(),
+		if(playerListener.onEntityDamageByEntity(player, new ItemBukkit(entity.getType()),
 				locVictime,
 				isAnimal, isMonster, isTamedAndNotOwner)) {
 			event.setCancelled(true);
@@ -377,7 +379,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 
-		if(playerListener.onPlayerBucketFill(player, event.getBlockClicked().getType().name(),
+		if(playerListener.onPlayerBucketFill(player, new ItemBukkit(event.getBlockClicked().getType()),
 				BukkitUtils.toPoint(event.getBlockClicked().getLocation()))) {
 			event.setCancelled(true);
 		}
@@ -394,7 +396,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 
-		if(playerListener.onPlayerBucketEmpty(player, event.getBucket().name(),
+		if(playerListener.onPlayerBucketEmpty(player, new ItemBukkit(event.getBucket()),
 				BukkitUtils.toPoint(block.getLocation()))) {
 			event.setCancelled(true);
 		}
@@ -407,7 +409,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		// All entities section
 		if(worldListener.onEntityChangeBlock(BukkitUtils.toPoint(event.getBlock().getLocation()),
 				event.getEntityType().name(),
-				event.getBlock().getType().name(), event.getTo().name())) {
+				new ItemBukkit(event.getBlock().getType()), new ItemBukkit(event.getTo()))) {
 			event.setCancelled(true);
 			return;
 		}
@@ -424,8 +426,8 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			return;
 		}
 
-    	if(playerListener.onPlayerChangeBlock(player, event.getBlock().getType().name(),
-    			event.getTo().name(), BukkitUtils.toPoint(event.getBlock().getLocation()))) {
+    	if(playerListener.onPlayerChangeBlock(player, new ItemBukkit(event.getBlock().getType()),
+    			new ItemBukkit(event.getTo()), BukkitUtils.toPoint(event.getBlock().getLocation()))) {
     		event.setCancelled(true);
     	}
 	}
@@ -617,7 +619,8 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 			
 			Block block = event.getEntity().getLocation().getBlock();
 			
-			if(pvpListener.onPlayerDamage(player, loc, event.getCause().name(), block.getType().name())) {
+			if(pvpListener.onPlayerDamage(player, loc, event.getCause().name(), 
+					new ItemBukkit(block.getType()))) {
 				block.setType(Material.AIR);
 				event.getEntity().setFireTicks(0);
 				event.setDamage(0);
@@ -632,9 +635,9 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
 		FPlayer player = Factoid.getServerCache().getPlayer(event.getPlayer().getUniqueId());
 
 		// Check if item in hand is present
-		String itemInHandType = null;
+		Item itemInHandType = null;
 		if(event.getPlayer().getItemInHand().getType() != Material.AIR) {
-			itemInHandType = event.getPlayer().getItemInHand().getType().name();
+			itemInHandType = new ItemBukkit(event.getPlayer().getItemInHand().getType());
 		}
 		
 		if(playerListener.onPlayerInteractAtEntity(player, event.getRightClicked().getType().name(),
@@ -772,7 +775,7 @@ public class ListenerBukkit implements Listener, org.bukkit.event.Listener {
     public void onBlockFromTo(BlockFromToEvent event) {
     	
     	if(worldListener.onBlockFromTo(BukkitUtils.toPoint(event.getBlock().getLocation()),
-    			event.getBlock().getType().name())) {
+    			new ItemBukkit(event.getBlock().getType()))) {
     		event.setCancelled(true);
     	}
     	

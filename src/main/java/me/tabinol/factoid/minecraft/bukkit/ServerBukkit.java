@@ -35,6 +35,7 @@ import me.tabinol.factoid.minecraft.ChatPaginator;
 import me.tabinol.factoid.minecraft.DependPlugin;
 import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.minecraft.FSign;
+import me.tabinol.factoid.minecraft.Item;
 import me.tabinol.factoid.minecraft.Server;
 import me.tabinol.factoid.minecraft.Task;
 import me.tabinol.factoid.utilities.FactoidRunnable;
@@ -219,13 +220,21 @@ public class ServerBukkit extends JavaPlugin implements Server {
 	}
 
 	@Override
-    public String getBlockTypeName(Point point) {
+    public Item getBlockItem(Point point) {
 	    
 		World world = ((FWorldBukkit) point.getWorld()).getWorld();
 		
-		return world.getBlockAt(BukkitUtils.toLocation(world, point)).getType().name();
+		return new ItemBukkit(world.getBlockAt(BukkitUtils.toLocation(world, point)).getType());
     }
 
+	@SuppressWarnings("deprecation")
+	@Override
+    public byte getByteItem(Point point) {
+	    
+		World world = ((FWorldBukkit) point.getWorld()).getWorld();
+		
+		return world.getBlockAt(BukkitUtils.toLocation(world, point)).getData();
+    }
 	
 	public void removeBlockAndDropSign(Point point) {
 		

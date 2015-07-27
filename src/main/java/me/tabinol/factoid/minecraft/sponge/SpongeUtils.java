@@ -53,5 +53,4 @@ public class SpongeUtils {
 		
 		return new Vector3d(loc.getYaw(), loc.getPitch(), 0);
 	}
-	
 }

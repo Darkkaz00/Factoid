@@ -20,6 +20,7 @@ package me.tabinol.factoid.listeners;
 import me.tabinol.factoid.Factoid;
 import me.tabinol.factoid.lands.DummyLand;
 import me.tabinol.factoid.lands.areas.Point;
+import me.tabinol.factoid.minecraft.Item;
 import me.tabinol.factoid.parameters.FlagList;
 
 
@@ -64,7 +65,7 @@ public class WorldListener extends CommonListener {
         return false;
     }
 
-    public boolean onEntityChangeBlock(Point loc, String entityType, String fromType, String toType) {
+    public boolean onEntityChangeBlock(Point loc, String entityType, Item fromType, Item toType) {
 
         DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 
@@ -76,8 +77,8 @@ public class WorldListener extends CommonListener {
             return true;
         
         // Crop trample
-        } else if ((fromType.equals("SOIL") /* BUKKIT */ || fromType.equals("FARMLAND")) /* SPONGE */ 
-				&& toType.equals("DIRT")
+        } else if ((fromType.strEquals("SOIL") /* BUKKIT */ || fromType.equals("FARMLAND")) /* SPONGE */ 
+				&& toType.strEquals("DIRT")
                 && land.getFlagAndInherit(FlagList.CROP_TRAMPLE.getFlagType()).getValueBoolean() == false) {
         	return true;
         }
@@ -134,7 +135,7 @@ public class WorldListener extends CommonListener {
         return false;
     }
 
-    public boolean onBlockFromTo(Point loc, String blockType) {
+    public boolean onBlockFromTo(Point loc, Item blockType) {
 
         DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 

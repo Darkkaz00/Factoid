@@ -205,15 +205,16 @@ public class ListenerSponge implements Listener {
 		}
 		
 		// Check item in hand
-		String itemInHand;
+		me.tabinol.factoid.minecraft.Item itemInHand;
 		if(event.getEntity().getItemInHand().isPresent()) {
-			itemInHand = event.getEntity().getItemInHand().get().getItem().getName();
+			itemInHand = new ItemSponge(event.getEntity().getItemInHand().get().getItem());
 		} else {
 			itemInHand = null;
 		}
 		
     	FPlayer player = Factoid.getServerCache().getPlayer(event.getEntity().getUniqueId());
-		if(playerListener.onPlayerInteract(player, click, itemInHand, event.getBlock().getBlockType().getName(),
+		if(playerListener.onPlayerInteract(player, click, itemInHand, 
+				new ItemSponge(event.getBlock().getBlockType()),
 				SpongeUtils.toPoint(event.getBlock()))) {
 			event.setCancelled(true);
 		}
@@ -229,7 +230,7 @@ public class ListenerSponge implements Listener {
 			return;
 		}
 
-    	if(playerListener.onBlockPlace(player, event.getBlock().getBlockType().getName(),
+    	if(playerListener.onBlockPlace(player, new ItemSponge(event.getBlock().getBlockType()),
     			SpongeUtils.toPoint(event.getBlock()))) {
     		event.setCancelled(true);
     	}
@@ -245,7 +246,7 @@ public class ListenerSponge implements Listener {
 			return;
 		}
 
-		pvpListener.onBlockPlaceMonitor(player, event.getBlock().getBlockType().getName(),
+		pvpListener.onBlockPlaceMonitor(player, new ItemSponge(event.getBlock().getBlockType()),
 				SpongeUtils.toPoint(event.getBlock()));
 	}
 
@@ -257,9 +258,9 @@ public class ListenerSponge implements Listener {
 		if(event.getInteractionType() == EntityInteractionTypes.USE) {
 			// Right click
 			// Check if item in hand is present
-			String itemInHandType = null;
+			me.tabinol.factoid.minecraft.Item itemInHandType = null;
 			if(event.getEntity().getItemInHand().isPresent()) {
-				itemInHandType = event.getEntity().getItemInHand().get().getItem().getName();
+				itemInHandType = new ItemSponge(event.getEntity().getItemInHand().get().getItem());
 			}
 			
 			if(playerListener.onPlayerInteractAtEntity(player, event.getTargetEntity().getType().getName(),
@@ -286,7 +287,8 @@ public class ListenerSponge implements Listener {
 			return;
 		}
 
-    	if(playerListener.onBlockPlace(player, event.getBlock().getBlockType().getName(),
+    	Factoid.getServer().info(event.getBlock().getBlockType().getName());
+		if(playerListener.onBlockPlace(player, new ItemSponge(event.getBlock().getBlockType()),
     			SpongeUtils.toPoint(event.getBlock()))) {
     		event.setCancelled(true);
     	}
@@ -303,7 +305,7 @@ public class ListenerSponge implements Listener {
 		}
 
 		for(ItemStack item : event.getDroppedItems()) {
-			if(playerListener.onPlayerDropItem(player, item.getItem().getName(),
+			if(playerListener.onPlayerDropItem(player, new ItemSponge(item.getItem()),
 					SpongeUtils.toPoint(event.getEntity().getLocation()))) {
 				event.setCancelled(true);
 			}
@@ -321,7 +323,7 @@ public class ListenerSponge implements Listener {
 		}
 
 		for(Item item : event.getItems()) {
-			if(playerListener.onPlayerPickupItem(player, item.getType().getName(),
+			if(playerListener.onPlayerPickupItem(player, new ItemSponge(item.getType()),
 					SpongeUtils.toPoint(item.getLocation()))) {
 				event.setCancelled(true);
 			}
@@ -365,7 +367,7 @@ public class ListenerSponge implements Listener {
 			return;
 		}
 
-		if(playerListener.onEntityDamageByEntity(player, entity.getType().getName(),
+		if(playerListener.onEntityDamageByEntity(player, new ItemSponge(entity.getType()),
 				SpongeUtils.toPoint(entity.getLocation()), isAnimal, isMonster, isTamedAndNotOwner)) {
 			event.setCancelled(true);
 
@@ -394,8 +396,10 @@ public class ListenerSponge implements Listener {
 			return;
 		}
 
-    	if(playerListener.onPlayerChangeBlock(player, event.getBlock().getBlockType().getName(),
-    			event.getReplacementBlock().getState().getType().getName(), SpongeUtils.toPoint(event.getBlock()))) {
+    	if(playerListener.onPlayerChangeBlock(player, 
+    			new ItemSponge(event.getBlock().getBlockType()),
+    			new ItemSponge(event.getReplacementBlock().getState().getType()), 
+    			SpongeUtils.toPoint(event.getBlock()))) {
     		event.setCancelled(true);
     	}
 	}
@@ -602,8 +606,8 @@ public class ListenerSponge implements Listener {
 		// All entities section
 		if(worldListener.onEntityChangeBlock(SpongeUtils.toPoint(event.getBlock()), 
 				event.getEntity().getType().getName(),
-				event.getBlock().getBlockType().getName(), 
-				event.getReplacementBlock().getState().getType().getName())) {
+				new ItemSponge(event.getBlock().getBlockType()), 
+				new ItemSponge(event.getReplacementBlock().getState().getType()))) {
 			event.setCancelled(true);
 			return;
 		}
@@ -650,7 +654,7 @@ public class ListenerSponge implements Listener {
 	public void onBlockChange(BlockChangeEvent event) {
 		
 		if(worldListener.onBlockFromTo(SpongeUtils.toPoint(event.getBlock()), 
-				event.getBlock().getBlockType().getName())) {
+				new ItemSponge(event.getBlock().getBlockType()))) {
 			event.setCancelled(true);
 		}
 	}

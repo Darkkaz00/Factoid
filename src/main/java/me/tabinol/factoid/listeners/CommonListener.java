@@ -89,7 +89,7 @@ public class CommonListener {
 		
 		Point up = point.getNearPoint(0, 1, 0);
 		
-		if((up.equals(ecoSignLoc) && Factoid.getServer().getBlockTypeName(up).contains("SIGN"))
+		if((up.equals(ecoSignLoc) && Factoid.getServer().getBlockItem(up).strEquals("SIGN"))
 				|| isEcoSignAttached(point.getNearPoint(0, 0, -1), ecoSignLoc)
 				|| isEcoSignAttached(point.getNearPoint(0, 0, 1), ecoSignLoc)
 				|| isEcoSignAttached(point.getNearPoint(-1, 0, 0), ecoSignLoc)
@@ -102,7 +102,7 @@ public class CommonListener {
 	
 	private boolean isEcoSignAttached(Point checkPoint, Point ecoSignLoc) {
 		
-		if(checkPoint.equals(ecoSignLoc) && Factoid.getServer().getBlockTypeName(checkPoint).equals("WALL_SIGN")) {
+		if(checkPoint.equals(ecoSignLoc) && Factoid.getServer().getBlockItem(checkPoint).strEquals("WALL_SIGN")) {
 			return true;
 		}
 		

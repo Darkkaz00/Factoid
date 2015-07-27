@@ -24,6 +24,7 @@ import me.tabinol.factoid.factions.Faction;
 import me.tabinol.factoid.lands.DummyLand;
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.minecraft.Item;
 import me.tabinol.factoid.parameters.FlagList;
 import me.tabinol.factoid.playercontainer.PlayerContainerPlayer;
 import me.tabinol.factoid.utilities.ExpirableHashMap;
@@ -62,9 +63,9 @@ public class PvpListener extends CommonListener {
 		return false;
 	}
 
-	public void onBlockPlaceMonitor(FPlayer player, String blockType, Point loc) {
+	public void onBlockPlaceMonitor(FPlayer player, Item blockType, Point loc) {
 		
-		if(blockType.equals("FIRE")) {
+		if(blockType.strEquals("FIRE")) {
 			
 			checkForPvpFire(loc, player);
 		}
@@ -86,7 +87,7 @@ public class PvpListener extends CommonListener {
 		}
 	}
 	
-	public boolean onPlayerDamage(FPlayer player, Point loc, String cause, String blockType) {
+	public boolean onPlayerDamage(FPlayer player, Point loc, String cause, Item blockType) {
 		
 		// Check for fire cancel
 		if(cause.contains("FIRE")) {
@@ -98,7 +99,7 @@ public class PvpListener extends CommonListener {
 				
 				if(loc.getWorld() == fireEntry.getKey().getWorld() 
 						&& loc.distance(fireEntry.getKey()) < 5) {
-					if((blockType.equals("FIRE") || blockType.equals("AIR")) 
+					if((blockType.strEquals("FIRE") || blockType.strEquals("AIR")) 
 							&& !isPvpValid(land, land, fireEntry.getValue(), player.getFSender().getPlayerContainer())) {
 						
 						// remove fire

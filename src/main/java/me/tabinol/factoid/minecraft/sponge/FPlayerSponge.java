@@ -23,6 +23,7 @@ import java.util.UUID;
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.minecraft.FPlayer;
 import me.tabinol.factoid.minecraft.FSender;
+import me.tabinol.factoid.minecraft.Item;
 
 import org.spongepowered.api.data.manipulator.entity.FoodData;
 import org.spongepowered.api.entity.player.Player;
@@ -117,11 +118,16 @@ public class FPlayerSponge implements FPlayer, Comparable<FPlayer> {
     }
 
 	@Override
-    public void sendBlockChange(Point loc, String blockType, byte by) {
+    public void sendBlockChange(Point loc, Item blockType, byte by) {
 	    
 		// TODO Visual selection in Sponge
     }
 
+	@Override
+	public void sendBlockChange(Point loc, String blockShortName, byte by) {
+		
+		// TODO Visual selection in Sponge
+	}
 	@Override
     public Point getTargetBlockLocation() {
 		
@@ -130,10 +136,10 @@ public class FPlayerSponge implements FPlayer, Comparable<FPlayer> {
 	}
 
 	@Override
-    public String getItemInHand() {
+    public Item getItemInHand() {
 
 		if(player.getItemInHand().isPresent()) {
-			return player.getItemInHand().get().getItem().getName();
+			return new ItemSponge(player.getItemInHand().get().getItem());
 		} else {
 			return null;
 		}

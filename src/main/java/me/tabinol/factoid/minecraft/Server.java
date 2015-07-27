@@ -72,7 +72,8 @@ public interface Server {
 	 */
 	public String[] getMaterials();
 	
-	public String getBlockTypeName(Point point);
+	public Item getBlockItem(Point point);
+	public byte getByteItem(Point point);
 	public void removeBlockAndDropSign(Point point);
 	public void loadChunk(Point point);
 	

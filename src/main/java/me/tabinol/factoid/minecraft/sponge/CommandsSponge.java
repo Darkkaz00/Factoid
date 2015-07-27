@@ -91,7 +91,7 @@ public class CommandsSponge implements Commands, CommandCallable {
 	}
 
 	@Override
-	public Optional<CommandResult> process(CommandSource source,
+	public CommandResult process(CommandSource source,
 	        String arguments) throws CommandException {
 		
 		FSender fSender;
@@ -102,9 +102,9 @@ public class CommandsSponge implements Commands, CommandCallable {
 			fSender = new FSenderSponge(source);
 		}
 
-		onCommand.onCommand(fSender, name, arguments.split(":"));
+		onCommand.onCommand(fSender, name, arguments.split(" "));
 		
-		return Optional.of(CommandResult.success());
+		return CommandResult.success();
 	}
 
 	@Override

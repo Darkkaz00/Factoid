@@ -34,6 +34,7 @@ import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.minecraft.Item;
 import me.tabinol.factoid.parameters.FlagList;
 import me.tabinol.factoid.parameters.Parameters.SpecialPermPrefix;
 import me.tabinol.factoid.parameters.PermissionList;
@@ -130,7 +131,7 @@ public class PlayerListener extends CommonListener {
 		updatePosInfo(false, player, to, false);
 	}
 
-	public boolean onPlayerInteract(FPlayer player, Click click, String itemInHand, String clickedItem, Point loc) {
+	public boolean onPlayerInteract(FPlayer player, Click click, Item itemInHand, Item clickedItem, Point loc) {
 
 		DummyLand land;
 
@@ -141,7 +142,7 @@ public class PlayerListener extends CommonListener {
 
 		// For infoItem
 		if (itemInHand != null && click == Click.LEFT
-				&& itemInHand == conf.getInfoItem()) {
+				&& itemInHand.strLongEquals(conf.getInfoItem())) {
 			try {
 				new CommandInfo(player, 
 						(CuboidArea) Factoid.getLands().getCuboidArea(loc))
@@ -155,7 +156,7 @@ public class PlayerListener extends CommonListener {
 			// For Select
 		} else if (itemInHand != null
 				&& click == Click.LEFT
-				&& itemInHand == conf.getSelectItem()) {
+				&& itemInHand.strLongEquals(conf.getSelectItem())) {
 
 			try {
 				new CommandSelect(player, new ArgList(new String[] { "here" },
@@ -170,7 +171,7 @@ public class PlayerListener extends CommonListener {
 			// For Select Cancel
 		} else if (itemInHand != null
 				&& click == Click.RIGHT
-				&& itemInHand == conf.getSelectItem()
+				&& itemInHand.strLongEquals(conf.getSelectItem())
 				&& player.getFSender().getSelection().hasSelection()) {
 
 			try {
@@ -217,14 +218,14 @@ public class PlayerListener extends CommonListener {
 					|| ((click == Click.RIGHT // BEGIN of USE
 					&& (clickedItem.contains("DOOR")
 							|| clickedItem.contains("BUTTON")
-							|| clickedItem.equals("LEVER")
-							|| clickedItem.equals("TRAPPED_CHEST")
+							|| clickedItem.strEquals("LEVER")
+							|| clickedItem.strEquals("TRAPPED_CHEST")
 							|| clickedItem.matches("^ENCHANT.*TABLE$") 
-							|| clickedItem.equals("ANVIL")
-							|| clickedItem.equals("MOB_SPAWNER")
+							|| clickedItem.strEquals("ANVIL")
+							|| clickedItem.strEquals("MOB_SPAWNER")
 							|| clickedItem.contains("DAYLIGHT_DETECTOR")
 							|| (click == Click.NONE && (clickedItem.contains("PLATE")
-							|| clickedItem.equals("STRING")))) && !checkPermission(
+							|| clickedItem.strEquals("STRING")))) && !checkPermission(
 								land, player,
 								PermissionList.USE.getPermissionType())) // End
 																		// of
@@ -238,7 +239,7 @@ public class PlayerListener extends CommonListener {
 								land, player,
 								PermissionList.USE_BUTTON.getPermissionType()))
 					|| (click == Click.RIGHT
-							&& clickedItem.equals("LEVER") && !checkPermission(land,
+							&& clickedItem.strEquals("LEVER") && !checkPermission(land,
 								player,
 								PermissionList.USE_LEVER.getPermissionType()))
 					|| (click == Click.NONE
@@ -246,20 +247,20 @@ public class PlayerListener extends CommonListener {
 								land, player, PermissionList.USE_PRESSUREPLATE
 										.getPermissionType()))
 					|| (click == Click.RIGHT
-							&& clickedItem.equals("TRAPPED_CHEST") && !checkPermission(
+							&& clickedItem.strEquals("TRAPPED_CHEST") && !checkPermission(
 								land, player,
 								PermissionList.USE_TRAPPEDCHEST
 										.getPermissionType()))
-					|| (click == Click.NONE && clickedItem.equals("STRING") && !checkPermission(
+					|| (click == Click.NONE && clickedItem.strEquals("STRING") && !checkPermission(
 							land, player,
 							PermissionList.USE_STRING.getPermissionType()))
-					|| (click == Click.RIGHT && clickedItem.equals("MOB_SPAWNER")
+					|| (click == Click.RIGHT && clickedItem.strEquals("MOB_SPAWNER")
 					        && !checkPermission(land, player, PermissionList.USE_MOBSPAWNER.getPermissionType()))
 					|| (click == Click.RIGHT && clickedItem.contains("DAYLIGHT_DETECTOR")
 					        && !checkPermission(land, player, PermissionList.USE_LIGHTDETECTOR.getPermissionType()))
 					|| (click == Click.RIGHT && clickedItem.matches("^ENCHANT.*TABLE$")
 							&& !checkPermission(land, player, PermissionList.USE_ENCHANTTABLE.getPermissionType()))
-					|| (click == Click.RIGHT && clickedItem.equals("ANVIL")
+					|| (click == Click.RIGHT && clickedItem.strEquals("ANVIL")
 						&& !checkPermission(land, player, PermissionList.USE_ANVIL.getPermissionType())))) {
 
 				if (click != Click.NONE) {
@@ -268,56 +269,56 @@ public class PlayerListener extends CommonListener {
 				return true;
 
 			} else if (click == Click.RIGHT
-					&& (((clickedItem.equals("CHEST")
-							|| clickedItem.equals("ENDER_CHEST") // Begin of OPEN
-							|| clickedItem.equals("WORKBENCH") // Bukkit 
-							|| clickedItem.equals("CRAFTING_TABLE") // Sponge
-							|| clickedItem.equals("BREWING_STAND")
+					&& (((clickedItem.strEquals("CHEST")
+							|| clickedItem.strEquals("ENDER_CHEST") // Begin of OPEN
+							|| clickedItem.strEquals("WORKBENCH") // Bukkit 
+							|| clickedItem.strEquals("CRAFTING_TABLE") // Sponge
+							|| clickedItem.strEquals("BREWING_STAND")
 							|| clickedItem.contains("FURNACE")
-							|| clickedItem.equals("BEACON")
-							|| clickedItem.equals("DROPPER") || clickedItem.equals("HOPPER")
-							|| clickedItem.equals("DISPENSER") || clickedItem.equals("JUKEBOX")) 
+							|| clickedItem.strEquals("BEACON")
+							|| clickedItem.strEquals("DROPPER") || clickedItem.strEquals("HOPPER")
+							|| clickedItem.strEquals("DISPENSER") || clickedItem.strEquals("JUKEBOX")) 
 							&& !checkPermission(land, player,
 								PermissionList.OPEN.getPermissionType())) // End
 																			// of
 																			// OPEN
-							|| (clickedItem.equals("CHEST") && !checkPermission(land,
+							|| (clickedItem.strEquals("CHEST") && !checkPermission(land,
 									player,
 									PermissionList.OPEN_CHEST
 											.getPermissionType()))
-							|| (clickedItem.equals("ENDER_CHEST") && !checkPermission(
+							|| (clickedItem.strEquals("ENDER_CHEST") && !checkPermission(
 									land, player,
 									PermissionList.OPEN_ENDERCHEST
 											.getPermissionType()))
-							|| ((clickedItem.equals("WORKBENCH") || clickedItem.equals("CRAFTING_TABLE"))
+							|| ((clickedItem.strEquals("WORKBENCH") || clickedItem.strEquals("CRAFTING_TABLE"))
 									&& !checkPermission(land, player, PermissionList.OPEN_CRAFT
 											.getPermissionType()))
-							|| (clickedItem.equals("BREWING_STAND") && !checkPermission(
+							|| (clickedItem.strEquals("BREWING_STAND") && !checkPermission(
 									land, player,
 									PermissionList.OPEN_BREW.getPermissionType()))
 							|| (clickedItem.contains("FURNACE") && !checkPermission(
 									land, player,
 									PermissionList.OPEN_FURNACE
 											.getPermissionType()))
-							|| (clickedItem.equals("BEACON") && !checkPermission(land,
+							|| (clickedItem.strEquals("BEACON") && !checkPermission(land,
 									player,
 									PermissionList.OPEN_BEACON
 											.getPermissionType()))
-							|| (clickedItem.equals("DISPENSER") && !checkPermission(land,
+							|| (clickedItem.strEquals("DISPENSER") && !checkPermission(land,
 									player,
 									PermissionList.OPEN_DISPENSER
 											.getPermissionType()))
-							|| (clickedItem.equals("DROPPER") && !checkPermission(
+							|| (clickedItem.strEquals("DROPPER") && !checkPermission(
 									land, player,
 									PermissionList.OPEN_DROPPER
-											.getPermissionType())) || (clickedItem.equals("HOPPER") 
+											.getPermissionType())) || (clickedItem.strEquals("HOPPER") 
 													&& !checkPermission(land, player,
 							PermissionList.OPEN_HOPPER.getPermissionType()))
-							|| (clickedItem.equals("JUKEBOX") && !checkPermission(
+							|| (clickedItem.strEquals("JUKEBOX") && !checkPermission(
 									land, player,
 									PermissionList.OPEN_JUKEBOX.getPermissionType())))
 					// For dragon egg fix
-					|| (clickedItem.equals("DRAGON_EGG") && (!checkPermission(land,
+					|| (clickedItem.strEquals("DRAGON_EGG") && (!checkPermission(land,
 							player,
 							PermissionList.BUILD.getPermissionType()) || !checkPermission(
 							land, player,
@@ -328,8 +329,8 @@ public class PlayerListener extends CommonListener {
 				// For tile entities
 			} else if(itemInHand != null
 					&& click == Click.RIGHT
-					&& (itemInHand.equals("ARMOR_STAND") || clickedItem.contains("SKULL")
-							|| itemInHand.equals("PAINTING") || clickedItem.equals("ITEM_FRAME"))
+					&& (itemInHand.strEquals("ARMOR_STAND") || clickedItem.contains("SKULL")
+							|| itemInHand.strEquals("PAINTING") || clickedItem.strEquals("ITEM_FRAME"))
 					&& ((land instanceof Land && ((Land) land).isBanned(player))
 						|| !checkPermission(land, player,
 								PermissionList.BUILD.getPermissionType())
@@ -342,7 +343,7 @@ public class PlayerListener extends CommonListener {
 		return false;
 	}
 
-	public boolean onBlockPlace(FPlayer player, String blockType, Point loc) {
+	public boolean onBlockPlace(FPlayer player, Item blockType, Point loc) {
 
 		// Check for fire init
 		if(blockType.contains("FIRE")) {
@@ -362,12 +363,12 @@ public class PlayerListener extends CommonListener {
 			} else if(!checkPermission(land, player, PermissionList.BUILD.getPermissionType())
 					|| !checkPermission(land, player, PermissionList.BUILD_PLACE.getPermissionType())) {
 				if(checkPermission(land, player, 
-						Factoid.getParameters().getSpecialPermission(SpecialPermPrefix.PLACE, blockType))) {
+						Factoid.getParameters().getSpecialPermission(SpecialPermPrefix.PLACE, blockType.getShortName()))) {
 					messagePermission(player);
 					return true;
 				}
 			} else if(!checkPermission(land, player, 
-					Factoid.getParameters().getSpecialPermission(SpecialPermPrefix.NOPLACE, blockType))) {
+					Factoid.getParameters().getSpecialPermission(SpecialPermPrefix.NOPLACE, blockType.getShortName()))) {
 				messagePermission(player);
 				return true;
 			}
@@ -394,7 +395,7 @@ public class PlayerListener extends CommonListener {
 		return false;
 	}
 
-	public boolean onBlockBreak(FPlayer player, String blockType, Point loc) {
+	public boolean onBlockBreak(FPlayer player, Item blockType, Point loc) {
 
 		if (!player.getFSender().isAdminMod()) {
 
@@ -410,12 +411,12 @@ public class PlayerListener extends CommonListener {
 					|| !checkPermission(land, player,
 							PermissionList.BUILD_DESTROY.getPermissionType())) {
 				if(checkPermission(land, player,
-						Factoid.getParameters().getSpecialPermission(SpecialPermPrefix.DESTROY, blockType))) {
+						Factoid.getParameters().getSpecialPermission(SpecialPermPrefix.DESTROY, blockType.getShortName()))) {
 					messagePermission(player);
 					return true;
 				}
 			} else if(!checkPermission(land, player,
-						Factoid.getParameters().getSpecialPermission(SpecialPermPrefix.NODESTROY, blockType))) {
+						Factoid.getParameters().getSpecialPermission(SpecialPermPrefix.NODESTROY, blockType.getShortName()))) {
 				messagePermission(player);
 				return true;
 			}
@@ -423,7 +424,7 @@ public class PlayerListener extends CommonListener {
 		return false;
 	}
 
-	public boolean onPlayerDropItem(FPlayer player, String itemType, Point loc) {
+	public boolean onPlayerDropItem(FPlayer player, Item itemType, Point loc) {
 
 		if (!player.getFSender().isAdminMod()) {
 			DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
@@ -436,7 +437,7 @@ public class PlayerListener extends CommonListener {
 		return false;
 	}
 
-	public boolean onPlayerPickupItem(FPlayer player, String itemType, Point loc) {
+	public boolean onPlayerPickupItem(FPlayer player, Item itemType, Point loc) {
 
 		if (!player.getFSender().isAdminMod()) {
 			DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
@@ -464,7 +465,7 @@ public class PlayerListener extends CommonListener {
 		return false;
 	}
 
-	public boolean onEntityDamageByEntity(FPlayer player, String entityType, Point loc,
+	public boolean onEntityDamageByEntity(FPlayer player, Item entityType, Point loc,
 			boolean isAnimal, boolean isMonster, boolean isTamedAndNotOwner) {
 
 		// Check for non-player kill
@@ -474,8 +475,8 @@ public class PlayerListener extends CommonListener {
 			// kill an entity (none player)
 			if (!player.getFSender().isAdminMod()
 					&& ((land instanceof Land && ((Land) land).isBanned(player))
-							|| ((entityType.equals("ARMOR_STAND") || entityType.equals("ITEM_FRAME") 
-									|| entityType.equals("PAINTING"))
+							|| ((entityType.strEquals("ARMOR_STAND") || entityType.strEquals("ITEM_FRAME") 
+									|| entityType.strEquals("PAINTING"))
 									&& (!checkPermission(land, player,
 											PermissionList.BUILD.getPermissionType())
 									|| !checkPermission(land, player,
@@ -488,14 +489,14 @@ public class PlayerListener extends CommonListener {
 									land, player,
 									PermissionList.MOB_KILL
 											.getPermissionType()))
-							|| (entityType.equals("VILLAGER") && !checkPermission(land, player,
+							|| (entityType.strEquals("VILLAGER") && !checkPermission(land, player,
 									PermissionList.VILLAGER_KILL
 											.getPermissionType()))
-							|| (entityType.equals("IRON_GOLEM") && !checkPermission(
+							|| (entityType.strEquals("IRON_GOLEM") && !checkPermission(
 									land, player,
 									PermissionList.VILLAGER_GOLEM_KILL
 											.getPermissionType()))
-							|| (entityType.equals("HORSE") && !checkPermission(
+							|| (entityType.strEquals("HORSE") && !checkPermission(
 									land, player,
 									PermissionList.HORSE_KILL.getPermissionType())) || 
 									(isTamedAndNotOwner && !checkPermission(land, player,
@@ -507,14 +508,14 @@ public class PlayerListener extends CommonListener {
 		return false;
 	}
 
-	public boolean onPlayerBucketFill(FPlayer player, String blockType, Point loc) {
+	public boolean onPlayerBucketFill(FPlayer player, Item blockType, Point loc) {
 
 		DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 
 		if ((land instanceof Land && ((Land) land).isBanned(player))
-				|| (blockType.equals("LAVA_BUCKET") && !checkPermission(land, player,
+				|| (blockType.strEquals("LAVA_BUCKET") && !checkPermission(land, player,
 						PermissionList.BUCKET_LAVA.getPermissionType()))
-				|| (blockType.equals("WATER_BUCKET") && !checkPermission(land, player,
+				|| (blockType.strEquals("WATER_BUCKET") && !checkPermission(land, player,
 						PermissionList.BUCKET_WATER.getPermissionType()))) {
 			messagePermission(player);
 			return true;
@@ -522,14 +523,14 @@ public class PlayerListener extends CommonListener {
 		return false;
 	}
 
-	public boolean onPlayerBucketEmpty(FPlayer player, String itemType, Point loc) {
+	public boolean onPlayerBucketEmpty(FPlayer player, Item itemType, Point loc) {
 
 		DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 
 		if ((land instanceof Land && ((Land) land).isBanned(player))
-				|| (itemType.equals("LAVA_BUCKET") && !checkPermission(land, player,
+				|| (itemType.strEquals("LAVA_BUCKET") && !checkPermission(land, player,
 						PermissionList.BUCKET_LAVA.getPermissionType()))
-				|| (itemType.equals("WATER_BUCKET") && !checkPermission(land, player,
+				|| (itemType.strEquals("WATER_BUCKET") && !checkPermission(land, player,
 						PermissionList.BUCKET_WATER.getPermissionType()))) {
 			messagePermission(player);
 			return true;
@@ -537,14 +538,14 @@ public class PlayerListener extends CommonListener {
 		return false;
 	}
 	
-    public boolean onPlayerChangeBlock(FPlayer player, String fromType, String toType, Point loc) {
+    public boolean onPlayerChangeBlock(FPlayer player, Item fromType, Item toType, Point loc) {
 
         // Crop trample
 		DummyLand land = Factoid.getLands().getLandOrOutsideArea(loc);
 		
 		if(((land instanceof Land && ((Land) land).isBanned(player))
-				|| ((fromType.equals("SOIL") /* BUKKIT */ || fromType.equals("FARMLAND")) /* SPONGE */ 
-						&& toType.equals("DIRT")
+				|| ((fromType.strEquals("SOIL") /* BUKKIT */ || fromType.strEquals("FARMLAND")) /* SPONGE */ 
+						&& toType.strEquals("DIRT")
 				&& !checkPermission(land, player,
 						PermissionList.CROP_TRAMPLE.getPermissionType())))) {
 			return true;
@@ -661,7 +662,7 @@ public class PlayerListener extends CommonListener {
 		return false;
 	}
 
-	public boolean onPlayerInteractAtEntity(FPlayer player, String entityType, String itemInHand, 
+	public boolean onPlayerInteractAtEntity(FPlayer player, String entityType, Item itemInHand, 
 			Point loc) {
 
 		DummyLand land;

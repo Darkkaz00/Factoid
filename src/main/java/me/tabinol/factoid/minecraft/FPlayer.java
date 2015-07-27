@@ -45,9 +45,10 @@ public interface FPlayer {
 	
 	public void removeOneItemFromHand();
 	public void teleport(Point newLocation);
-	public void sendBlockChange(Point loc, String blockType, byte by);
+	public void sendBlockChange(Point loc, Item blockType, byte by);
+	public void sendBlockChange(Point loc, String blockShortName, byte by);
 	public Point getTargetBlockLocation();
-	public String getItemInHand();
+	public Item getItemInHand();
 	
 	// Heal
 	public int getFoodLevel();

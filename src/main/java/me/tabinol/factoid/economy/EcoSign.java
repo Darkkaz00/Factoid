@@ -64,7 +64,7 @@ public class EcoSign {
 		}
 		
 		testBlock = targetBlock.getNearPoint(0, 1, 0);
-		if (Factoid.getServer().getBlockTypeName(testBlock).equals("AIR") && land.isLocationInside(testBlock)) {
+		if (Factoid.getServer().getBlockItem(testBlock).strEquals("AIR") && land.isLocationInside(testBlock)) {
 
 			// If the block as air upside, put the block on top of it
 			location = testBlock;
@@ -76,7 +76,7 @@ public class EcoSign {
 			// A Wall Sign
 			yaw = player.getLocation().getYaw();
 			testBlock = targetBlock.getNearPoint(wallXDiff(yaw), 0, wallZDiff(yaw));
-			if(!Factoid.getServer().getBlockTypeName(testBlock).equals("AIR")) {
+			if(!Factoid.getServer().getBlockItem(testBlock).strEquals("AIR")) {
 				// Error no place to put the wall sign
 				throw new SignException();
 			}
@@ -201,7 +201,7 @@ public class EcoSign {
 		Factoid.getServer().loadChunk(oldSignLocation);
 
 		// Remove only if it is a sign;
-		if (Factoid.getServer().getBlockTypeName(oldSignLocation).contains("SIGN")) {
+		if (Factoid.getServer().getBlockItem(oldSignLocation).contains("SIGN")) {
 			Factoid.getServer().removeBlockAndDropSign(oldSignLocation);
 		}
 	}

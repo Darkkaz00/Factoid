@@ -28,6 +28,7 @@ import me.tabinol.factoid.lands.Land;
 import me.tabinol.factoid.lands.areas.CuboidArea;
 import me.tabinol.factoid.lands.areas.Point;
 import me.tabinol.factoid.minecraft.FPlayer;
+import me.tabinol.factoid.minecraft.Item;
 import me.tabinol.factoid.parameters.PermissionList;
 import me.tabinol.factoid.selection.PlayerSelection.SelectionType;
 
@@ -37,18 +38,20 @@ import me.tabinol.factoid.selection.PlayerSelection.SelectionType;
  */
 public class AreaSelection extends RegionSelection {
 
-    /** The area. */
+    public final byte DEF_BYTE = 0;
+	
+	/** The area. */
     CuboidArea area;
     
     /** The is collision. */
     boolean isCollision = false;
     
-    /** The by. */
-    private final byte by = 0;
+    /** The block list. */
+    private final Map<Point, Item> blockList = new HashMap<Point, Item>();
     
     /** The block list. */
-    private final Map<Point, String> blockList = new HashMap<Point, String>();
-    
+    private final Map<Point, Byte> byteList = new HashMap<Point, Byte>();
+
     /** The is from land. */
     private boolean isFromLand = false;
     
@@ -153,7 +156,8 @@ public class AreaSelection extends RegionSelection {
                         || posZ == area.getZ1() || posZ == area.getZ2()) {
 
                     Point newloc = new Point(area.getWorldName(), posX, this.getYNearPlayer(posX, posZ) - 1, posZ);
-                    blockList.put(newloc, Factoid.getServer().getBlockTypeName(newloc));
+                    blockList.put(newloc, Factoid.getServer().getBlockItem(newloc));
+                    byteList.put(newloc, Factoid.getServer().getByteItem(newloc));
 
                     if (!isFromLand) {
 
@@ -161,9 +165,9 @@ public class AreaSelection extends RegionSelection {
                         DummyLand testCuboidarea = Factoid.getLands().getLandOrOutsideArea(newloc);
                         if (parentDetected == testCuboidarea 
                         		&& (canCreate == true || player.getFSender().isAdminMod())) {
-                            this.player.sendBlockChange(newloc, "SPONGE", this.by);
+                            this.player.sendBlockChange(newloc, "SPONGE", DEF_BYTE);
                         } else {
-                            this.player.sendBlockChange(newloc, "REDSTONE_BLOCK", this.by);
+                            this.player.sendBlockChange(newloc, "REDSTONE_BLOCK", DEF_BYTE);
                             isCollision = true;
                         }
                     } else {
@@ -179,7 +183,7 @@ public class AreaSelection extends RegionSelection {
                                 || (posX == area.getX2() - 1 && posZ == area.getZ2())) {
 
                             // Subcorner
-                            this.player.sendBlockChange(newloc, "IRON_BLOCK", this.by);
+                            this.player.sendBlockChange(newloc, "IRON_BLOCK", DEF_BYTE);
 
                         } else if ((posX == area.getX1() && posZ == area.getZ1())
                                 || (posX == area.getX2() && posZ == area.getZ1())
@@ -187,7 +191,7 @@ public class AreaSelection extends RegionSelection {
                                 || (posX == area.getX2() && posZ == area.getZ2())) {
 
                             // Exact corner
-                            this.player.sendBlockChange(newloc, "BEACON", this.by);
+                            this.player.sendBlockChange(newloc, "BEACON", DEF_BYTE);
                         }
                     }
 
@@ -205,11 +209,13 @@ public class AreaSelection extends RegionSelection {
 	@Override
     public void removeSelection() {
 
-        for (Map.Entry<Point, String> EntrySet : this.blockList.entrySet()) {
-            this.player.sendBlockChange(EntrySet.getKey(), EntrySet.getValue(), this.by);
+        for (Map.Entry<Point, Item> EntrySet : this.blockList.entrySet()) {
+            this.player.sendBlockChange(EntrySet.getKey(), EntrySet.getValue(),
+            		byteList.get(EntrySet.getKey()));
         }
 
         blockList.clear();
+        byteList.clear();
     }
 
     /**
@@ -252,11 +258,11 @@ public class AreaSelection extends RegionSelection {
 
         Point loc = new Point(player.getLocation().getWorldName(), x, player.getLocation().getY() - 1, z);
 
-        if (Factoid.getServer().getBlockTypeName(loc).equals("AIR")) {
-            while (Factoid.getServer().getBlockTypeName(loc.add(0, -1, 0)).equals("AIR")
+        if (Factoid.getServer().getBlockItem(loc).strEquals("AIR")) {
+            while (Factoid.getServer().getBlockItem(loc.add(0, -1, 0)).strEquals("AIR")
                     && loc.getBlockY() > 0);
         } else {
-            while (!Factoid.getServer().getBlockTypeName(loc).equals("AIR") 
+            while (!Factoid.getServer().getBlockItem(loc).strEquals("AIR") 
             		&& loc.getBlockY() < loc.getWorld().getMaxHeight()) {
                 loc.add(0, 1, 0);
             }
